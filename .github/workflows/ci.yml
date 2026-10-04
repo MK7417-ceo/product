@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  core-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install deps
+        run: pip install -r part-1-core/requirements.txt
+      - name: Run tests
+        run: cd part-1-core && python -m pytest -q
+      - name: Docs present
+        run: test -f docs/ARCHITECTURE.md && test -f docs/PROGRAM.md
