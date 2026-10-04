@@ -1,5 +1,21 @@
 # Part 1 — SkillForge Core: PLAN
 
+**Fresh-repo note (2026-10-04):** this PLAN was written against the old
+`SKILL_FORGE` repo. The program moved to fresh repo `MK7417-ceo/product`
+(hexagonal, 3 parts). Phase map for the new repo:
+
+- **F0 — Foundation** ✅ DONE (branch `feat/f0-foundation`, PR pending):
+  hexagonal skeleton, working `/api/v1/health` vertical slice
+  (domain→port→adapter→API), DB wiring, pytest (5 green), CI, Docker,
+  docker-compose, full docs dossier committed.
+- **F1 — Auth (email/password, JWT)** — mirrors old M2, hexagonal: `AuthService`
+  inbound port, `UserRepository` + `PasswordHasher` + `TokenIssuer` outbound
+  ports. Done: register/login/me round-trip, tests green.
+- **F2 = old A2** — Google OAuth (adapter behind `OAuthProvider` port) +
+  resume registration + placement/verification flow + Aurora UI screens.
+  Blocked on: Google OAuth client credentials (user creates in Google Cloud).
+- **B, D** — as below (question bank, tracks/mocks), unchanged.
+
 **Gates (founder-skills workflow):** no phase starts until its PLAN section is
 approved; no phase closes until Agent lane + Developer lane both pass; user
 merges every PR.
