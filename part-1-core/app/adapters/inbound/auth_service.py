@@ -47,6 +47,15 @@ class JwtAuthService:
         self._users.save(user)
         return self._issue_pair(user)
 
+    def register_oauth(self, email: str) -> AuthResult:
+        """OAuth users have no password; password login will never verify."""
+        email = validate_email(email)
+        user = self._users.find_by_email(email)
+        if not user:
+            user = new_user(uuid.uuid4().hex, email, "")
+            self._users.save(user)
+        return self._issue_pair(user)
+
     def login(self, email: str, password: str) -> AuthResult:
         email = validate_email(email)
         user = self._users.find_by_email(email)
