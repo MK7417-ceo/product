@@ -54,3 +54,19 @@ class PlacementModel(Base):
     total: Mapped[int] = mapped_column(nullable=False, default=0)
     verified_level: Mapped[str] = mapped_column(String(16), nullable=True)
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class AssessmentModel(Base):
+    __tablename__ = "assessment_sessions"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    topic: Mapped[str] = mapped_column(String(80), nullable=False)
+    level: Mapped[str] = mapped_column(String(16), nullable=False)
+    question_ids: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON list
+    answers: Mapped[str] = mapped_column(Text, nullable=False, default="{}")  # JSON dict
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="open")
+    correct: Mapped[int] = mapped_column(nullable=False, default=0)
+    total: Mapped[int] = mapped_column(nullable=False, default=0)
+    gaps: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON list of skill tags
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)

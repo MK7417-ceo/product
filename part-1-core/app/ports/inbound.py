@@ -52,3 +52,35 @@ class AuthService(Protocol):
     def register_oauth(self, email: str) -> AuthResult:
         """Find-or-create a user from an OAuth identity. No password set."""
         ...
+
+
+class OnboardingService(Protocol):
+    def save_profile(self, user_id: str, **fields) -> object:
+        """Create or replace the user's resume-style profile."""
+        ...
+
+    def get_profile(self, user_id: str) -> object:
+        """Raises DomainError if the user has no profile yet."""
+        ...
+
+    def start_placement(self, user_id: str, topic: str, claimed_level: str) -> tuple[object, list[dict]]:
+        """Open a placement session; returns (session, public questions)."""
+        ...
+
+    def submit_placement(self, user_id: str, placement_id: str, answers: dict[str, int]) -> object:
+        """Score answers and stamp the verified level. Session closes."""
+        ...
+
+
+class AssessmentService(Protocol):
+    def start_assessment(self, user_id: str, topic: str, level: str, count: int = 6) -> tuple[object, list[dict]]:
+        """Open an assessment session; returns (session, public questions)."""
+        ...
+
+    def submit_assessment(self, user_id: str, assessment_id: str, answers: dict[str, int]) -> object:
+        """Score answers server-side and return the result with gap report."""
+        ...
+
+    def get_assessment(self, user_id: str, assessment_id: str) -> object:
+        """Raises DomainError if missing or owned by someone else."""
+        ...
