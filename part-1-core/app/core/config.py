@@ -8,6 +8,10 @@ class Settings(BaseSettings):
     SECRET_KEY: str  # no default: fail fast, never ship a hardcoded key
     ACCESS_TOKEN_MINUTES: int = 30
     REFRESH_TOKEN_DAYS: int = 7
+    # Google OAuth — empty until the operator configures them (F2/A2)
+    GOOGLE_CLIENT_ID: str = ""
+    GOOGLE_CLIENT_SECRET: str = ""
+    GOOGLE_REDIRECT_URI: str = ""
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 

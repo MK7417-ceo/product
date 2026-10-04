@@ -48,3 +48,7 @@ class AuthService(Protocol):
     def delete_account(self, user_id: str) -> None:
         """Delete a user and their tokens."""
         ...
+
+    def register_oauth(self, email: str) -> AuthResult:
+        """Find-or-create a user from an OAuth identity. No password set."""
+        ...
