@@ -11,6 +11,7 @@ const LINKS = [
   { to: '/resume', label: 'Resume' },
   { to: '/certificates', label: 'Certificates' },
   { to: '/interview', label: 'Interview' },
+  { to: '/english', label: 'English' },
 ];
 
 export default function Shell() {

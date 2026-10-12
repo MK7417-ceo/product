@@ -376,3 +376,21 @@ export const prepApi = {
       `/api/v1/prep/questions?topic=${encodeURIComponent(topic)}&count=${count}`,
     ),
 };
+
+export interface EnglishQuestion {
+  id: string;
+  kind: string;
+  level: string;
+  prompt: string;
+  choices: string[];
+  passage: string;
+}
+
+export const englishApi = {
+  daily: () => api<{ date: string; questions: EnglishQuestion[] }>('/api/v1/english/daily'),
+  submit: (answers: Record<string, number>) =>
+    api<{ date: string; correct: number; total: number }>('/api/v1/english/daily/submit', {
+      method: 'POST',
+      body: JSON.stringify({ answers }),
+    }),
+};
