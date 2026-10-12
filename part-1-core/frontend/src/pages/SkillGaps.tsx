@@ -212,7 +212,7 @@ export default function SkillGaps() {
             Take an assessment to discover yours — gaps come from server-scored tests,
             never from self-report.
           </p>
-          <Link to="/assessment" className="btn" style={{ textDecoration: 'none', display: 'inline-block' }}>
+          <Link to="/plan" className="btn" style={{ textDecoration: 'none', display: 'inline-block' }}>
             Take an assessment to discover yours →
           </Link>
         </div>
@@ -344,7 +344,7 @@ export default function SkillGaps() {
                 >
                   {roadmapBusy === g.skill ? 'Updating roadmap…' : 'Add to roadmap'}
                 </button>
-                <button className="btn-ghost" onClick={() => navigate('/assessment')}>
+                <button className="btn-ghost" onClick={() => navigate('/plan')}>
                   Reassess
                 </button>
               </div>

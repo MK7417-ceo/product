@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import type { TodayOut } from '../../lib/api-dashboard';
 import { ErrBox, Load } from './ui';
+import DailyDSACard from '../dsa/DailyDSACard';
 import './dashboard.css';
 
 interface Props {
@@ -74,11 +75,7 @@ export default function TodayRail({ today, loading, error, onRetry }: Props) {
         {body}
       </section>
 
-      <section className="sf-card" aria-label="Daily DSA">
-        <h3>Daily DSA</h3>
-        <div className="sf-hint">One focused data-structure or algorithms problem a day.</div>
-        {/* DSA-SLOT: coordinator wires <DailyDSACard/> from src/components/dsa/DailyDSACard.tsx here */}
-      </section>
+      <DailyDSACard />
     </aside>
   );
 }

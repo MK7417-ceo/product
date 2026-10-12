@@ -103,7 +103,7 @@ export default function Dashboard() {
   /* ---- next best action, derived from real state ---- */
   const openTask = roadmap.data ? topActionableTask(roadmap.data) : null;
   let nba: React.ReactNode;
-  let nbaTo = '/assessment';
+  let nbaTo = '/plan';
   if (openTask) {
     nba = (
       <>

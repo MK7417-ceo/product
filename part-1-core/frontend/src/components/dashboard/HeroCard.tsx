@@ -89,10 +89,10 @@ export default function HeroCard({ profile, assessments, roadmap, loading, error
         </div>
       </div>
       <div className="sf-cta-row">
-        <button className="sf-btn-primary" onClick={() => navigate('/assessment')}>
+        <button className="sf-btn-primary" onClick={() => navigate('/plan')}>
           Start 15-min diagnostic →
         </button>
-        <button className="sf-btn-ghost" onClick={() => navigate('/assessment')}>
+        <button className="sf-btn-ghost" onClick={() => navigate('/plan')}>
           How scoring works
         </button>
       </div>

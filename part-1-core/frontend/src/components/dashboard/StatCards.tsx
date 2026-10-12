@@ -91,7 +91,7 @@ export default function StatCards({ roadmap, assessments, today, loading }: Prop
         ),
       )}
       {card(
-        '/skills',
+        '/gaps',
         'TOP SKILL GAP',
         loading ? '…' : <span style={{ fontSize: gapValue.length > 14 ? 18 : 24 }}>{gapValue}</span>,
         <>
