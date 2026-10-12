@@ -7,6 +7,8 @@ import Shell from './components/Shell';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Assessment from './pages/Assessment';
+import RoadmapPage from './pages/Roadmap';
 import Placeholder from './pages/Placeholder';
 import type { JSX } from 'react';
 
@@ -33,8 +35,8 @@ createRoot(document.getElementById('root')!).render(
             }
           >
             <Route index element={<Dashboard />} />
-            <Route path="assessment" element={<Placeholder title="Assessment" note="Take level-matched tests — MCQ, coding, theory." />} />
-            <Route path="roadmap" element={<Placeholder title="Roadmap" note="Your personalized learning plan, built from skill gaps." />} />
+            <Route path="assessment" element={<Assessment />} />
+            <Route path="roadmap" element={<RoadmapPage />} />
             <Route path="practice" element={<Placeholder title="Practice" note="Daily questions and weekly mock tests." />} />
             <Route path="code" element={<Placeholder title="Code Runner" note="Write and run code right in the browser." />} />
             <Route path="portfolio" element={<Placeholder title="Portfolio" note="Build and publish your expert portfolio." />} />
