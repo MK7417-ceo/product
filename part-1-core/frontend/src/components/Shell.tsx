@@ -12,6 +12,7 @@ const LINKS = [
   { to: '/certificates', label: 'Certificates' },
   { to: '/interview', label: 'Interview' },
   { to: '/english', label: 'English' },
+  { to: '/settings', label: 'Settings' },
 ];
 
 export default function Shell() {
