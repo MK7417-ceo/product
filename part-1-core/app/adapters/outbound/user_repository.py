@@ -10,7 +10,7 @@ from app.domain.user import User
 
 
 def _to_domain(m: UserModel) -> User:
-    return User(id=m.id, email=m.email, password_hash=m.password_hash, role=m.role, created_at=m.created_at)
+    return User(id=m.id, email=m.email, password_hash=m.password_hash, role=m.role, tier=m.tier or "free", created_at=m.created_at)
 
 
 class SqlAlchemyUserRepository:
@@ -27,6 +27,15 @@ class SqlAlchemyUserRepository:
         with self._sessions() as s:
             m = s.query(UserModel).filter_by(email=email).one_or_none()
             return _to_domain(m) if m else None
+
+    def set_tier(self, user_id: str, tier: str) -> User | None:
+        with self._sessions() as s:
+            m = s.query(UserModel).filter_by(id=user_id).one_or_none()
+            if not m:
+                return None
+            m.tier = tier
+            s.commit()
+            return _to_domain(m)
 
     def get(self, user_id: str) -> User | None:
         with self._sessions() as s:
