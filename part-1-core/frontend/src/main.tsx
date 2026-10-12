@@ -14,6 +14,7 @@ import Code from './pages/Code';
 import Resume from './pages/Resume';
 import Certificates from './pages/Certificates';
 import PortfolioPage from './pages/Portfolio';
+import Interview from './pages/Interview';
 import type { JSX } from 'react';
 
 function Guard({ children }: { children: JSX.Element }) {
@@ -46,6 +47,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="resume" element={<Resume />} />
             <Route path="certificates" element={<Certificates />} />
             <Route path="portfolio" element={<PortfolioPage />} />
+            <Route path="interview" element={<Interview />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
