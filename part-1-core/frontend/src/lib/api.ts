@@ -220,3 +220,28 @@ export const roadmapApi = {
     }),
   listEvidence: (taskId: string) => api<Evidence[]>(`/api/v1/roadmaps/tasks/${taskId}/evidence`),
 };
+
+export interface DailyQuestion {
+  id: string;
+  topic: string;
+  level: string;
+  prompt: string;
+  choices: string[];
+}
+
+export interface TodayPlan {
+  date: string;
+  questions: DailyQuestion[];
+  tasks: { id: string; title: string; status: string; effort_minutes: number; priority: string }[];
+  has_roadmap: boolean;
+}
+
+export const practiceApi = {
+  daily: () => api<{ date: string; questions: DailyQuestion[] }>('/api/v1/practice/daily'),
+  submitDaily: (answers: Record<string, number>) =>
+    api<{ date: string; correct: number; total: number }>('/api/v1/practice/daily/submit', {
+      method: 'POST',
+      body: JSON.stringify({ answers }),
+    }),
+  today: () => api<TodayPlan>('/api/v1/practice/today'),
+};
