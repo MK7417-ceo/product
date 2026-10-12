@@ -83,4 +83,23 @@ class AssessmentService(Protocol):
 
     def get_assessment(self, user_id: str, assessment_id: str) -> object:
         """Raises DomainError if missing or owned by someone else."""
+class RoadmapService(Protocol):
+    def generate(self, user_id: str, gaps: list[dict], title: str = "", source: str = "manual") -> object:
+        """Build roadmap v1 from skill gaps. Raises DomainError on bad input."""
+        ...
+
+    def get_current(self, user_id: str) -> object:
+        """Latest roadmap version. Raises DomainError if none exists."""
+        ...
+
+    def list_versions(self, user_id: str) -> list[object]:
+        """All roadmap versions, newest first."""
+        ...
+
+    def update_task(self, user_id: str, task_id: str, status: str) -> object:
+        """Move a task of the current roadmap to a new status."""
+        ...
+
+    def regenerate(self, user_id: str, gaps: list[dict]) -> object:
+        """New version from fresh gaps; completed tasks are preserved."""
         ...

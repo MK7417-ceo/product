@@ -69,4 +69,33 @@ class AssessmentModel(Base):
     correct: Mapped[int] = mapped_column(nullable=False, default=0)
     total: Mapped[int] = mapped_column(nullable=False, default=0)
     gaps: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON list of skill tags
+
+
+class RoadmapModel(Base):
+    __tablename__ = "roadmaps"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    version: Mapped[int] = mapped_column(nullable=False, default=1)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    source: Mapped[str] = mapped_column(String(80), nullable=False, default="manual")
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class RoadmapTaskModel(Base):
+    __tablename__ = "roadmap_tasks"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)  # row uuid
+    task_key: Mapped[str] = mapped_column(String(16), nullable=False, index=True)  # logical id (t0001…)
+    roadmap_id: Mapped[str] = mapped_column(String(36), ForeignKey("roadmaps.id", ondelete="CASCADE"), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    why_it_matters: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    target_skills: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON list
+    prerequisites: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON list
+    effort_minutes: Mapped[int] = mapped_column(nullable=False, default=30)
+    priority: Mapped[str] = mapped_column(String(16), nullable=False, default="medium")
+    expected_evidence: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    acceptance_criteria: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="pending")
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)

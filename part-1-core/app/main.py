@@ -10,11 +10,13 @@ from app.adapters.inbound.auth_service import JwtAuthService
 from app.adapters.inbound.health_service import SystemHealthService
 from app.adapters.inbound.onboarding_service import OnboardingServiceImpl
 from app.adapters.outbound.assessment_repository import SqlAlchemyAssessmentRepository
+from app.adapters.inbound.roadmap_service import RoadmapServiceImpl
 from app.adapters.outbound.google_oauth import GoogleOAuthProvider
 from app.adapters.outbound.profile_repository import (
     SqlAlchemyPlacementRepository,
     SqlAlchemyProfileRepository,
 )
+from app.adapters.outbound.roadmap_repository import SqlAlchemyRoadmapRepository
 from app.adapters.outbound.question_bank import StaticQuestionBank
 from app.adapters.outbound.security import BcryptPasswordHasher, DbTokenStore, JwtTokenIssuer
 from app.adapters.outbound.system_probe import SqlAlchemyDatabaseProbe
@@ -24,6 +26,7 @@ from app.api.v1 import assessments as assessments_api
 from app.api.v1 import health as health_api
 from app.api.v1 import oauth as oauth_api
 from app.api.v1 import onboarding as onboarding_api
+from app.api.v1 import roadmaps as roadmaps_api
 from app.core.config import settings
 from app.core.database import SessionLocal
 from app.core.logging import configure_logging
@@ -57,6 +60,7 @@ def create_app() -> FastAPI:
     app.state.assessment_repo = SqlAlchemyAssessmentRepository(SessionLocal)
     app.state.assessment_service = AssessmentServiceImpl(
         app.state.assessment_repo, bank)
+    app.state.roadmap_service = RoadmapServiceImpl(SqlAlchemyRoadmapRepository(SessionLocal))
     app.state.oauth_provider = GoogleOAuthProvider(
         client_id=settings.GOOGLE_CLIENT_ID,
         client_secret=settings.GOOGLE_CLIENT_SECRET,
@@ -75,6 +79,7 @@ def create_app() -> FastAPI:
     app.include_router(oauth_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(onboarding_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(assessments_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(roadmaps_api.router, prefix=settings.API_V1_PREFIX)
     return app
 
 
