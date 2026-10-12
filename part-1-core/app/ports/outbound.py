@@ -103,3 +103,24 @@ class RoadmapRepository(Protocol):
 class EvidenceRepository(Protocol):
     def save(self, evidence: object) -> None: ...
     def list_for_task(self, user_id: str, task_key: str) -> list[object]: ...
+
+
+class CodeRunnerClient(Protocol):
+    """Outbound port: Part 1 Core talks to the Part 2 Code Engine ONLY here."""
+
+    def run(self, language: str, code: str, stdin: str,
+            limits: dict, request_id: str) -> dict:
+        """Execute code in the engine. Returns the engine's RunResult dict.
+        Raises CodeEngineError when the engine is unreachable or rejects."""
+        ...
+
+    def languages(self) -> list[dict]:
+        """Languages the engine reports as supported."""
+        ...
+
+
+class CodeEngineError(Exception):
+    def __init__(self, code: str, message: str, status: int = 502) -> None:
+        super().__init__(message)
+        self.code = code
+        self.status = status
