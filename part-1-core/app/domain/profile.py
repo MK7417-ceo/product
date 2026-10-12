@@ -35,6 +35,7 @@ class Question:
     prompt: str
     choices: tuple[str, ...]
     answer_index: int  # NEVER sent to clients
+    skill: str = ""  # skill tag used for gap reports; defaults to topic
 
 
 @dataclass

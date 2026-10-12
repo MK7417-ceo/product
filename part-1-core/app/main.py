@@ -5,9 +5,11 @@ import uuid
 
 from fastapi import FastAPI, Request
 
+from app.adapters.inbound.assessment_service import AssessmentServiceImpl
 from app.adapters.inbound.auth_service import JwtAuthService
 from app.adapters.inbound.health_service import SystemHealthService
 from app.adapters.inbound.onboarding_service import OnboardingServiceImpl
+from app.adapters.outbound.assessment_repository import SqlAlchemyAssessmentRepository
 from app.adapters.outbound.google_oauth import GoogleOAuthProvider
 from app.adapters.outbound.profile_repository import (
     SqlAlchemyPlacementRepository,
@@ -18,6 +20,7 @@ from app.adapters.outbound.security import BcryptPasswordHasher, DbTokenStore, J
 from app.adapters.outbound.system_probe import SqlAlchemyDatabaseProbe
 from app.adapters.outbound.user_repository import SqlAlchemyUserRepository
 from app.api.v1 import auth as auth_api
+from app.api.v1 import assessments as assessments_api
 from app.api.v1 import health as health_api
 from app.api.v1 import oauth as oauth_api
 from app.api.v1 import onboarding as onboarding_api
@@ -51,6 +54,9 @@ def create_app() -> FastAPI:
     bank = StaticQuestionBank()
     app.state.onboarding_service = OnboardingServiceImpl(profiles, placements, bank)
     app.state.question_bank = bank
+    app.state.assessment_repo = SqlAlchemyAssessmentRepository(SessionLocal)
+    app.state.assessment_service = AssessmentServiceImpl(
+        app.state.assessment_repo, bank)
     app.state.oauth_provider = GoogleOAuthProvider(
         client_id=settings.GOOGLE_CLIENT_ID,
         client_secret=settings.GOOGLE_CLIENT_SECRET,
@@ -68,6 +74,7 @@ def create_app() -> FastAPI:
     app.include_router(auth_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(oauth_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(onboarding_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(assessments_api.router, prefix=settings.API_V1_PREFIX)
     return app
 
 
