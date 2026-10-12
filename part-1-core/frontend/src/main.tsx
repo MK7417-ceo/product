@@ -11,6 +11,7 @@ import Assessment from './pages/Assessment';
 import RoadmapPage from './pages/Roadmap';
 import Placeholder from './pages/Placeholder';
 import Practice from './pages/Practice';
+import Code from './pages/Code';
 import type { JSX } from 'react';
 
 function Guard({ children }: { children: JSX.Element }) {
@@ -39,7 +40,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="assessment" element={<Assessment />} />
             <Route path="roadmap" element={<RoadmapPage />} />
             <Route path="practice" element={<Practice />} />
-            <Route path="code" element={<Placeholder title="Code Runner" note="Write and run code right in the browser." />} />
+            <Route path="code" element={<Code />} />
             <Route path="portfolio" element={<Placeholder title="Portfolio" note="Build and publish your expert portfolio." />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />

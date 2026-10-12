@@ -245,3 +245,31 @@ export const practiceApi = {
     }),
   today: () => api<TodayPlan>('/api/v1/practice/today'),
 };
+
+export interface CodeRunResult {
+  run_id: string;
+  verdict: string;
+  stdout: string;
+  stderr: string;
+  truncated: boolean;
+  exit_code: number | null;
+  cpu_ms: number | null;
+  peak_ram_mb: number | null;
+  timed_out: boolean;
+}
+
+export interface EngineLanguage {
+  id: string;
+  compile: string[] | null;
+  run: string[];
+  available: boolean;
+}
+
+export const codeApi = {
+  run: (language: string, code: string, stdin: string) =>
+    api<CodeRunResult>('/api/v1/code/run', {
+      method: 'POST',
+      body: JSON.stringify({ language, code, stdin }),
+    }),
+  languages: () => api<{ languages: EngineLanguage[] }>('/api/v1/code/languages'),
+};
