@@ -23,6 +23,9 @@ from app.adapters.outbound.roadmap_repository import SqlAlchemyRoadmapRepository
 from app.adapters.outbound.code_runner_client import HttpCodeRunnerClient
 from app.adapters.inbound.launchpad_service import LaunchpadServiceImpl
 from app.adapters.outbound.resume_repository import SqlAlchemyResumeRepository
+from app.adapters.outbound.certificate_repository import SqlAlchemyCertificateRepository
+from app.adapters.outbound.user_repository import SqlAlchemyUserRepository
+from app.adapters.outbound.roadmap_repository import SqlAlchemyRoadmapRepository
 from app.adapters.outbound.question_bank import StaticQuestionBank
 from app.adapters.outbound.security import BcryptPasswordHasher, DbTokenStore, JwtTokenIssuer
 from app.adapters.outbound.system_probe import SqlAlchemyDatabaseProbe
@@ -74,7 +77,10 @@ def create_app() -> FastAPI:
         bank, SqlAlchemyRoadmapRepository(SessionLocal))
     app.state.code_runner = HttpCodeRunnerClient(settings.CODE_ENGINE_URL)
     app.state.launchpad_service = LaunchpadServiceImpl(
-        SqlAlchemyResumeRepository(SessionLocal))
+        SqlAlchemyResumeRepository(SessionLocal),
+        SqlAlchemyRoadmapRepository(SessionLocal),
+        SqlAlchemyCertificateRepository(SessionLocal),
+        SqlAlchemyUserRepository(SessionLocal))
     app.state.roadmap_service = RoadmapServiceImpl(SqlAlchemyRoadmapRepository(SessionLocal))
     app.state.evidence_service = EvidenceServiceImpl(
         SqlAlchemyEvidenceRepository(SessionLocal),

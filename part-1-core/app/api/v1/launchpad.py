@@ -75,3 +75,43 @@ def jd_match(body: JDMatchRequest, request: Request,
             return JSONResponse(status_code=404,
                                 content={"error": "no_resume", "message": str(exc)})
         raise _domain_error(exc)
+
+
+class IssueRequest(BaseModel):
+    kind: str
+    ref_id: str
+
+
+def _cert_out(cert) -> dict:
+    return {
+        "id": cert.id, "kind": cert.kind, "title": cert.title,
+        "ref_id": cert.ref_id, "verification_code": cert.verification_code,
+        "issued_at": cert.issued_at, "detail": cert.detail,
+    }
+
+
+@router.get("/launchpad/certificates")
+def list_certificates(request: Request, user_id: str = Depends(current_user_id)):
+    try:
+        return [_cert_out(c) for c in _svc(request).list_certificates(user_id)]
+    except DomainError as exc:
+        raise _domain_error(exc)
+
+
+@router.post("/launchpad/certificates/issue")
+def issue_certificate(body: IssueRequest, request: Request,
+                      user_id: str = Depends(current_user_id)):
+    try:
+        return _cert_out(_svc(request).issue_certificate(
+            user_id, body.kind, body.ref_id))
+    except DomainError as exc:
+        raise _domain_error(exc)
+
+
+@router.get("/launchpad/certificates/verify/{code}")
+def verify_certificate(code: str, request: Request):
+    # PUBLIC — employers verify without an account
+    try:
+        return _svc(request).verify_certificate(code)
+    except DomainError as exc:
+        raise _domain_error(exc)

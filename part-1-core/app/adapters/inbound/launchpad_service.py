@@ -5,6 +5,12 @@ import json
 import uuid
 from datetime import datetime, timezone
 
+from app.domain.certificate import (
+    KINDS,
+    Certificate,
+    check_roadmap_eligible,
+    new_verification_code,
+)
 from app.domain.launchpad import (
     Education,
     Experience,
@@ -38,8 +44,12 @@ def _resume_to_data(resume: Resume) -> str:
 
 
 class LaunchpadServiceImpl:
-    def __init__(self, resumes) -> None:
+    def __init__(self, resumes, roadmaps=None, certificates=None,
+                 users=None) -> None:
         self._resumes = resumes
+        self._roadmaps = roadmaps
+        self._certificates = certificates
+        self._users = users
 
     def save_resume(self, user_id: str, payload: dict) -> Resume:
         try:
@@ -92,3 +102,57 @@ class LaunchpadServiceImpl:
     @staticmethod
     def now():
         return datetime.now(timezone.utc)
+
+    # ---------- certificates ----------
+
+    def _need(self, name: str):
+        repo = {"roadmaps": self._roadmaps, "certificates": self._certificates,
+                "users": self._users}[name]
+        if repo is None:
+            raise DomainError("certificates not configured")
+        return repo
+
+    def list_certificates(self, user_id: str) -> list[Certificate]:
+        return self._need("certificates").list_for_user(user_id)
+
+    def issue_certificate(self, user_id: str, kind: str, ref_id: str) -> Certificate:
+        if kind not in KINDS:
+            raise DomainError(f"unknown certificate kind: {kind}")
+        if not ref_id or not ref_id.strip():
+            raise DomainError("ref_id required")
+        certs = self._need("certificates")
+        if certs.exists(user_id, kind, ref_id):
+            raise DomainError("certificate already issued for this item")
+
+        if kind == "roadmap":
+            roadmap = self._need("roadmaps").get_current(user_id)
+            if not roadmap or roadmap.id != ref_id:
+                raise DomainError("ref_id must be your current roadmap")
+            eligible, reason = check_roadmap_eligible(roadmap)
+            if not eligible:
+                raise DomainError(f"not eligible: {reason}")
+            title = KINDS[kind][0].format(ref_title=roadmap.title)
+            detail = (f"{len(list(roadmap.tasks))} tasks completed; "
+                      f"roadmap v{roadmap.version}")
+        else:  # pragma: no cover — future kinds
+            raise DomainError(f"kind not implemented: {kind}")
+
+        cert = Certificate(id=uuid.uuid4().hex, user_id=user_id, kind=kind,
+                           title=title, ref_id=ref_id,
+                           verification_code=new_verification_code(),
+                           issued_at=self.now().isoformat(), detail=detail)
+        cert.validate()
+        certs.save(cert)
+        return cert
+
+    def verify_certificate(self, code: str) -> dict:
+        cert = self._need("certificates").find_by_code(code.strip().upper())
+        if not cert:
+            return {"valid": False}
+        issued_to = None
+        if self._users is not None:
+            user = self._users.get(cert.user_id)
+            issued_to = user.email if user else None
+        return {"valid": True, "title": cert.title, "kind": cert.kind,
+                "issued_to": issued_to, "issued_at": cert.issued_at,
+                "detail": cert.detail}

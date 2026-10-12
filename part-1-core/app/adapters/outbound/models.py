@@ -122,3 +122,16 @@ class ResumeModel(Base):
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     data: Mapped[str] = mapped_column(Text, nullable=False)  # JSON resume body
     updated_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class CertificateModel(Base):
+    __tablename__ = "certificates"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    kind: Mapped[str] = mapped_column(String(32), nullable=False)
+    title: Mapped[str] = mapped_column(String(300), nullable=False)
+    ref_id: Mapped[str] = mapped_column(String(64), nullable=False)
+    verification_code: Mapped[str] = mapped_column(String(16), nullable=False, unique=True, index=True)
+    issued_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+    detail: Mapped[str] = mapped_column(Text, nullable=False, default="")
