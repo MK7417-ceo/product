@@ -15,6 +15,8 @@ import Resume from './pages/Resume';
 import Certificates from './pages/Certificates';
 import PortfolioPage from './pages/Portfolio';
 import Interview from './pages/Interview';
+import English from './pages/English';
+import Settings from './pages/Settings';
 import type { JSX } from 'react';
 
 function Guard({ children }: { children: JSX.Element }) {
@@ -48,6 +50,8 @@ createRoot(document.getElementById('root')!).render(
             <Route path="certificates" element={<Certificates />} />
             <Route path="portfolio" element={<PortfolioPage />} />
             <Route path="interview" element={<Interview />} />
+            <Route path="english" element={<English />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
