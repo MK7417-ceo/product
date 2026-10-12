@@ -28,10 +28,12 @@ def _to_gaps(gaps: list[dict]) -> list[SkillGap]:
 
 
 class RoadmapServiceImpl:
-    def __init__(self, roadmaps) -> None:
+    def __init__(self, roadmaps, users=None) -> None:
         self._roadmaps = roadmaps
+        self._users = users
 
     def generate(self, user_id: str, gaps: list[dict], title: str = "", source: str = "manual") -> Roadmap:
+        self._check_tier_limit(user_id)
         gap_objs = _to_gaps(gaps)
         roadmap = Roadmap(
             id=uuid.uuid4().hex,
@@ -75,3 +77,16 @@ class RoadmapServiceImpl:
         )
         self._roadmaps.save(roadmap)
         return roadmap
+
+    def _check_tier_limit(self, user_id: str) -> None:
+        """Free tier caps roadmap count; paid tiers are unlimited."""
+        if self._users is None:
+            return
+        from app.domain.billing import TIERS
+        user = self._users.get(user_id)
+        tier = (user.tier if user and user.tier in TIERS else "free")
+        limit = TIERS[tier]["max_roadmaps"]
+        if self._roadmaps.max_version(user_id) >= limit:
+            from app.domain.user import DomainError
+            raise DomainError(
+                f"tier_limit: {tier} allows {limit} roadmaps — upgrade to create more")

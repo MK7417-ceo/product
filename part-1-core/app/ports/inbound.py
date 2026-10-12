@@ -126,4 +126,35 @@ class PracticeService(Protocol):
 
     def today(self, user_id: str, date: str) -> dict:
         """Aaj ka plan: daily questions + today's roadmap tasks."""
+class LaunchpadService(Protocol):
+    def save_resume(self, user_id: str, payload: dict) -> object:
+        """Create or replace the user's resume. Raises DomainError on bad input."""
+        ...
+
+    def get_resume(self, user_id: str) -> object:
+        """Raises DomainError if the user has no resume yet."""
+        ...
+
+    def match_jd(self, user_id: str, jd_text: str) -> dict:
+        """Explainable ATS-style score of the resume against a job description."""
+        ...
+
+    def list_certificates(self, user_id: str) -> list:
+        """All certificates earned by the user."""
+        ...
+
+    def issue_certificate(self, user_id: str, kind: str, ref_id: str) -> object:
+        """Issue only when server-side eligibility passes. Raises DomainError."""
+        ...
+
+    def verify_certificate(self, code: str) -> dict:
+        """Public verification: {valid, title, kind, issued_to, issued_at}."""
+        ...
+
+    def get_portfolio(self, user_id: str) -> object:
+        """Aggregated portfolio data. Raises DomainError if no resume."""
+        ...
+
+    def render_portfolio(self, user_id: str) -> tuple[str, str]:
+        """(filename, single-file HTML)."""
         ...
