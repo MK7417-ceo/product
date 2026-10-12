@@ -10,6 +10,7 @@ from pydantic import BaseModel
 
 from app.adapters.runners import CodeRunnerServiceImpl
 from app.domain.execution import ExecutionError, ExecutionRequest, Limits
+from app.domain.plagiarism import check as plagiarism_check
 
 REQUEST_ID_HEADER = "X-Request-ID"
 
@@ -31,6 +32,13 @@ class RunResponse(BaseModel):
     cpu_ms: int | None
     peak_ram_mb: float | None
     timed_out: bool
+
+
+class PlagiarismRequest(BaseModel):
+    language: str
+    code: str
+    candidates: list[dict]  # [{id, code}]
+    boilerplate: str = ""
 
 
 def create_app() -> FastAPI:
@@ -77,6 +85,30 @@ def create_app() -> FastAPI:
         ).model_dump()
         payload["server_ms"] = int((time.monotonic() - t0) * 1000)
         return payload
+
+    @app.post("/v1/plagiarism/check")
+    def plagiarism(body: PlagiarismRequest):
+        if body.language not in ("python", "c", "cpp", "java"):
+            return JSONResponse(status_code=400, content={
+                "error": "unsupported_language",
+                "message": "language must be python|c|cpp|java"})
+        if not body.code.strip() or not body.candidates:
+            return JSONResponse(status_code=400, content={
+                "error": "bad_request",
+                "message": "code and non-empty candidates are required"})
+        try:
+            verdicts = plagiarism_check(body.code,
+                                        [{"id": c.get("id", "?"), "code": c.get("code", "")}
+                                         for c in body.candidates],
+                                        body.language, body.boilerplate)
+        except (ValueError, SyntaxError) as exc:
+            return JSONResponse(status_code=400, content={
+                "error": "bad_request", "message": str(exc)})
+        return {"results": [
+            {"candidate_id": v.candidate_id, "score": v.score,
+             "flagged": v.flagged, "reasons": list(v.reasons),
+             "fingerprint_a": v.fingerprint_a, "fingerprint_b": v.fingerprint_b}
+            for v in verdicts]}
 
     return app
 
