@@ -31,6 +31,10 @@ class SqlAlchemyEvidenceRepository:
             ))
             s.commit()
 
+    def count_for_user(self, user_id: str) -> int:
+        with self._sessions() as s:
+            return s.query(EvidenceModel).filter_by(user_id=user_id).count()
+
     def list_for_task(self, user_id: str, task_key: str) -> list[Evidence]:
         with self._sessions() as s:
             rows = (

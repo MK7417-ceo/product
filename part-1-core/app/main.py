@@ -23,14 +23,19 @@ from app.adapters.outbound.roadmap_repository import SqlAlchemyRoadmapRepository
 from app.adapters.outbound.code_runner_client import HttpCodeRunnerClient
 from app.adapters.inbound.launchpad_service import LaunchpadServiceImpl
 from app.adapters.outbound.resume_repository import SqlAlchemyResumeRepository
+from app.adapters.outbound.certificate_repository import SqlAlchemyCertificateRepository
+from app.adapters.outbound.user_repository import SqlAlchemyUserRepository
 from app.adapters.outbound.question_bank import StaticQuestionBank
 from app.adapters.outbound.security import BcryptPasswordHasher, DbTokenStore, JwtTokenIssuer
 from app.adapters.outbound.system_probe import SqlAlchemyDatabaseProbe
-from app.adapters.outbound.user_repository import SqlAlchemyUserRepository
+from app.adapters.outbound.link_repository import SqlAlchemyAccountLinkRepository
 from app.api.v1 import auth as auth_api
 from app.api.v1 import assessments as assessments_api
+from app.api.v1 import account as account_api
 from app.api.v1 import code as code_api
 from app.api.v1 import launchpad as launchpad_api
+from app.api.v1 import prep as prep_api
+from app.api.v1 import english as english_api
 from app.api.v1 import health as health_api
 from app.api.v1 import oauth as oauth_api
 from app.api.v1 import onboarding as onboarding_api
@@ -61,6 +66,8 @@ def create_app() -> FastAPI:
     tokens = DbTokenStore(SessionLocal, refresh_days=settings.REFRESH_TOKEN_DAYS)
     app.state.auth_service = JwtAuthService(users, hasher, issuer, tokens)
     app.state.token_issuer = issuer  # for the auth dependency
+    app.state.user_repo = users
+    app.state.links_repo = SqlAlchemyAccountLinkRepository(SessionLocal)
 
     profiles = SqlAlchemyProfileRepository(SessionLocal)
     placements = SqlAlchemyPlacementRepository(SessionLocal)
@@ -74,8 +81,13 @@ def create_app() -> FastAPI:
         bank, SqlAlchemyRoadmapRepository(SessionLocal))
     app.state.code_runner = HttpCodeRunnerClient(settings.CODE_ENGINE_URL)
     app.state.launchpad_service = LaunchpadServiceImpl(
-        SqlAlchemyResumeRepository(SessionLocal))
-    app.state.roadmap_service = RoadmapServiceImpl(SqlAlchemyRoadmapRepository(SessionLocal))
+        SqlAlchemyResumeRepository(SessionLocal),
+        SqlAlchemyRoadmapRepository(SessionLocal),
+        SqlAlchemyCertificateRepository(SessionLocal),
+        SqlAlchemyUserRepository(SessionLocal),
+        SqlAlchemyEvidenceRepository(SessionLocal))
+    app.state.roadmap_service = RoadmapServiceImpl(
+        SqlAlchemyRoadmapRepository(SessionLocal), users)
     app.state.evidence_service = EvidenceServiceImpl(
         SqlAlchemyEvidenceRepository(SessionLocal),
         SqlAlchemyRoadmapRepository(SessionLocal),
@@ -95,8 +107,11 @@ def create_app() -> FastAPI:
 
     app.include_router(health_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(auth_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(account_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(code_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(launchpad_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(prep_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(english_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(oauth_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(onboarding_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(assessments_api.router, prefix=settings.API_V1_PREFIX)
