@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { ApiError } from '../lib/api';
+import { HexLogo } from '../components/layout/TopNav';
 
 export default function Register() {
   const { register } = useAuth();
@@ -33,8 +34,12 @@ export default function Register() {
   return (
     <div className="auth-wrap">
       <div className="auth-card">
-        <div className="logo">
-          SKILL<span>FORGE</span>
+        <div className="auth-logo">
+          <HexLogo size={30} />
+          <div>
+            SKILLFORGE
+            <small>CAREER INTELLIGENCE</small>
+          </div>
         </div>
         <h1>Create your account</h1>
         <p className="sub">Start your zero-to-expert journey. Free forever plan included.</p>
@@ -63,7 +68,7 @@ export default function Register() {
               autoComplete="new-password"
             />
           </div>
-          <button className="btn" type="submit" disabled={busy}>
+          <button className="btn-primary" type="submit" disabled={busy}>
             {busy ? 'Creating…' : 'Create account'}
           </button>
         </form>

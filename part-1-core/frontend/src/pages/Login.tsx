@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { ApiError } from '../lib/api';
+import { HexLogo } from '../components/layout/TopNav';
 
 export default function Login() {
   const { login } = useAuth();
@@ -29,8 +30,12 @@ export default function Login() {
   return (
     <div className="auth-wrap">
       <div className="auth-card">
-        <div className="logo">
-          SKILL<span>FORGE</span>
+        <div className="auth-logo">
+          <HexLogo size={30} />
+          <div>
+            SKILLFORGE
+            <small>CAREER INTELLIGENCE</small>
+          </div>
         </div>
         <h1>Welcome back</h1>
         <p className="sub">Sign in to continue building your career intelligence.</p>
@@ -58,7 +63,7 @@ export default function Login() {
               autoComplete="current-password"
             />
           </div>
-          <button className="btn" type="submit" disabled={busy}>
+          <button className="btn-primary" type="submit" disabled={busy}>
             {busy ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
