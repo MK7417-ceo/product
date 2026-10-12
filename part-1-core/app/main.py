@@ -34,6 +34,7 @@ from app.api.v1 import assessments as assessments_api
 from app.api.v1 import code as code_api
 from app.api.v1 import launchpad as launchpad_api
 from app.api.v1 import prep as prep_api
+from app.api.v1 import english as english_api
 from app.api.v1 import health as health_api
 from app.api.v1 import oauth as oauth_api
 from app.api.v1 import onboarding as onboarding_api
@@ -105,6 +106,7 @@ def create_app() -> FastAPI:
     app.include_router(code_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(launchpad_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(prep_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(english_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(oauth_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(onboarding_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(assessments_api.router, prefix=settings.API_V1_PREFIX)
