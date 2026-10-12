@@ -13,6 +13,7 @@ class UserModel(Base):
     email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False, index=True)
     password_hash: Mapped[str] = mapped_column(Text, nullable=False)
     role: Mapped[str] = mapped_column(String(16), nullable=False, default="user")
+    tier: Mapped[str] = mapped_column(String(16), nullable=False, default="free")
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
@@ -69,6 +70,7 @@ class AssessmentModel(Base):
     correct: Mapped[int] = mapped_column(nullable=False, default=0)
     total: Mapped[int] = mapped_column(nullable=False, default=0)
     gaps: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON list of skill tags
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
 class RoadmapModel(Base):
@@ -135,3 +137,13 @@ class CertificateModel(Base):
     verification_code: Mapped[str] = mapped_column(String(16), nullable=False, unique=True, index=True)
     issued_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
     detail: Mapped[str] = mapped_column(Text, nullable=False, default="")
+
+
+class AccountLinkModel(Base):
+    __tablename__ = "account_links"
+
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    github: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    linkedin: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    leetcode: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    updated_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
