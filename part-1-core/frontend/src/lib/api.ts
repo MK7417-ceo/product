@@ -329,3 +329,33 @@ export const certificatesApi = {
       `/api/v1/launchpad/certificates/verify/${code}`,
     ),
 };
+
+export interface Portfolio {
+  name: string;
+  summary: string;
+  skills: string[];
+  experience: { title: string; company: string; bullets: string[] }[];
+  projects: { name: string; description: string; tech: string[] }[];
+  education: { degree: string; school: string; year: string }[];
+  links: Record<string, string>;
+  certificates: { title: string; issued_at: string; detail: string; verification_code: string }[];
+  roadmap_title: string;
+  roadmap_done: number;
+  roadmap_total: number;
+  evidence_count: number;
+}
+
+export const portfolioApi = {
+  get: () => api<Portfolio>('/api/v1/launchpad/portfolio'),
+  download: async () => {
+    const t = getAccessToken();
+    const res = await fetch('/api/v1/launchpad/portfolio/download', {
+      headers: t ? { Authorization: `Bearer ${t}` } : {},
+    });
+    if (!res.ok) throw new ApiError(res.status, 'Download failed');
+    const blob = await res.blob();
+    const cd = res.headers.get('content-disposition') || '';
+    const m = cd.match(/filename="([^"]+)"/);
+    return { blob, filename: m ? m[1] : 'portfolio.html' };
+  },
+};

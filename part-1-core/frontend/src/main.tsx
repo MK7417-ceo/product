@@ -9,11 +9,11 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Assessment from './pages/Assessment';
 import RoadmapPage from './pages/Roadmap';
-import Placeholder from './pages/Placeholder';
 import Practice from './pages/Practice';
 import Code from './pages/Code';
 import Resume from './pages/Resume';
 import Certificates from './pages/Certificates';
+import PortfolioPage from './pages/Portfolio';
 import type { JSX } from 'react';
 
 function Guard({ children }: { children: JSX.Element }) {
@@ -45,7 +45,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="code" element={<Code />} />
             <Route path="resume" element={<Resume />} />
             <Route path="certificates" element={<Certificates />} />
-            <Route path="portfolio" element={<Placeholder title="Portfolio" note="Build and publish your expert portfolio." />} />
+            <Route path="portfolio" element={<PortfolioPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
