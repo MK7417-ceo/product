@@ -28,9 +28,10 @@ from app.adapters.outbound.user_repository import SqlAlchemyUserRepository
 from app.adapters.outbound.question_bank import StaticQuestionBank
 from app.adapters.outbound.security import BcryptPasswordHasher, DbTokenStore, JwtTokenIssuer
 from app.adapters.outbound.system_probe import SqlAlchemyDatabaseProbe
-from app.adapters.outbound.user_repository import SqlAlchemyUserRepository
+from app.adapters.outbound.link_repository import SqlAlchemyAccountLinkRepository
 from app.api.v1 import auth as auth_api
 from app.api.v1 import assessments as assessments_api
+from app.api.v1 import account as account_api
 from app.api.v1 import code as code_api
 from app.api.v1 import launchpad as launchpad_api
 from app.api.v1 import prep as prep_api
@@ -65,6 +66,8 @@ def create_app() -> FastAPI:
     tokens = DbTokenStore(SessionLocal, refresh_days=settings.REFRESH_TOKEN_DAYS)
     app.state.auth_service = JwtAuthService(users, hasher, issuer, tokens)
     app.state.token_issuer = issuer  # for the auth dependency
+    app.state.user_repo = users
+    app.state.links_repo = SqlAlchemyAccountLinkRepository(SessionLocal)
 
     profiles = SqlAlchemyProfileRepository(SessionLocal)
     placements = SqlAlchemyPlacementRepository(SessionLocal)
@@ -83,7 +86,8 @@ def create_app() -> FastAPI:
         SqlAlchemyCertificateRepository(SessionLocal),
         SqlAlchemyUserRepository(SessionLocal),
         SqlAlchemyEvidenceRepository(SessionLocal))
-    app.state.roadmap_service = RoadmapServiceImpl(SqlAlchemyRoadmapRepository(SessionLocal))
+    app.state.roadmap_service = RoadmapServiceImpl(
+        SqlAlchemyRoadmapRepository(SessionLocal), users)
     app.state.evidence_service = EvidenceServiceImpl(
         SqlAlchemyEvidenceRepository(SessionLocal),
         SqlAlchemyRoadmapRepository(SessionLocal),
@@ -103,6 +107,7 @@ def create_app() -> FastAPI:
 
     app.include_router(health_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(auth_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(account_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(code_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(launchpad_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(prep_api.router, prefix=settings.API_V1_PREFIX)
