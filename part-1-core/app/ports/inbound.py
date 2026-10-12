@@ -150,3 +150,11 @@ class LaunchpadService(Protocol):
     def verify_certificate(self, code: str) -> dict:
         """Public verification: {valid, title, kind, issued_to, issued_at}."""
         ...
+
+    def get_portfolio(self, user_id: str) -> object:
+        """Aggregated portfolio data. Raises DomainError if no resume."""
+        ...
+
+    def render_portfolio(self, user_id: str) -> tuple[str, str]:
+        """(filename, single-file HTML)."""
+        ...

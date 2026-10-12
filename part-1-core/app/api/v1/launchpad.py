@@ -115,3 +115,42 @@ def verify_certificate(code: str, request: Request):
         return _svc(request).verify_certificate(code)
     except DomainError as exc:
         raise _domain_error(exc)
+
+
+def _portfolio_out(data) -> dict:
+    return {
+        "name": data.name, "summary": data.summary,
+        "skills": list(data.skills), "experience": list(data.experience),
+        "projects": list(data.projects), "education": list(data.education),
+        "links": data.links, "certificates": list(data.certificates),
+        "roadmap_title": data.roadmap_title,
+        "roadmap_done": data.roadmap_done,
+        "roadmap_total": data.roadmap_total,
+        "evidence_count": data.evidence_count,
+    }
+
+
+@router.get("/launchpad/portfolio")
+def get_portfolio(request: Request, user_id: str = Depends(current_user_id)):
+    try:
+        return _portfolio_out(_svc(request).get_portfolio(user_id))
+    except DomainError as exc:
+        if "no resume yet" in str(exc):
+            return JSONResponse(status_code=404,
+                                content={"error": "no_resume", "message": str(exc)})
+        raise _domain_error(exc)
+
+
+@router.get("/launchpad/portfolio/download")
+def download_portfolio(request: Request, user_id: str = Depends(current_user_id)):
+    from fastapi.responses import Response
+    try:
+        filename, html = _svc(request).render_portfolio(user_id)
+    except DomainError as exc:
+        if "no resume yet" in str(exc):
+            return JSONResponse(status_code=404,
+                                content={"error": "no_resume", "message": str(exc)})
+        raise _domain_error(exc)
+    return Response(content=html, media_type="text/html",
+                    headers={"Content-Disposition":
+                             f'attachment; filename="{filename}"'})
