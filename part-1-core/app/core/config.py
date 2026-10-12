@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_ID: str = ""
     GOOGLE_CLIENT_SECRET: str = ""
     GOOGLE_REDIRECT_URI: str = ""
+    CODE_ENGINE_URL: str = "http://localhost:8028"
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 
