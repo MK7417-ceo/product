@@ -24,6 +24,7 @@ const GROUPS: { title: string; items: NavItem[] }[] = [
     title: 'PROVE',
     items: [
       { to: '/skills', label: 'Skill Profile', icon: '📊' },
+      { to: '/gaps', label: 'Skill Gaps', icon: '🧩' },
       { to: '/evidence', label: 'Evidence', icon: '🛡️' },
       { to: '/certificates', label: 'Certificates', icon: '🏆' },
     ],

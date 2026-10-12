@@ -16,6 +16,7 @@ export const CRUMBS: Record<string, string> = {
   '/practice': 'Practice',
   '/codelab': 'Code Lab',
   '/skills': 'Skill Profile',
+  '/gaps': 'Skill Gaps',
   '/evidence': 'Evidence',
   '/certificates': 'Certificates',
   '/portfolio': 'Portfolio',

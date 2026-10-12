@@ -15,6 +15,7 @@ const CodeLab = lazy(() => import('./pages/CodeLab'));
 const Roadmap = lazy(() => import('./pages/Roadmap'));
 const Practice = lazy(() => import('./pages/Practice'));
 const SkillProfile = lazy(() => import('./pages/SkillProfile'));
+const SkillGaps = lazy(() => import('./pages/SkillGaps'));
 const Evidence = lazy(() => import('./pages/Evidence'));
 const Certificates = lazy(() => import('./pages/Certificates'));
 const Portfolio = lazy(() => import('./pages/Portfolio'));
@@ -75,6 +76,7 @@ export default function App() {
           <Route path="practice" element={<Practice />} />
           <Route path="codelab" element={<CodeLab />} />
           <Route path="skills" element={<SkillProfile />} />
+          <Route path="gaps" element={<SkillGaps />} />
           <Route path="evidence" element={<Evidence />} />
           <Route path="certificates" element={<Certificates />} />
           <Route path="portfolio" element={<Portfolio />} />

@@ -71,6 +71,7 @@ tiny placeholder pages for every route other agents own.
 | `/practice` | Practice | placeholder |
 | `/codelab` | CodeLab | placeholder |
 | `/skills` | SkillProfile | placeholder |
+| `/gaps` | SkillGaps | placeholder (P1-pages agent owns) |
 | `/evidence` | Evidence | placeholder |
 | `/certificates` | Certificates | placeholder |
 | `/portfolio` | Portfolio | placeholder |
@@ -81,13 +82,14 @@ tiny placeholder pages for every route other agents own.
 | `/billing` | Billing (real) | SHELL |
 | `*` | → redirect `/` | SHELL |
 
-NOT created (per spec): `/notifications`, `/skill-gaps`, `/resources`.
+NOT created (per spec): `/notifications`, `/skill-gaps` (superseded by the
+approved `/gaps` P1 page), `/resources`.
 
 ## Breadcrumb mapping (`CRUMBS` in TopNav.tsx)
 
 /→Dashboard, /welcome→Welcome, /resume→Resume, /subscription→Subscription,
 /plan→Assessment, /verification→Verification, /roadmap→Roadmap, /practice→Practice,
-/codelab→Code Lab, /skills→Skill Profile, /evidence→Evidence, /certificates→Certificates,
+/codelab→Code Lab, /skills→Skill Profile, /gaps→Skill Gaps, /evidence→Evidence, /certificates→Certificates,
 /portfolio→Portfolio, /interview→Interview Prep, /english→English, /settings→Settings,
 /profile→Profile, /billing→Billing.
 
