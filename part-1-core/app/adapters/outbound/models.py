@@ -112,3 +112,13 @@ class EvidenceModel(Base):
     content: Mapped[str] = mapped_column(Text, nullable=False)
     feedback: Mapped[str] = mapped_column(Text, nullable=False, default="")
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class ResumeModel(Base):
+    __tablename__ = "resumes"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    data: Mapped[str] = mapped_column(Text, nullable=False)  # JSON resume body
+    updated_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)

@@ -126,4 +126,15 @@ class PracticeService(Protocol):
 
     def today(self, user_id: str, date: str) -> dict:
         """Aaj ka plan: daily questions + today's roadmap tasks."""
+class LaunchpadService(Protocol):
+    def save_resume(self, user_id: str, payload: dict) -> object:
+        """Create or replace the user's resume. Raises DomainError on bad input."""
+        ...
+
+    def get_resume(self, user_id: str) -> object:
+        """Raises DomainError if the user has no resume yet."""
+        ...
+
+    def match_jd(self, user_id: str, jd_text: str) -> dict:
+        """Explainable ATS-style score of the resume against a job description."""
         ...
