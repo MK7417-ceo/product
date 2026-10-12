@@ -117,3 +117,80 @@ export const authApi = {
 };
 
 export { ApiError };
+
+/* ---------- code runner (P2 via Core) ---------- */
+
+export interface EngineLanguage {
+  id: string;
+  name: string;
+  available?: boolean;
+  version?: string;
+}
+
+export interface CodeRunResult {
+  run_id: string;
+  verdict: string; // "ok" | "compile_error" | "runtime_error" | "time_limit" | ...
+  stdout: string;
+  stderr: string;
+  truncated: boolean;
+  exit_code: number | null;
+  cpu_ms: number | null;
+  peak_ram_mb: number | null;
+  timed_out: boolean;
+  server_ms?: number;
+}
+
+export interface EngineErrorBody {
+  error: string;
+  message: string;
+}
+
+export const codeApi = {
+  run: (language: string, code: string, stdin: string) =>
+    api<CodeRunResult>('/api/v1/code/run', {
+      method: 'POST',
+      body: JSON.stringify({ language, code, stdin }),
+    }),
+  languages: () => api<{ languages: EngineLanguage[] }>('/api/v1/code/languages'),
+};
+
+/* ---------- daily DSA (F6b) ---------- */
+
+export interface DSAExample {
+  stdin: string;
+  stdout: string;
+  explanation: string;
+}
+
+export interface DailyDSAQuestion {
+  id: string;
+  title: string;
+  difficulty: string; // easy | medium | hard
+  description: string;
+  examples: DSAExample[];
+  starter_code: string;
+  hidden_test_count: number;
+  topic_tags: string[];
+  hints: string[];
+  date: string; // YYYY-MM-DD
+}
+
+export interface DSASubmitResult {
+  date: string;
+  question_id: string;
+  passed: number;
+  total: number;
+  verdict: string;
+  accepted: boolean;
+  failed_case: string | null;
+}
+
+export const dsaApi = {
+  daily: (date?: string) =>
+    api<DailyDSAQuestion>(`/api/v1/dsa/daily${date ? `?date=${encodeURIComponent(date)}` : ''}`),
+  submit: (date: string, language: string, code: string) =>
+    api<DSASubmitResult>('/api/v1/dsa/daily/submit', {
+      method: 'POST',
+      body: JSON.stringify({ date, language, code }),
+    }),
+};

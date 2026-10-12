@@ -7,6 +7,7 @@ import Shell from './components/Shell';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import CodeLab from './pages/CodeLab';
 import Placeholder from './pages/Placeholder';
 import type { JSX } from 'react';
 
@@ -33,6 +34,7 @@ createRoot(document.getElementById('root')!).render(
             }
           >
             <Route index element={<Dashboard />} />
+            <Route path="codelab" element={<CodeLab />} />
             <Route path="assessment" element={<Placeholder title="Assessment" note="Take level-matched tests — MCQ, coding, theory." />} />
             <Route path="roadmap" element={<Placeholder title="Roadmap" note="Your personalized learning plan, built from skill gaps." />} />
             <Route path="practice" element={<Placeholder title="Practice" note="Daily questions and weekly mock tests." />} />
