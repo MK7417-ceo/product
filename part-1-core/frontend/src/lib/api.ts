@@ -306,3 +306,26 @@ export const launchpadApi = {
       body: JSON.stringify({ jd_text }),
     }),
 };
+
+export interface Certificate {
+  id: string;
+  kind: string;
+  title: string;
+  ref_id: string;
+  verification_code: string;
+  issued_at: string;
+  detail: string;
+}
+
+export const certificatesApi = {
+  list: () => api<Certificate[]>('/api/v1/launchpad/certificates'),
+  issue: (kind: string, ref_id: string) =>
+    api<Certificate>('/api/v1/launchpad/certificates/issue', {
+      method: 'POST',
+      body: JSON.stringify({ kind, ref_id }),
+    }),
+  verify: (code: string) =>
+    api<{ valid: boolean; title?: string; kind?: string; issued_to?: string; issued_at?: string; detail?: string }>(
+      `/api/v1/launchpad/certificates/verify/${code}`,
+    ),
+};
