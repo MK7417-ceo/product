@@ -103,3 +103,13 @@ class RoadmapService(Protocol):
     def regenerate(self, user_id: str, gaps: list[dict]) -> object:
         """New version from fresh gaps; completed tasks are preserved."""
         ...
+
+
+class EvidenceService(Protocol):
+    def submit(self, user_id: str, task_id: str, kind: str, content: str) -> object:
+        """Submit proof of work for an in-progress task; completes the task."""
+        ...
+
+    def list_for_task(self, user_id: str, task_id: str) -> list[object]:
+        """All evidence ever submitted for a task. Never deleted."""
+        ...

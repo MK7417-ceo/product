@@ -99,3 +99,16 @@ class RoadmapTaskModel(Base):
     acceptance_criteria: Mapped[str] = mapped_column(Text, nullable=False, default="")
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="pending")
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class EvidenceModel(Base):
+    __tablename__ = "evidence"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    roadmap_id: Mapped[str] = mapped_column(String(36), ForeignKey("roadmaps.id", ondelete="CASCADE"), nullable=False, index=True)
+    task_key: Mapped[str] = mapped_column(String(16), nullable=False, index=True)
+    kind: Mapped[str] = mapped_column(String(16), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    feedback: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
