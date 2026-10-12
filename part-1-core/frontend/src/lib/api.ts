@@ -86,7 +86,8 @@ export async function api<T>(path: string, init: RequestInit = {}, retried = fal
   if (res.status === 204) return undefined as T;
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    throw new ApiError(res.status, (data as { detail?: string }).detail ?? `request failed (${res.status})`);
+    const d = data as { detail?: string; message?: string; error?: string };
+    throw new ApiError(res.status, d.detail ?? d.message ?? `request failed (${res.status})`);
   }
   return data as T;
 }
@@ -392,5 +393,31 @@ export const englishApi = {
     api<{ date: string; correct: number; total: number }>('/api/v1/english/daily/submit', {
       method: 'POST',
       body: JSON.stringify({ answers }),
+    }),
+};
+
+export interface TierInfo {
+  tier: string;
+  name: string;
+  price_inr: number;
+  max_roadmaps: number;
+  features: string[];
+}
+
+export const accountApi = {
+  subscription: () =>
+    api<{ subscription: TierInfo; tiers: Record<string, { name: string; price_inr: number; features: string[] }> }>(
+      '/api/v1/account/subscription',
+    ),
+  checkout: (tier: string) =>
+    api<{ error: string; message: string }>('/api/v1/account/subscription/checkout', {
+      method: 'POST',
+      body: JSON.stringify({ tier }),
+    }),
+  getLinks: () => api<{ github: string; linkedin: string; leetcode: string }>('/api/v1/account/links'),
+  saveLinks: (links: { github: string; linkedin: string; leetcode: string }) =>
+    api<{ github: string; linkedin: string; leetcode: string }>('/api/v1/account/links', {
+      method: 'PUT',
+      body: JSON.stringify(links),
     }),
 };
