@@ -12,6 +12,7 @@ from app.adapters.inbound.onboarding_service import OnboardingServiceImpl
 from app.adapters.outbound.assessment_repository import SqlAlchemyAssessmentRepository
 from app.adapters.inbound.evidence_service import EvidenceServiceImpl
 from app.adapters.inbound.practice_service import PracticeServiceImpl
+from app.adapters.inbound.dsa_service import DSAServiceImpl
 from app.adapters.inbound.roadmap_service import RoadmapServiceImpl
 from app.adapters.outbound.google_oauth import GoogleOAuthProvider
 from app.adapters.outbound.profile_repository import (
@@ -33,6 +34,7 @@ from app.api.v1 import auth as auth_api
 from app.api.v1 import assessments as assessments_api
 from app.api.v1 import account as account_api
 from app.api.v1 import code as code_api
+from app.api.v1 import dsa as dsa_api
 from app.api.v1 import launchpad as launchpad_api
 from app.api.v1 import prep as prep_api
 from app.api.v1 import english as english_api
@@ -80,6 +82,7 @@ def create_app() -> FastAPI:
     app.state.practice_service = PracticeServiceImpl(
         bank, SqlAlchemyRoadmapRepository(SessionLocal))
     app.state.code_runner = HttpCodeRunnerClient(settings.CODE_ENGINE_URL)
+    app.state.dsa_service = DSAServiceImpl(code_runner=app.state.code_runner)
     app.state.launchpad_service = LaunchpadServiceImpl(
         SqlAlchemyResumeRepository(SessionLocal),
         SqlAlchemyRoadmapRepository(SessionLocal),
@@ -117,6 +120,7 @@ def create_app() -> FastAPI:
     app.include_router(assessments_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(roadmaps_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(practice_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(dsa_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(evidence_api.router, prefix=settings.API_V1_PREFIX)
     return app
 
