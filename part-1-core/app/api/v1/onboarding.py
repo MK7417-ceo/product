@@ -68,7 +68,13 @@ def start_placement(body: PlacementStartRequest, request: Request,
         session, questions = _svc(request).start_placement(
             user_id, body.topic, body.claimed_level)
         return {"placement_id": session.id, "topic": session.topic,
-                "claimed_level": session.claimed_level, "questions": questions}
+                "claimed_level": session.claimed_level,
+                "status": session.status,
+                "verification_skipped": session.status == "completed",
+                "verified_level": session.verified_level,
+                "levels": sorted({q["level"] for q in questions}),
+                "question_count": len(questions),
+                "questions": questions}
     except DomainError as exc:
         raise _domain_error(exc)
 
@@ -77,12 +83,13 @@ def start_placement(body: PlacementStartRequest, request: Request,
 def submit_placement(placement_id: str, body: PlacementSubmitRequest,
                      request: Request, user_id: str = Depends(current_user_id)):
     try:
-        s = _svc(request).submit_placement(user_id, placement_id, body.answers)
+        s, analysis = _svc(request).submit_placement(user_id, placement_id, body.answers)
         return {
             "placement_id": s.id, "status": s.status,
             "correct": s.correct, "total": s.total,
             "claimed_level": s.claimed_level,
             "verified_level": s.verified_level,
+            "analysis": analysis,
         }
     except DomainError as exc:
         raise _domain_error(exc)
