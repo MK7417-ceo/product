@@ -10,6 +10,7 @@ const LINKS = [
   { to: '/portfolio', label: 'Portfolio' },
   { to: '/resume', label: 'Resume' },
   { to: '/certificates', label: 'Certificates' },
+  { to: '/interview', label: 'Interview' },
 ];
 
 export default function Shell() {
