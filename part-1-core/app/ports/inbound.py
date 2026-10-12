@@ -113,3 +113,17 @@ class EvidenceService(Protocol):
     def list_for_task(self, user_id: str, task_id: str) -> list[object]:
         """All evidence ever submitted for a task. Never deleted."""
         ...
+
+
+class PracticeService(Protocol):
+    def daily(self, user_id: str, date: str) -> list[dict]:
+        """Today's questions (public view). Deterministic per user+date."""
+        ...
+
+    def submit_daily(self, user_id: str, date: str, answers: dict[str, int]) -> dict:
+        """Score today's answers server-side."""
+        ...
+
+    def today(self, user_id: str, date: str) -> dict:
+        """Aaj ka plan: daily questions + today's roadmap tasks."""
+        ...
