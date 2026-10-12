@@ -1,0 +1,99 @@
+/* DailyDSACard — Aurora Dark (UX v2 tokens) */
+.dsa-card {
+  --base: #080b14;
+  --surface: #121a2b;
+  --border: rgba(255, 255, 255, 0.10);
+  --violet: #8b5cf6;
+  --cyan: #36c5f0;
+  --green: #39d98a;
+  --amber: #f5b84b;
+  --red: #f06c75;
+  --text: #f5f7fb;
+  --muted: #9aa6bb;
+
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+.dsa-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(320px 160px at 90% -20%, rgba(139, 92, 246, 0.22), transparent 65%);
+}
+.dsa-card > * { position: relative; }
+
+.dsa-card .kicker {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.dsa-card .row { display: flex; align-items: center; gap: 10px; }
+.dsa-card h3 { font-size: 16px; font-weight: 700; margin: 0; flex: 1; }
+
+.dsa-badge {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 11px;
+  border-radius: 99px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+.dsa-badge.easy { color: var(--cyan); border-color: rgba(54, 197, 240, 0.45); background: rgba(54, 197, 240, 0.10); }
+.dsa-badge.medium { color: var(--amber); border-color: rgba(245, 184, 75, 0.45); background: rgba(245, 184, 75, 0.10); }
+.dsa-badge.hard { color: var(--red); border-color: rgba(240, 108, 117, 0.45); background: rgba(240, 108, 117, 0.10); }
+.dsa-badge.solved { color: var(--green); border-color: rgba(57, 217, 138, 0.45); background: rgba(57, 217, 138, 0.10); }
+
+.dsa-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+.dsa-tag {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--cyan);
+  border: 1px solid rgba(54, 197, 240, 0.30);
+  background: rgba(54, 197, 240, 0.07);
+  padding: 3px 10px;
+  border-radius: 99px;
+}
+.dsa-card .foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+.dsa-solve {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--violet), #6d28d9);
+  padding: 8px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.40);
+  transition: transform 0.12s ease;
+}
+.dsa-solve:hover { transform: translateY(-1px); }
+.dsa-card .meta { font-size: 12px; color: var(--muted); }
+.dsa-card .err { font-size: 13px; color: var(--amber); line-height: 1.5; }
+.dsa-card .loading { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13.5px; }
+.dsa-card .loading .spin {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--border); border-top-color: var(--violet);
+  animation: dsaspin 0.8s linear infinite;
+}
+@keyframes dsaspin { to { transform: rotate(360deg); } }
