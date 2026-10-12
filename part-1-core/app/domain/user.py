@@ -23,6 +23,7 @@ class User:
     email: str
     password_hash: str
     role: str = "user"
+    tier: str = "free"
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
 
