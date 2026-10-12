@@ -70,6 +70,7 @@ class AssessmentModel(Base):
     correct: Mapped[int] = mapped_column(nullable=False, default=0)
     total: Mapped[int] = mapped_column(nullable=False, default=0)
     gaps: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON list of skill tags
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
 
 
 class RoadmapModel(Base):
