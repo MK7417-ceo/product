@@ -117,3 +117,131 @@ export const authApi = {
 };
 
 export { ApiError };
+
+/* ---------- assessments (F3) ---------- */
+
+export interface PublicQuestion {
+  id: string;
+  topic: string;
+  level: string;
+  prompt: string;
+  choices: string[];
+}
+
+export interface AssessmentStart {
+  assessment_id: string;
+  topic: string;
+  level: string;
+  total: number;
+  questions: PublicQuestion[];
+}
+
+export interface AssessmentResult {
+  assessment_id: string;
+  correct: number;
+  total: number;
+  ratio: number;
+  per_skill: { skill: string; correct: number; total: number }[];
+  gaps: string[];
+}
+
+export const assessmentApi = {
+  start: (topic: string, level: string, count: number) =>
+    api<AssessmentStart>('/api/v1/assessments/start', {
+      method: 'POST',
+      body: JSON.stringify({ topic, level, count }),
+    }),
+  submit: (id: string, answers: Record<string, number>) =>
+    api<AssessmentResult>(`/api/v1/assessments/${id}/submit`, {
+      method: 'POST',
+      body: JSON.stringify({ answers }),
+    }),
+};
+
+/* ---------- roadmaps (F4) + evidence (F5) ---------- */
+
+export interface RoadmapTask {
+  id: string;
+  title: string;
+  description: string;
+  why_it_matters: string;
+  target_skills: string[];
+  prerequisites: string[];
+  effort_minutes: number;
+  priority: string;
+  expected_evidence: string;
+  acceptance_criteria: string;
+  status: string;
+}
+
+export interface Roadmap {
+  id: string;
+  version: number;
+  title: string;
+  source: string;
+  tasks: RoadmapTask[];
+  task_counts: { total: number; pending: number; in_progress: number; completed: number };
+}
+
+export interface Evidence {
+  id: string;
+  task_key: string;
+  kind: string;
+  content: string;
+  feedback: string;
+  created_at: string;
+}
+
+export const roadmapApi = {
+  generate: (gaps: { skill: string; mastery_pct: number }[], title = '') =>
+    api<Roadmap>('/api/v1/roadmaps/generate', {
+      method: 'POST',
+      body: JSON.stringify({ gaps, title }),
+    }),
+  current: () => api<Roadmap>('/api/v1/roadmaps/current'),
+  versions: () =>
+    api<{ id: string; version: number; title: string; completed: number; task_total: number }[]>(
+      '/api/v1/roadmaps',
+    ),
+  updateTask: (taskId: string, status: string) =>
+    api<RoadmapTask>(`/api/v1/roadmaps/tasks/${taskId}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    }),
+  regenerate: (gaps: { skill: string; mastery_pct: number }[]) =>
+    api<Roadmap>('/api/v1/roadmaps/regenerate', {
+      method: 'POST',
+      body: JSON.stringify({ gaps }),
+    }),
+  submitEvidence: (taskId: string, kind: string, content: string) =>
+    api<Evidence>(`/api/v1/roadmaps/tasks/${taskId}/evidence`, {
+      method: 'POST',
+      body: JSON.stringify({ kind, content }),
+    }),
+  listEvidence: (taskId: string) => api<Evidence[]>(`/api/v1/roadmaps/tasks/${taskId}/evidence`),
+};
+
+export interface DailyQuestion {
+  id: string;
+  topic: string;
+  level: string;
+  prompt: string;
+  choices: string[];
+}
+
+export interface TodayPlan {
+  date: string;
+  questions: DailyQuestion[];
+  tasks: { id: string; title: string; status: string; effort_minutes: number; priority: string }[];
+  has_roadmap: boolean;
+}
+
+export const practiceApi = {
+  daily: () => api<{ date: string; questions: DailyQuestion[] }>('/api/v1/practice/daily'),
+  submitDaily: (answers: Record<string, number>) =>
+    api<{ date: string; correct: number; total: number }>('/api/v1/practice/daily/submit', {
+      method: 'POST',
+      body: JSON.stringify({ answers }),
+    }),
+  today: () => api<TodayPlan>('/api/v1/practice/today'),
+};
