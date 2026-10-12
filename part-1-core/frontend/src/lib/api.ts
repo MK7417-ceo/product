@@ -273,3 +273,36 @@ export const codeApi = {
     }),
   languages: () => api<{ languages: EngineLanguage[] }>('/api/v1/code/languages'),
 };
+
+export interface ResumeData {
+  id: string;
+  title: string;
+  summary: string;
+  skills: string[];
+  experience: { title: string; company: string; start: string; end: string; bullets: string[] }[];
+  projects: { name: string; description: string; tech: string[]; link: string }[];
+  education: { degree: string; school: string; year: string }[];
+  links: Record<string, string>;
+}
+
+export interface JDMatchResult {
+  score: number;
+  jd_keyword_count: number;
+  matched: { keyword: string; jd_count: number }[];
+  missing: { keyword: string; jd_count: number }[];
+  suggestions: string[];
+}
+
+export const launchpadApi = {
+  getResume: () => api<ResumeData>('/api/v1/launchpad/resume'),
+  saveResume: (r: Omit<ResumeData, 'id'>) =>
+    api<ResumeData>('/api/v1/launchpad/resume', {
+      method: 'PUT',
+      body: JSON.stringify(r),
+    }),
+  matchJd: (jd_text: string) =>
+    api<JDMatchResult>('/api/v1/launchpad/jd-match', {
+      method: 'POST',
+      body: JSON.stringify({ jd_text }),
+    }),
+};

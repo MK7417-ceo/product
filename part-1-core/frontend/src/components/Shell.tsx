@@ -8,6 +8,7 @@ const LINKS = [
   { to: '/practice', label: 'Practice' },
   { to: '/code', label: 'Code Runner' },
   { to: '/portfolio', label: 'Portfolio' },
+  { to: '/resume', label: 'Resume' },
 ];
 
 export default function Shell() {
