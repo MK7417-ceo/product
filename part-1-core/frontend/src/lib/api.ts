@@ -359,3 +359,20 @@ export const portfolioApi = {
     return { blob, filename: m ? m[1] : 'portfolio.html' };
   },
 };
+
+export interface PrepQuestion {
+  id: string;
+  topic: string;
+  level: string;
+  question: string;
+  guidance: string[];
+  tags: string[];
+}
+
+export const prepApi = {
+  topics: () => api<{ topics: { topic: string; count: number }[] }>('/api/v1/prep/topics'),
+  questions: (topic: string, count = 10) =>
+    api<{ questions: PrepQuestion[] }>(
+      `/api/v1/prep/questions?topic=${encodeURIComponent(topic)}&count=${count}`,
+    ),
+};
