@@ -245,3 +245,87 @@ export const practiceApi = {
     }),
   today: () => api<TodayPlan>('/api/v1/practice/today'),
 };
+
+export interface CodeRunResult {
+  run_id: string;
+  verdict: string;
+  stdout: string;
+  stderr: string;
+  truncated: boolean;
+  exit_code: number | null;
+  cpu_ms: number | null;
+  peak_ram_mb: number | null;
+  timed_out: boolean;
+}
+
+export interface EngineLanguage {
+  id: string;
+  compile: string[] | null;
+  run: string[];
+  available: boolean;
+}
+
+export const codeApi = {
+  run: (language: string, code: string, stdin: string) =>
+    api<CodeRunResult>('/api/v1/code/run', {
+      method: 'POST',
+      body: JSON.stringify({ language, code, stdin }),
+    }),
+  languages: () => api<{ languages: EngineLanguage[] }>('/api/v1/code/languages'),
+};
+
+export interface ResumeData {
+  id: string;
+  title: string;
+  summary: string;
+  skills: string[];
+  experience: { title: string; company: string; start: string; end: string; bullets: string[] }[];
+  projects: { name: string; description: string; tech: string[]; link: string }[];
+  education: { degree: string; school: string; year: string }[];
+  links: Record<string, string>;
+}
+
+export interface JDMatchResult {
+  score: number;
+  jd_keyword_count: number;
+  matched: { keyword: string; jd_count: number }[];
+  missing: { keyword: string; jd_count: number }[];
+  suggestions: string[];
+}
+
+export const launchpadApi = {
+  getResume: () => api<ResumeData>('/api/v1/launchpad/resume'),
+  saveResume: (r: Omit<ResumeData, 'id'>) =>
+    api<ResumeData>('/api/v1/launchpad/resume', {
+      method: 'PUT',
+      body: JSON.stringify(r),
+    }),
+  matchJd: (jd_text: string) =>
+    api<JDMatchResult>('/api/v1/launchpad/jd-match', {
+      method: 'POST',
+      body: JSON.stringify({ jd_text }),
+    }),
+};
+
+export interface Certificate {
+  id: string;
+  kind: string;
+  title: string;
+  ref_id: string;
+  verification_code: string;
+  issued_at: string;
+  detail: string;
+}
+
+export const certificatesApi = {
+  list: () => api<Certificate[]>('/api/v1/launchpad/certificates'),
+  issue: (kind: string, ref_id: string) =>
+    api<Certificate>('/api/v1/launchpad/certificates/issue', {
+      method: 'POST',
+      body: JSON.stringify({ kind, ref_id }),
+    }),
+  verify: (code: string) =>
+    api<{ valid: boolean; title?: string; kind?: string; issued_to?: string; issued_at?: string; detail?: string }>(
+      `/api/v1/launchpad/certificates/verify/${code}`,
+    ),
+};
