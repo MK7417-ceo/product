@@ -340,6 +340,9 @@ button { font-family: inherit; }
   padding: 10px 14px; margin-bottom: 18px;
 }
 .auth-alt { margin-top: 20px; text-align: center; font-size: 14px; color: var(--muted); }
+.auth-forgot { text-align: right; margin: -6px 0 14px; font-size: 13.5px; }
+.auth-forgot a { color: var(--violet-bright, #a78bfa); text-decoration: none; font-weight: 600; }
+.auth-forgot a:hover { text-decoration: underline; }
 
 /* ============================ Mobile bottom nav ============================ */
 .mnav { display: none; }

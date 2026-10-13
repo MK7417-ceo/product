@@ -63,6 +63,9 @@ export default function Login() {
               autoComplete="current-password"
             />
           </div>
+          <div className="auth-forgot">
+            <Link to="/forgot-password">Forgot password?</Link>
+          </div>
           <button className="btn-primary" type="submit" disabled={busy}>
             {busy ? 'Signing in…' : 'Sign in'}
           </button>

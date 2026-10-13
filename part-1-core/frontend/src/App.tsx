@@ -5,6 +5,8 @@ import AppShell, { RequireAuth } from './components/layout/AppShell';
 
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Welcome = lazy(() => import('./pages/onboarding/Welcome'));
 const Resume = lazy(() => import('./pages/onboarding/Resume'));
@@ -54,6 +56,22 @@ export default function App() {
           element={
             <PublicOnly>
               <Register />
+            </PublicOnly>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <PublicOnly>
+              <ForgotPassword />
+            </PublicOnly>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <PublicOnly>
+              <ResetPassword />
             </PublicOnly>
           }
         />
