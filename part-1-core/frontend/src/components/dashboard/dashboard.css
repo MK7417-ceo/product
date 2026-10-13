@@ -29,15 +29,19 @@
   font-weight: 600;
 }
 
-/* ---------- hero (violet→cyan gradient border) ---------- */
+/* ---------- hero (aurora gradient) ---------- */
 .sf-hero {
   margin-top: 24px;
-  background: linear-gradient(180deg, #141c33, #0e1424);
-  border: 1px solid rgba(139, 92, 246, 0.3);
+  background:
+    radial-gradient(600px 300px at 12% 0%, rgba(139, 92, 246, 0.22), transparent 65%),
+    radial-gradient(500px 280px at 88% 20%, rgba(62, 214, 242, 0.12), transparent 65%),
+    linear-gradient(180deg, #151d36, #0d1322);
+  border: 1px solid rgba(139, 92, 246, 0.35);
   border-radius: 18px;
   padding: 26px 28px;
   position: relative;
   overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 40px rgba(139, 92, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 .sf-hero::before {
   content: '';
@@ -46,13 +50,14 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--violet, #8b5cf6), var(--cyan, #36c5f0));
+  background: linear-gradient(90deg, #8b5cf6, #d946ef, #3ed6f2);
 }
 .sf-kicker {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
-  color: var(--violet, #8b5cf6);
+  background: linear-gradient(90deg, var(--violet-bright, #a78bfa), var(--magenta, #e879f9));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .sf-hero h2 {
   font-size: 22px;
@@ -187,8 +192,8 @@
   margin-top: 20px;
 }
 .sf-stat {
-  background: var(--surface, #121a2b);
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  background: linear-gradient(180deg, rgba(22, 31, 54, 0.94), rgba(13, 19, 36, 0.96));
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 16px;
   padding: 20px;
   cursor: pointer;
@@ -197,6 +202,7 @@
   color: inherit;
   display: block;
   min-width: 0;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 .sf-stat:hover {
   transform: translateY(-2px);
