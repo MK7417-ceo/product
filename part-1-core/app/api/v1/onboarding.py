@@ -27,6 +27,9 @@ class PlacementStartRequest(BaseModel):
 
 class PlacementSubmitRequest(BaseModel):
     answers: dict[str, int]
+    # {problem_id: {"language": "python", "code": "..."}} — optional for
+    # backward compatibility; missing code grades as not_attempted.
+    code: dict[str, dict] = Field(default_factory=dict)
 
 
 def _svc(request: Request):
@@ -65,7 +68,7 @@ def get_my_profile(request: Request, user_id: str = Depends(current_user_id)):
 def start_placement(body: PlacementStartRequest, request: Request,
                     user_id: str = Depends(current_user_id)):
     try:
-        session, questions = _svc(request).start_placement(
+        session, questions, coding = _svc(request).start_placement(
             user_id, body.topic, body.claimed_level)
         return {"placement_id": session.id, "topic": session.topic,
                 "claimed_level": session.claimed_level,
@@ -73,8 +76,11 @@ def start_placement(body: PlacementStartRequest, request: Request,
                 "verification_skipped": session.status == "completed",
                 "verified_level": session.verified_level,
                 "levels": sorted({q["level"] for q in questions}),
-                "question_count": len(questions),
-                "questions": questions}
+                "question_count": len(questions) + len(coding),
+                "mcq_count": len(questions),
+                "coding_count": len(coding),
+                "questions": questions,
+                "coding_questions": coding}
     except DomainError as exc:
         raise _domain_error(exc)
 
@@ -83,7 +89,8 @@ def start_placement(body: PlacementStartRequest, request: Request,
 def submit_placement(placement_id: str, body: PlacementSubmitRequest,
                      request: Request, user_id: str = Depends(current_user_id)):
     try:
-        s, analysis = _svc(request).submit_placement(user_id, placement_id, body.answers)
+        s, analysis = _svc(request).submit_placement(
+            user_id, placement_id, body.answers, code=body.code)
         return {
             "placement_id": s.id, "status": s.status,
             "correct": s.correct, "total": s.total,

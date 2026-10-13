@@ -1,7 +1,8 @@
-"""Service tests: onboarding orchestration with fake outbound ports."""
+"""Service tests: onboarding orchestration with fake outbound ports (F6c v3)."""
 import pytest
 
 from app.adapters.inbound.onboarding_service import OnboardingServiceImpl
+from app.adapters.outbound.dsa_bank import BANK as DSA_BANK
 from app.adapters.outbound.question_bank import StaticQuestionBank
 from app.domain.user import DomainError
 
@@ -28,9 +29,24 @@ class FakePlacements:
         return self.by_id.get(pid)
 
 
+class FakeRunner:
+    """Pretends every run succeeds; stdout echoes a canned value."""
+
+    def __init__(self, stdout=""):
+        self.stdout = stdout
+        self.calls = []
+
+    def run(self, language, code, stdin, limits, request_id):
+        self.calls.append((language, code, stdin))
+        return {"verdict": "ok", "exit_code": 0,
+                "stdout": self.stdout, "stderr": ""}
+
+
 @pytest.fixture()
 def svc():
-    return OnboardingServiceImpl(FakeProfiles(), FakePlacements(), StaticQuestionBank())
+    return OnboardingServiceImpl(
+        FakeProfiles(), FakePlacements(), StaticQuestionBank(),
+        dsa_bank=DSA_BANK, code_runner=FakeRunner())
 
 
 def _profile_fields(**over):
@@ -61,30 +77,43 @@ def test_get_missing_profile(svc):
 
 def test_start_placement_beginner_skips_questions(svc):
     # beginners start from scratch: session completes immediately, no questions
-    session, questions = svc.start_placement("u1", "python", "beginner")
+    session, questions, coding = svc.start_placement("u1", "python", "beginner")
     assert questions == []
+    assert coding == []
     assert session.status == "completed"
     assert session.verified_level == "beginner"
 
 
-def test_start_placement_returns_public_questions(svc):
-    session, questions = svc.start_placement("u1", "python", "intermediate")
-    assert len(questions) == 8  # intermediate claim -> 2 levels x 4
+def test_start_placement_v3_counts(svc):
+    session, questions, coding = svc.start_placement(
+        "u1", "python", "intermediate")
+    assert len(questions) == 15  # 5 per level x B/I/A
+    assert len(coding) == 5  # 2 easy + 2 medium + 1 hard
     assert all("answer_index" not in q for q in questions)
+    assert all("hidden_tests" not in c for c in coding)
     assert session.status == "open"
 
 
-def test_start_placement_spread_matches_claim(svc):
-    _, questions = svc.start_placement("u1", "python", "advanced")
-    assert len(questions) == 12  # 3 levels x 4
+def test_start_placement_spread_beginner_to_advanced(svc):
+    _, questions, _ = svc.start_placement("u1", "python", "advanced")
     levels = [q["level"] for q in questions]
-    assert levels == ["beginner"] * 4 + ["intermediate"] * 4 + ["advanced"] * 4
+    assert levels == (["beginner"] * 5 + ["intermediate"] * 5
+                      + ["advanced"] * 5)
 
 
-def test_start_placement_expert_claim_now_works(svc):
-    _, questions = svc.start_placement("u1", "python", "expert")
-    assert len(questions) == 16  # 4 levels x 4
-    assert "expert" in {q["level"] for q in questions}
+def test_start_placement_coding_mix(svc):
+    _, _, coding = svc.start_placement("u1", "python", "intermediate")
+    from collections import Counter
+    assert dict(Counter(c["difficulty"] for c in coding)) == {
+        "easy": 2, "medium": 2, "hard": 1}
+
+
+def test_start_placement_expert_claim_gets_v3_spread(svc):
+    # expert claim also draws the B/I/A v3 spread (no expert MCQs in v3)
+    _, questions, coding = svc.start_placement("u1", "python", "expert")
+    assert len(questions) == 15
+    assert len(coding) == 5
+    assert "expert" not in {q["level"] for q in questions}
 
 
 def test_start_placement_unknown_topic(svc):
@@ -92,21 +121,84 @@ def test_start_placement_unknown_topic(svc):
         svc.start_placement("u1", "cobol", "beginner")
 
 
+def test_coding_redrived_on_submit():
+    # the coding set on submit must equal the set handed out at start
+    s = OnboardingServiceImpl(
+        FakeProfiles(), FakePlacements(), StaticQuestionBank(),
+        dsa_bank=DSA_BANK, code_runner=FakeRunner())
+    session, _, coding_at_start = s.start_placement("u1", "python", "advanced")
+    _, analysis = s.submit_placement("u1", session.id, {}, code={})
+    at_submit = [c["problem_id"] for c in analysis["coding"]]
+    assert at_submit == [c["id"] for c in coding_at_start]
+
+
 def test_submit_all_correct_verifies_claim(svc):
     bank = StaticQuestionBank()
-    session, _ = svc.start_placement("u1", "python", "intermediate")
+    session, _, _ = svc.start_placement("u1", "python", "intermediate")
     answers = {q.id: q.answer_index for q in
                [bank.get(qid) for qid in session.question_ids]}
     done, analysis = svc.submit_placement("u1", session.id, answers)
     assert done.status == "completed"
-    assert done.verified_level == "intermediate"
-    assert done.correct == 8
-    assert analysis["verified_level"] == "intermediate"
-    assert set(analysis["levels"]) == {"beginner", "intermediate"}
+    assert done.verified_level == "advanced"
+    assert done.correct == 15
+    assert analysis["verified_level"] == "advanced"
+    assert set(analysis["levels"]) == {"beginner", "intermediate", "advanced"}
+    assert "; coding 0/5 accepted" in analysis["summary"]
+
+
+def test_submit_coding_accepted_with_fake_runner(svc):
+    # OrderedRunner pops expected outputs in grading order: the service
+    # grades each problem's hidden tests sequentially, so this is deterministic.
+    from app.domain.profile import sample_placement_coding
+
+    class OrderedRunner:
+        def __init__(self, problems):
+            self.queue = [(t.stdin, t.expected)
+                          for q in problems for t in q.hidden_tests]
+
+        def run(self, language, code, stdin, limits, request_id):
+            exp_stdin, expected = self.queue.pop(0)
+            assert stdin == exp_stdin, "grading order changed"
+            return {"verdict": "ok", "exit_code": 0,
+                    "stdout": expected, "stderr": ""}
+
+    s = OnboardingServiceImpl(
+        FakeProfiles(), FakePlacements(), StaticQuestionBank(),
+        dsa_bank=DSA_BANK, code_runner=None)  # replaced below
+    session, _, coding = s.start_placement("u1", "python", "advanced")
+    problems = sample_placement_coding(DSA_BANK, session.id)
+    s._runner = OrderedRunner(problems)
+    code = {c["id"]: {"language": "python", "code": "print('x')"}
+            for c in coding}
+    _, analysis = s.submit_placement("u1", session.id, {}, code=code)
+    assert analysis["coding_accepted"] == 5
+    assert analysis["coding_total"] == 5
+    assert all(c["verdict"] == "accepted" for c in analysis["coding"])
+
+
+def test_submit_coding_not_attempted_without_code(svc):
+    session, _, _ = svc.start_placement("u1", "python", "advanced")
+    _, analysis = svc.submit_placement("u1", session.id, {})
+    assert analysis["coding_accepted"] == 0
+    assert all(c["verdict"] == "not_attempted"
+               for c in analysis["coding"])
+
+
+def test_submit_coding_engine_error_without_runner():
+    s = OnboardingServiceImpl(
+        FakeProfiles(), FakePlacements(), StaticQuestionBank(),
+        dsa_bank=DSA_BANK, code_runner=None)
+    session, _, coding = s.start_placement("u1", "python", "advanced")
+    code = {c["id"]: {"language": "python", "code": "print(1)"}
+            for c in coding}
+    done, analysis = s.submit_placement("u1", session.id, {}, code=code)
+    # MCQ grading still completes; coding degrades honestly
+    assert done.status == "completed"
+    assert all(c["verdict"] == "engine_error" for c in analysis["coding"])
 
 
 def test_submit_all_wrong_steps_down(svc):
-    session, _ = svc.start_placement("u1", "python", "advanced")
+    session, _, _ = svc.start_placement("u1", "python", "advanced")
     answers = {qid: 99 for qid in session.question_ids}  # nothing matches
     done, analysis = svc.submit_placement("u1", session.id, answers)
     assert done.verified_level == "beginner"
@@ -115,7 +207,7 @@ def test_submit_all_wrong_steps_down(svc):
 
 def test_submit_partial_finds_true_level(svc):
     bank = StaticQuestionBank()
-    session, _ = svc.start_placement("u1", "python", "advanced")
+    session, _, _ = svc.start_placement("u1", "python", "advanced")
     answers = {}
     for qid in session.question_ids:
         q = bank.get(qid)
@@ -127,13 +219,13 @@ def test_submit_partial_finds_true_level(svc):
 
 
 def test_double_submit_rejected(svc):
-    session, _ = svc.start_placement("u1", "python", "intermediate")
+    session, _, _ = svc.start_placement("u1", "python", "intermediate")
     svc.submit_placement("u1", session.id, {})
     with pytest.raises(DomainError, match="already completed"):
         svc.submit_placement("u1", session.id, {})
 
 
 def test_other_users_session_rejected(svc):
-    session, _ = svc.start_placement("u1", "python", "intermediate")
+    session, _, _ = svc.start_placement("u1", "python", "intermediate")
     with pytest.raises(DomainError, match="not found"):
         svc.submit_placement("u2", session.id, {})

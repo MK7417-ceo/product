@@ -61,6 +61,7 @@ def test_placement_beginner_skips_verification():
     assert body["verification_skipped"] is True
     assert body["verified_level"] == "beginner"
     assert body["questions"] == []
+    assert body["coding_questions"] == []
     assert body["question_count"] == 0
 
 
@@ -72,21 +73,29 @@ def test_placement_full_verify_flow():
     assert r.status_code == 201, r.text
     body = r.json()
     assert body["verification_skipped"] is False
-    assert len(body["questions"]) == 8
-    assert body["levels"] == ["beginner", "intermediate"]
-    assert body["question_count"] == 8
+    assert len(body["questions"]) == 15
+    assert len(body["coding_questions"]) == 5
+    assert body["mcq_count"] == 15
+    assert body["coding_count"] == 5
+    assert body["question_count"] == 20
+    assert body["levels"] == ["advanced", "beginner", "intermediate"]
     assert all("answer_index" not in q for q in body["questions"])
+    assert all("hidden_tests" not in q for q in body["coding_questions"])
 
-    # answer everything wrong -> verified level must step down to beginner (floor)
+    # answer everything wrong, no code -> verified beginner, coding not_attempted
     r = c.post(f"/api/v1/placement/{body['placement_id']}/submit",
-               json={"answers": {q["id"]: 99 for q in body["questions"]}}, headers=h)
+               json={"answers": {q["id"]: 99 for q in body["questions"]}},
+               headers=h)
     assert r.status_code == 200
     out = r.json()
     assert out["status"] == "completed"
     assert out["verified_level"] == "beginner"
     assert out["correct"] == 0
     assert out["analysis"]["verified_level"] == "beginner"
-    assert set(out["analysis"]["levels"]) == {"beginner", "intermediate"}
+    assert set(out["analysis"]["levels"]) == {
+        "beginner", "intermediate", "advanced"}
+    assert out["analysis"]["coding_total"] == 5
+    assert out["analysis"]["coding_accepted"] == 0
     assert "summary" in out["analysis"]
 
 
@@ -97,7 +106,7 @@ def test_placement_start_spread_for_advanced_claim():
                headers=_authz(c))
     assert r.status_code == 201, r.text
     body = r.json()
-    assert body["question_count"] == 12
+    assert body["question_count"] == 20
     assert body["levels"] == ["advanced", "beginner", "intermediate"]
 
 

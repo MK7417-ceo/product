@@ -27,6 +27,7 @@ from app.adapters.outbound.resume_repository import SqlAlchemyResumeRepository
 from app.adapters.outbound.certificate_repository import SqlAlchemyCertificateRepository
 from app.adapters.outbound.user_repository import SqlAlchemyUserRepository
 from app.adapters.outbound.question_bank import StaticQuestionBank
+from app.adapters.outbound.dsa_bank import BANK as DSA_BANK
 from app.adapters.outbound.security import BcryptPasswordHasher, DbTokenStore, JwtTokenIssuer
 from app.adapters.outbound.system_probe import SqlAlchemyDatabaseProbe
 from app.adapters.outbound.link_repository import SqlAlchemyAccountLinkRepository
@@ -74,14 +75,16 @@ def create_app() -> FastAPI:
     profiles = SqlAlchemyProfileRepository(SessionLocal)
     placements = SqlAlchemyPlacementRepository(SessionLocal)
     bank = StaticQuestionBank()
-    app.state.onboarding_service = OnboardingServiceImpl(profiles, placements, bank)
+    app.state.code_runner = HttpCodeRunnerClient(settings.CODE_ENGINE_URL)
+    app.state.onboarding_service = OnboardingServiceImpl(
+        profiles, placements, bank, dsa_bank=DSA_BANK,
+        code_runner=app.state.code_runner)
     app.state.question_bank = bank
     app.state.assessment_repo = SqlAlchemyAssessmentRepository(SessionLocal)
     app.state.assessment_service = AssessmentServiceImpl(
         app.state.assessment_repo, bank)
     app.state.practice_service = PracticeServiceImpl(
         bank, SqlAlchemyRoadmapRepository(SessionLocal))
-    app.state.code_runner = HttpCodeRunnerClient(settings.CODE_ENGINE_URL)
     app.state.dsa_service = DSAServiceImpl(code_runner=app.state.code_runner)
     app.state.launchpad_service = LaunchpadServiceImpl(
         SqlAlchemyResumeRepository(SessionLocal),

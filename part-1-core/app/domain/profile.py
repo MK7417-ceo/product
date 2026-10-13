@@ -19,6 +19,12 @@ LEVELS = ("beginner", "intermediate", "advanced", "expert")
 QUESTIONS_PER_LEVEL = 4
 PASS_RATIO = 0.7
 
+# F6c placement v3: 20 questions = 15 MCQ + 5 coding.
+MCQ_PER_LEVEL_V3 = 5
+V3_MCQ_LEVELS = ("beginner", "intermediate", "advanced")
+CODING_MIX = (("easy", 2), ("medium", 2), ("hard", 1))
+SUPPORTED_CODE_LANGUAGES = ("python", "c", "cpp", "java")
+
 
 @dataclass(frozen=True)
 class Profile:
@@ -107,21 +113,42 @@ def levels_upto(claimed: str) -> tuple[str, ...]:
 
 
 def sample_placement_questions(bank, topic: str, claimed_level: str, seed: str) -> list[Question]:
-    """Random, reproducible placement set: QUESTIONS_PER_LEVEL questions per
-    level, from beginner up to the claimed level.
+    """Random, reproducible placement set (F6c v3): MCQ_PER_LEVEL_V3 questions
+    per level across beginner/intermediate/advanced — 15 total — for any
+    non-beginner claim.
 
-    The draw is seeded (per placement session id) so it is different every
-    attempt yet fully reproducible and auditable. Raises DomainError when the
-    bank cannot supply enough questions for a level.
+    The claimed level no longer narrows the spread: verification finds the
+    true level purely from performance. The draw is seeded (per placement
+    session id) so it is different every attempt yet fully reproducible
+    and auditable. Raises DomainError when the bank cannot supply enough
+    questions for a level.
     """
-    levels = levels_upto(claimed_level)
+    validate_level(claimed_level)
     rng = random.Random(int(seed, 16) % (2**63))
     picked: list[Question] = []
-    for lvl in levels:
+    for lvl in V3_MCQ_LEVELS:
         pool = bank.pool(topic, lvl)
-        if len(pool) < QUESTIONS_PER_LEVEL:
+        if len(pool) < MCQ_PER_LEVEL_V3:
             raise DomainError(f"not enough questions for {topic}/{lvl}")
-        picked.extend(rng.sample(pool, QUESTIONS_PER_LEVEL))
+        picked.extend(rng.sample(pool, MCQ_PER_LEVEL_V3))
+    return picked
+
+
+def sample_placement_coding(dsa_bank, seed: str) -> list:
+    """Random, reproducible coding set (F6c v3): CODING_MIX problems from the
+    DSA bank (2 easy + 2 medium + 1 hard), seeded by the session id so the
+    set can be re-derived on submit without a DB migration.
+    """
+    import hashlib
+    rng = random.Random(
+        int(hashlib.sha256(f"{seed}:code".encode()).hexdigest(), 16) % (2**63)
+    )
+    picked: list = []
+    for difficulty, count in CODING_MIX:
+        pool = [q for q in dsa_bank if q.difficulty == difficulty]
+        if len(pool) < count:
+            raise DomainError(f"not enough coding problems: {difficulty}")
+        picked.extend(rng.sample(pool, count))
     return picked
 
 
@@ -137,6 +164,16 @@ class LevelResult:
 
 
 @dataclass(frozen=True)
+class CodingResult:
+    problem_id: str
+    title: str
+    difficulty: str
+    verdict: str  # accepted | wrong_answer | runtime_error | engine_error | not_attempted
+    passed: int
+    total: int
+
+
+@dataclass(frozen=True)
 class PlacementAnalysis:
     claimed_level: str
     verified_level: str
@@ -144,18 +181,26 @@ class PlacementAnalysis:
     correct: int
     total: int
     summary: str
+    coding: tuple[CodingResult, ...] = ()
+    coding_accepted: int = 0
+    coding_total: int = 0
 
 
 def analyze_placement(
-    claimed_level: str, questions: list[Question], answers: dict[str, int]
+    claimed_level: str, questions: list[Question], answers: dict[str, int],
+    coding: tuple[CodingResult, ...] = (),
 ) -> PlacementAnalysis:
     """Per-level analysis of a placement attempt.
 
-    Verified level = the highest level (never above the claim) where the
-    user scored >= PASS_RATIO *and* every lower level also passed. This
-    finds the true level instead of grading one flat ratio.
+    Verified level = the highest level where the user scored >= PASS_RATIO
+    *and* every lower level also passed. This finds the true level instead
+    of grading one flat ratio. Coding results are reported separately and
+    feed roadmap gaps; they do not move the verified level.
     """
-    levels = levels_upto(claimed_level)
+    levels = [lvl for lvl in V3_MCQ_LEVELS
+              if any(q.level == lvl for q in questions)]
+    if not levels:
+        levels = list(levels_upto(claimed_level))
     results: list[LevelResult] = []
     for lvl in levels:
         qs = [q for q in questions if q.level == lvl]
@@ -169,6 +214,7 @@ def analyze_placement(
             break
     correct = sum(r.correct for r in results)
     total = sum(r.total for r in results)
+    coding_accepted = sum(1 for c in coding if c.verdict == "accepted")
     if total == 0:
         # No questions asked (e.g. beginner fast-path): nothing to analyse.
         summary = (
@@ -183,6 +229,8 @@ def analyze_placement(
             f"{breakdown} -> verified level: {verified} "
             f"(claimed {claimed_level})"
         )
+        if coding:
+            summary += f"; coding {coding_accepted}/{len(coding)} accepted"
     return PlacementAnalysis(
         claimed_level=claimed_level,
         verified_level=verified,
@@ -190,7 +238,44 @@ def analyze_placement(
         correct=correct,
         total=total,
         summary=summary,
+        coding=coding,
+        coding_accepted=coding_accepted,
+        coding_total=len(coding),
     )
+
+
+def analyze_placement_coding(problems, code_submissions: dict, grade_fn) -> tuple[CodingResult, ...]:
+    """Grade coding submissions for a placement session.
+
+    problems: list of DSAQuestion (re-derived from the session seed).
+    code_submissions: {problem_id: {"language": str, "code": str}}.
+    grade_fn(problem, language, code) -> (verdict, passed, total_tests):
+        injected so the domain stays pure; the service wires the engine.
+    Missing/blank code -> not_attempted. Engine failures surface as
+    engine_error via grade_fn — they never block MCQ grading.
+    """
+    results: list[CodingResult] = []
+    for p in problems:
+        sub = (code_submissions or {}).get(p.id) or {}
+        code = (sub.get("code") or "").strip()
+        language = sub.get("language") or "python"
+        if not code:
+            results.append(CodingResult(
+                problem_id=p.id, title=p.title, difficulty=p.difficulty,
+                verdict="not_attempted", passed=0,
+                total=len(p.hidden_tests)))
+            continue
+        if language not in SUPPORTED_CODE_LANGUAGES:
+            results.append(CodingResult(
+                problem_id=p.id, title=p.title, difficulty=p.difficulty,
+                verdict="runtime_error", passed=0,
+                total=len(p.hidden_tests)))
+            continue
+        verdict, passed, total = grade_fn(p, language, code)
+        results.append(CodingResult(
+            problem_id=p.id, title=p.title, difficulty=p.difficulty,
+            verdict=verdict, passed=passed, total=total))
+    return tuple(results)
 
 
 def analysis_to_dict(a: PlacementAnalysis) -> dict:
@@ -205,4 +290,12 @@ def analysis_to_dict(a: PlacementAnalysis) -> dict:
                       "ratio": round(r.ratio, 3)}
             for r in a.levels
         },
+        "coding_accepted": a.coding_accepted,
+        "coding_total": a.coding_total,
+        "coding": [
+            {"problem_id": c.problem_id, "title": c.title,
+             "difficulty": c.difficulty, "verdict": c.verdict,
+             "passed": c.passed, "total": c.total}
+            for c in a.coding
+        ],
     }
