@@ -329,3 +329,29 @@
   border-color: rgba(139, 92, 246, 0.55);
   box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.35);
 }
+
+/* ---------- F6d: written questions ---------- */
+.ob-lvl-tag.written {
+  color: #7dd3a8;
+  background: rgba(57, 217, 138, 0.10);
+  border-color: rgba(57, 217, 138, 0.30);
+}
+.ob-written-editor {
+  width: 100%;
+  min-height: 140px;
+  box-sizing: border-box;
+  background: #0d1220;
+  color: #e6e9f2;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 12px;
+  padding: 14px;
+  font-family: inherit;
+  font-size: 14.5px;
+  line-height: 1.65;
+  resize: vertical;
+}
+.ob-written-editor:focus {
+  outline: none;
+  border-color: rgba(57, 217, 138, 0.50);
+  box-shadow: 0 0 0 1px rgba(57, 217, 138, 0.30);
+}

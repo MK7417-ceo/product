@@ -6,6 +6,7 @@ import type {
   PlacementSubmitResult,
   Question,
   VerificationState,
+  WrittenQuestion,
 } from './lib';
 import './onboarding.css';
 
@@ -35,13 +36,20 @@ function prettyTopic(t: string): string {
 
 type Item =
   | { kind: 'mcq'; q: Question }
-  | { kind: 'code'; q: CodingQuestion };
+  | { kind: 'code'; q: CodingQuestion }
+  | { kind: 'written'; q: WrittenQuestion };
 
 const VERDICT_LABEL: Record<string, string> = {
   accepted: '✓ accepted',
   wrong_answer: '✗ wrong answer',
   runtime_error: '⚠ runtime error',
   engine_error: '⚠ engine unreachable',
+  not_attempted: '– not attempted',
+};
+
+const WRITTEN_LABEL: Record<string, string> = {
+  scored: 'scored',
+  too_short: 'too short',
   not_attempted: '– not attempted',
 };
 
@@ -55,6 +63,7 @@ export default function Verification() {
   const [codeSubs, setCodeSubs] = useState<
     Record<string, { language: string; code: string }>
   >({});
+  const [writtenAns, setWrittenAns] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [result, setResult] = useState<PlacementSubmitResult | null>(null);
@@ -63,6 +72,7 @@ export default function Verification() {
 
   const mcqs: Question[] = state?.questions ?? [];
   const coding: CodingQuestion[] = state?.coding_questions ?? [];
+  const writtenQs: WrittenQuestion[] = state?.written_questions ?? [];
   if (!state || mcqs.length === 0) {
     return <Navigate to="/plan" replace />;
   }
@@ -71,11 +81,15 @@ export default function Verification() {
   const items: Item[] = [
     ...mcqs.map((q) => ({ kind: 'mcq' as const, q })),
     ...coding.map((q) => ({ kind: 'code' as const, q })),
+    ...writtenQs.map((q) => ({ kind: 'written' as const, q })),
   ];
   const item = items[idx];
   const mcqAnswered = Object.keys(answers).length;
   const codeAttempted = Object.values(codeSubs).filter((s) =>
     s.code.trim(),
+  ).length;
+  const writtenAttempted = Object.values(writtenAns).filter((t) =>
+    t.trim(),
   ).length;
   const allMcqAnswered = mcqAnswered === mcqs.length;
 
@@ -107,9 +121,13 @@ export default function Verification() {
       for (const [pid, sub] of Object.entries(codeSubs)) {
         if (sub.code.trim()) code[pid] = sub;
       }
+      const written: Record<string, string> = {};
+      for (const [qid, text] of Object.entries(writtenAns)) {
+        if (text.trim()) written[qid] = text;
+      }
       const res = await api<PlacementSubmitResult>(
         `/api/v1/placement/${state.placement_id}/submit`,
-        { method: 'POST', body: JSON.stringify({ answers, code }) },
+        { method: 'POST', body: JSON.stringify({ answers, code, written }) },
       );
       setResult(res);
     } catch (e) {
@@ -248,6 +266,48 @@ export default function Verification() {
           </>
         )}
 
+        {a.written && a.written.length > 0 && (
+          <>
+            <div className="ob-section-t">WRITTEN</div>
+            <div className="ob-card">
+              {a.written.map((w) => (
+                <div className="ob-lvl" key={w.question_id}>
+                  <div className="row">
+                    <b style={{ textTransform: 'none', fontWeight: 600, fontSize: 13 }}>
+                      {w.prompt.length > 80 ? w.prompt.slice(0, 80) + '…' : w.prompt}
+                    </b>
+                    <span className="mono" style={{ color: 'var(--muted)', fontSize: 13 }}>
+                      {w.level} · {WRITTEN_LABEL[w.status] ?? w.status}
+                      {w.status === 'scored' &&
+                        ` · ${Math.round(w.coverage * 100)}% concepts (${w.matched.length}/${w.concepts_total})`}
+                    </span>
+                  </div>
+                  {w.status === 'scored' && (
+                    <div className="ob-bar">
+                      <i
+                        style={{
+                          width: `${Math.round(w.coverage * 100)}%`,
+                          background:
+                            w.coverage >= 0.7
+                              ? '#36C5F0'
+                              : w.coverage >= 0.4
+                                ? '#F5B84B'
+                                : '#F06C75',
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              ))}
+              <p className="ob-empty" style={{ marginTop: 6 }}>
+                Written answers are graded on key-concept coverage by a local
+                rubric — no AI, no external calls. Skipped answers don't count
+                as failures.
+              </p>
+            </div>
+          </>
+        )}
+
         {genError && <div className="ob-alert err">{genError}</div>}
         <div className="ob-cta-row">
           <button className="ob-btn" onClick={generateRoadmap} disabled={generating}>
@@ -273,8 +333,9 @@ export default function Verification() {
         </span>
       </h1>
       <p className="ob-sub">
-        {mcqs.length} questions check your knowledge, {coding.length} check your
-        code. Answer keys and hidden tests never leave the server.
+        {mcqs.length} questions check your knowledge, {coding.length} check
+        your code, {writtenQs.length} check your explanations. Answer keys,
+        hidden tests and rubrics never leave the server.
       </p>
 
       <div className="ob-card">
@@ -284,11 +345,14 @@ export default function Verification() {
           </span>
           {item.kind === 'mcq' ? (
             <span className="ob-lvl-tag">{item.q.level}</span>
-          ) : (
+          ) : item.kind === 'code' ? (
             <span className="ob-lvl-tag code">CODING · {item.q.difficulty}</span>
+          ) : (
+            <span className="ob-lvl-tag written">WRITTEN · {item.q.level}</span>
           )}
           <span className="mono" style={{ marginLeft: 'auto' }}>
-            {mcqAnswered}/{mcqs.length} MCQ · {codeAttempted}/{coding.length} code
+            {mcqAnswered}/{mcqs.length} MCQ · {codeAttempted}/{coding.length}{' '}
+            code · {writtenAttempted}/{writtenQs.length} written
           </span>
         </div>
         <div className="ob-bar cyan" style={{ marginBottom: 20 }}>
@@ -309,11 +373,19 @@ export default function Verification() {
               </button>
             ))}
           </>
-        ) : (
+        ) : item.kind === 'code' ? (
           <CodingPanel
             q={item.q}
             sub={codeSubs[item.q.id]}
             onChange={(patch) => setCode(item.q.id, patch)}
+          />
+        ) : (
+          <WrittenPanel
+            q={item.q}
+            value={writtenAns[item.q.id] ?? ''}
+            onChange={(text) =>
+              setWrittenAns((s) => ({ ...s, [item.q.id]: text }))
+            }
           />
         )}
 
@@ -425,6 +497,39 @@ function CodingPanel({
         spellCheck={false}
         rows={10}
       />
+    </div>
+  );
+}
+
+function WrittenPanel({
+  q,
+  value,
+  onChange,
+}: {
+  q: WrittenQuestion;
+  value: string;
+  onChange: (text: string) => void;
+}) {
+  return (
+    <div>
+      <p className="ob-qprompt">{q.prompt}</p>
+      <p className="ob-hint">
+        Explain in your own words — 2–4 sentences. Graded on key concepts by a
+        local rubric, no AI involved. Optional — blank counts as skipped.
+      </p>
+      <textarea
+        className="ob-written-editor"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Write your explanation here…"
+        rows={6}
+      />
+      <div className="ob-hint mono" style={{ fontSize: 12, marginTop: 8 }}>
+        {value.trim().length} chars
+        {value.trim().length > 0 && value.trim().length < 20
+          ? ' · too short to grade'
+          : ''}
+      </div>
     </div>
   );
 }
