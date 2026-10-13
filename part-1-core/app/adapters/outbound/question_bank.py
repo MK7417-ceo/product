@@ -58,6 +58,40 @@ _WRITTEN_BANK: list[WrittenQuestion] = [
         "I/O-bound threads still benefit. Workarounds: multiprocessing, "
         "C extensions releasing the GIL, or nogil builds.",
     ),
+    # ---- ml-basics written (F6d fix: placement crashed without these) ----
+    _wq(
+        "ml-w1", "ml-basics", "beginner",
+        "Explain the difference between supervised and unsupervised learning, "
+        "with one example of each.",
+        ["labeled", "unlabeled", "classification", "clustering",
+         "training data", "prediction"],
+        "Supervised learning trains on labeled data to make predictions, "
+        "e.g. classification of emails as spam or not. Unsupervised learning "
+        "finds structure in unlabeled data, e.g. clustering customers by "
+        "behaviour.",
+    ),
+    _wq(
+        "ml-w2", "ml-basics", "intermediate",
+        "What is overfitting? How can you detect it, and what are two ways "
+        "to reduce it?",
+        ["overfitting", "training", "validation", "generalization",
+         "regularization", "more data"],
+        "Overfitting is when a model memorises training data and fails to "
+        "generalise — training error low, validation error high. Detect with "
+        "a validation set or cross-validation. Reduce with regularization, "
+        "more data, simpler models, or early stopping.",
+    ),
+    _wq(
+        "ml-w3", "ml-basics", "advanced",
+        "Explain the bias-variance tradeoff. How does model complexity affect "
+        "each, and how do you find the right balance in practice?",
+        ["bias", "variance", "underfitting", "overfitting", "complexity",
+         "validation curve"],
+        "Simple models have high bias (underfitting) and low variance; complex "
+        "models have low bias and high variance (overfitting). Total error is "
+        "bias² + variance + noise. In practice, use validation curves and "
+        "cross-validation to pick the complexity with the lowest validation error.",
+    ),
 ]
 
 

@@ -312,3 +312,12 @@ def test_written_does_not_move_verified_level(svc):
                        for w in written}
     done, _ = svc.submit_placement("u1", session.id, answers, written=written_answers)
     assert done.verified_level == "beginner"
+
+
+def test_start_placement_written_works_for_all_topics(svc):
+    # regression: ml-basics placement crashed with no written bank
+    for topic in ["python", "ml-basics"]:
+        _, _, _, written = svc.start_placement("u1", topic, "intermediate")
+        assert len(written) == 3
+        assert [w["level"] for w in written] == [
+            "beginner", "intermediate", "advanced"]
