@@ -28,14 +28,27 @@
 html, body { height: 100%; }
 
 body {
-  font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', sans-serif;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
   background: var(--base);
   color: var(--text);
   font-size: 15px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   min-height: 100vh;
 }
+
+::selection { background: rgba(139, 92, 246, 0.40); color: #fff; }
+
+/* Refined scrollbars */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.25);
+  border-radius: 8px;
+  border: 2px solid var(--base);
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(139, 92, 246, 0.45); }
 
 /* Aurora glow behind everything — rich but calm. */
 body::before {
@@ -59,9 +72,10 @@ button { font-family: inherit; }
   position: sticky;
   top: 0;
   z-index: 50;
-  backdrop-filter: blur(14px);
-  background: rgba(8, 11, 20, 0.84);
-  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  background: rgba(6, 9, 19, 0.78);
+  border-bottom: 1px solid transparent;
+  border-image: linear-gradient(90deg, rgba(139,92,246,0.35), rgba(62,214,242,0.18), rgba(232,121,249,0.25)) 1;
 }
 .topnav-in {
   max-width: 1440px;
@@ -199,6 +213,7 @@ button { font-family: inherit; }
   overflow-y: auto;
   border-right: 1px solid var(--border);
   padding: 18px 12px;
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.05), transparent 30%);
 }
 .sgroup { font-size: 10.5px; font-weight: 700; letter-spacing: 0.12em; color: var(--muted); padding: 16px 12px 6px; }
 .sgroup:first-child { padding-top: 4px; }
@@ -355,4 +370,62 @@ button { font-family: inherit; }
   }
   .mnav a.active { color: var(--violet); }
   .mnav span { font-size: 20px; display: block; margin-bottom: 2px; }
+}
+
+/* ============================================================
+   Polish pass 2 — motion, typography, focus (Oct 13)
+   Tasteful, workable: nothing here changes layout or function.
+   ============================================================ */
+
+/* Page entrance — soft rise on every route render */
+@keyframes sf-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.content > * { animation: sf-rise 0.35s ease-out both; }
+.content > *:nth-child(2) { animation-delay: 0.05s; }
+.content > *:nth-child(3) { animation-delay: 0.10s; }
+.content > *:nth-child(4) { animation-delay: 0.15s; }
+
+/* Headings — tighter, more confident */
+h1, h2, h3 { letter-spacing: -0.02em; }
+.page-h { letter-spacing: -0.025em; }
+
+/* Buttons — press feedback + focus ring */
+.btn-primary:active, .ob-btn:active, .ob-btn-sm:active { transform: translateY(0) scale(0.98); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid rgba(167, 139, 250, 0.70);
+  outline-offset: 2px;
+}
+
+/* Progress bars — smooth fill + glow tip */
+.ob-bar i, .sf-bar i {
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  box-shadow: 0 0 12px rgba(62, 214, 242, 0.45);
+}
+
+/* Cards — gentle hover lift */
+.card, .sf-stat, .ob-card {
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+a.card:hover, .sf-stat:hover {
+  transform: translateY(-2px);
+  border-color: rgba(139, 92, 246, 0.35);
+}
+
+/* Pills / badges — crisper */
+.pill, .badge, .sf-kicker, .ob-kicker {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Inputs — richer focus */
+input, select, textarea {
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .content > * { animation: none; }
+  .ob-bar i, .sf-bar i { transition: none; }
+  .card, .sf-stat, .ob-card, a.card:hover, .sf-stat:hover { transform: none; }
 }
