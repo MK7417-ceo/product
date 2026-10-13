@@ -13,6 +13,7 @@ from app.adapters.outbound.assessment_repository import SqlAlchemyAssessmentRepo
 from app.adapters.inbound.evidence_service import EvidenceServiceImpl
 from app.adapters.inbound.practice_service import PracticeServiceImpl
 from app.adapters.inbound.roadmap_service import RoadmapServiceImpl
+from app.adapters.inbound.search_service import SearchServiceImpl
 from app.adapters.outbound.google_oauth import GoogleOAuthProvider
 from app.adapters.outbound.profile_repository import (
     SqlAlchemyPlacementRepository,
@@ -20,6 +21,7 @@ from app.adapters.outbound.profile_repository import (
 )
 from app.adapters.outbound.evidence_repository import SqlAlchemyEvidenceRepository
 from app.adapters.outbound.roadmap_repository import SqlAlchemyRoadmapRepository
+from app.adapters.outbound.search_repository import SqlAlchemySearchRepository
 from app.adapters.outbound.code_runner_client import HttpCodeRunnerClient
 from app.adapters.inbound.launchpad_service import LaunchpadServiceImpl
 from app.adapters.outbound.resume_repository import SqlAlchemyResumeRepository
@@ -42,6 +44,7 @@ from app.api.v1 import onboarding as onboarding_api
 from app.api.v1 import evidence as evidence_api
 from app.api.v1 import practice as practice_api
 from app.api.v1 import roadmaps as roadmaps_api
+from app.api.v1 import search as search_api
 from app.core.config import settings
 from app.core.database import SessionLocal
 from app.core.logging import configure_logging
@@ -92,6 +95,8 @@ def create_app() -> FastAPI:
         SqlAlchemyEvidenceRepository(SessionLocal),
         SqlAlchemyRoadmapRepository(SessionLocal),
     )
+    app.state.search_service = SearchServiceImpl(
+        SqlAlchemySearchRepository(SessionLocal))
     app.state.oauth_provider = GoogleOAuthProvider(
         client_id=settings.GOOGLE_CLIENT_ID,
         client_secret=settings.GOOGLE_CLIENT_SECRET,
@@ -116,6 +121,7 @@ def create_app() -> FastAPI:
     app.include_router(onboarding_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(assessments_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(roadmaps_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(search_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(practice_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(evidence_api.router, prefix=settings.API_V1_PREFIX)
     return app

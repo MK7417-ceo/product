@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
+import SearchBar from './SearchBar';
 
 const LINKS = [
   { to: '/', label: 'Dashboard' },
@@ -41,6 +42,9 @@ export default function Shell() {
         </div>
       </aside>
       <main className="main">
+        <div className="topbar">
+          <SearchBar />
+        </div>
         <Outlet />
       </main>
     </div>
