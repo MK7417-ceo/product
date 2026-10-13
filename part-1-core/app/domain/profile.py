@@ -25,6 +25,12 @@ V3_MCQ_LEVELS = ("beginner", "intermediate", "advanced")
 CODING_MIX = (("easy", 2), ("medium", 2), ("hard", 1))
 SUPPORTED_CODE_LANGUAGES = ("python", "c", "cpp", "java")
 
+# F6d placement v4: +3 written (subjective) questions, 1 per level.
+# Total verification = 23 questions.
+WRITTEN_PER_LEVEL = 1
+V3_WRITTEN_LEVELS = ("beginner", "intermediate", "advanced")
+WRITTEN_MIN_CHARS = 20  # below this the answer is "too short", not graded
+
 
 @dataclass(frozen=True)
 class Profile:
@@ -174,6 +180,121 @@ class CodingResult:
 
 
 @dataclass(frozen=True)
+class WrittenQuestion:
+    """A subjective (free-text) placement question.
+
+    key_concepts and sample_answer NEVER leave the server — the client
+    only sees id/topic/level/prompt via public_written_question().
+    """
+    id: str
+    topic: str
+    level: str
+    prompt: str
+    key_concepts: tuple[str, ...]
+    sample_answer: str
+    max_points: int = 100
+
+
+@dataclass(frozen=True)
+class WrittenResult:
+    question_id: str
+    prompt: str
+    level: str
+    status: str  # scored | too_short | not_attempted
+    coverage: float  # 0.0-1.0 fraction of key concepts mentioned
+    matched: tuple[str, ...] = ()
+    missed: tuple[str, ...] = ()
+
+
+def public_written_question(q: WrittenQuestion) -> dict:
+    """Client-safe shape: rubric stays on the server."""
+    return {"id": q.id, "topic": q.topic, "level": q.level, "prompt": q.prompt}
+
+
+def sample_placement_written(bank, topic: str, seed: str) -> list[WrittenQuestion]:
+    """Seeded written set (F6d v4): WRITTEN_PER_LEVEL per level across
+    beginner/intermediate/advanced. Reproducible per session id."""
+    import hashlib
+    rng = random.Random(
+        int(hashlib.sha256(f"{seed}:written".encode()).hexdigest(), 16) % (2**63)
+    )
+    picked: list[WrittenQuestion] = []
+    for lvl in V3_WRITTEN_LEVELS:
+        pool = bank.written_pool(topic, lvl)
+        if len(pool) < WRITTEN_PER_LEVEL:
+            raise DomainError(f"not enough written questions for {topic}/{lvl}")
+        picked.extend(rng.sample(pool, WRITTEN_PER_LEVEL))
+    return picked
+
+
+def _normalize_text(text: str) -> str:
+    import re
+    text = text.lower()
+    text = re.sub(r"[^a-z0-9\s]", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _concept_mentioned(concept: str, normalized: str) -> bool:
+    """v1 heuristic: a concept counts as mentioned when its phrase appears,
+    or when all of its significant words appear (plural-tolerant)."""
+    concept = concept.lower().strip()
+    if not concept:
+        return False
+    if concept in normalized:
+        return True
+    words = [w for w in concept.split() if len(w) > 2]
+    if not words:
+        return False
+    tokens = set(normalized.split())
+
+    def singular(w: str) -> str:
+        return w[:-1] if w.endswith("s") and len(w) > 3 else w
+
+    return all(w in tokens or singular(w) in tokens for w in words)
+
+
+def grade_written(question: WrittenQuestion, answer: str) -> WrittenResult:
+    """Deterministic rubric grader v1 (heuristic).
+
+    Checks which key concepts the answer mentions — a coverage signal, not
+    a deep understanding judgement. The analysis labels it accordingly.
+    This is the `grade_written` seam: an LLM grader v2 can replace this
+    function without changing any API shape.
+    """
+    text = (answer or "").strip()
+    if not text:
+        return WrittenResult(
+            question_id=question.id, prompt=question.prompt,
+            level=question.level, status="not_attempted", coverage=0.0,
+        )
+    if len(text) < WRITTEN_MIN_CHARS:
+        return WrittenResult(
+            question_id=question.id, prompt=question.prompt,
+            level=question.level, status="too_short", coverage=0.0,
+        )
+    normalized = _normalize_text(text)
+    matched = tuple(c for c in question.key_concepts
+                    if _concept_mentioned(c, normalized))
+    missed = tuple(c for c in question.key_concepts if c not in matched)
+    coverage = len(matched) / len(question.key_concepts) if question.key_concepts else 0.0
+    return WrittenResult(
+        question_id=question.id, prompt=question.prompt,
+        level=question.level, status="scored", coverage=round(coverage, 3),
+        matched=matched, missed=missed,
+    )
+
+
+def analyze_placement_written(
+    questions: list[WrittenQuestion], written_answers: dict[str, str],
+) -> tuple[WrittenResult, ...]:
+    """Grade each written answer. Missing/blank -> not_attempted (not a failure)."""
+    return tuple(
+        grade_written(q, (written_answers or {}).get(q.id, ""))
+        for q in questions
+    )
+
+
+@dataclass(frozen=True)
 class PlacementAnalysis:
     claimed_level: str
     verified_level: str
@@ -184,18 +305,20 @@ class PlacementAnalysis:
     coding: tuple[CodingResult, ...] = ()
     coding_accepted: int = 0
     coding_total: int = 0
+    written: tuple[WrittenResult, ...] = ()
 
 
 def analyze_placement(
     claimed_level: str, questions: list[Question], answers: dict[str, int],
     coding: tuple[CodingResult, ...] = (),
+    written: tuple[WrittenResult, ...] = (),
 ) -> PlacementAnalysis:
     """Per-level analysis of a placement attempt.
 
     Verified level = the highest level where the user scored >= PASS_RATIO
     *and* every lower level also passed. This finds the true level instead
-    of grading one flat ratio. Coding results are reported separately and
-    feed roadmap gaps; they do not move the verified level.
+    of grading one flat ratio. Coding and written results are reported
+    separately and feed roadmap gaps; they do not move the verified level.
     """
     levels = [lvl for lvl in V3_MCQ_LEVELS
               if any(q.level == lvl for q in questions)]
@@ -231,6 +354,11 @@ def analyze_placement(
         )
         if coding:
             summary += f"; coding {coding_accepted}/{len(coding)} accepted"
+        if written:
+            scored = [w for w in written if w.status == "scored"]
+            if scored:
+                avg = sum(w.coverage for w in scored) / len(scored)
+                summary += f"; written {avg:.0%} concept coverage"
     return PlacementAnalysis(
         claimed_level=claimed_level,
         verified_level=verified,
@@ -241,6 +369,7 @@ def analyze_placement(
         coding=coding,
         coding_accepted=coding_accepted,
         coding_total=len(coding),
+        written=written,
     )
 
 
@@ -297,5 +426,13 @@ def analysis_to_dict(a: PlacementAnalysis) -> dict:
              "difficulty": c.difficulty, "verdict": c.verdict,
              "passed": c.passed, "total": c.total}
             for c in a.coding
+        ],
+        "written_total": len(a.written),
+        "written": [
+            {"question_id": w.question_id, "prompt": w.prompt,
+             "level": w.level, "status": w.status,
+             "coverage": w.coverage, "matched": list(w.matched),
+             "concepts_total": len(w.matched) + len(w.missed)}
+            for w in a.written
         ],
     }

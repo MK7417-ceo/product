@@ -10,9 +10,12 @@ from app.domain.profile import (
     analysis_to_dict,
     analyze_placement,
     analyze_placement_coding,
+    analyze_placement_written,
     public_question,
+    public_written_question,
     sample_placement_coding,
     sample_placement_questions,
+    sample_placement_written,
     validate_level,
     validate_profile,
 )
@@ -74,11 +77,12 @@ class OnboardingServiceImpl:
                 verified_level="beginner",
             )
             self._placements.save(session)
-            return session, [], []
+            return session, [], [], []
         questions = sample_placement_questions(
             self._bank, topic, claimed_level, placement_id
         )
         coding = sample_placement_coding(self._dsa_bank, placement_id)
+        written = sample_placement_written(self._bank, topic, placement_id)
         session = Placement(
             id=placement_id, user_id=user_id, topic=topic,
             claimed_level=claimed_level,
@@ -86,7 +90,8 @@ class OnboardingServiceImpl:
         )
         self._placements.save(session)
         return (session, [public_question(q) for q in questions],
-                [public_dsa(q) for q in coding])
+                [public_dsa(q) for q in coding],
+                [public_written_question(q) for q in written])
 
     def _grade_one(self, request_id: str):
         """Build the injected grader for placement coding submissions.
@@ -117,7 +122,7 @@ class OnboardingServiceImpl:
 
     def submit_placement(
         self, user_id: str, placement_id: str, answers: dict[str, int],
-        code: dict | None = None,
+        code: dict | None = None, written: dict[str, str] | None = None,
     ) -> tuple[Placement, dict]:
         from app.domain.user import DomainError
         session = self._placements.get(placement_id)
@@ -133,8 +138,14 @@ class OnboardingServiceImpl:
         coding = analyze_placement_coding(
             coding_problems, code or {},
             self._grade_one(f"placement-{placement_id[:8]}"))
+        # Written questions likewise re-derived from the session seed.
+        written_questions = sample_placement_written(
+            self._bank, session.topic, placement_id)
+        written_results = analyze_placement_written(
+            written_questions, written or {})
         analysis = analyze_placement(
-            session.claimed_level, questions, answers, coding=coding)
+            session.claimed_level, questions, answers,
+            coding=coding, written=written_results)
         session.answers = dict(answers)
         session.status = "completed"
         session.correct = analysis.correct

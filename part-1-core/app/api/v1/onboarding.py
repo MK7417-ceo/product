@@ -30,6 +30,9 @@ class PlacementSubmitRequest(BaseModel):
     # {problem_id: {"language": "python", "code": "..."}} — optional for
     # backward compatibility; missing code grades as not_attempted.
     code: dict[str, dict] = Field(default_factory=dict)
+    # {written_qid: "free text answer"} — optional; missing/blank grades
+    # as not_attempted, never as a failure.
+    written: dict[str, str] = Field(default_factory=dict)
 
 
 def _svc(request: Request):
@@ -68,7 +71,7 @@ def get_my_profile(request: Request, user_id: str = Depends(current_user_id)):
 def start_placement(body: PlacementStartRequest, request: Request,
                     user_id: str = Depends(current_user_id)):
     try:
-        session, questions, coding = _svc(request).start_placement(
+        session, questions, coding, written = _svc(request).start_placement(
             user_id, body.topic, body.claimed_level)
         return {"placement_id": session.id, "topic": session.topic,
                 "claimed_level": session.claimed_level,
@@ -76,11 +79,13 @@ def start_placement(body: PlacementStartRequest, request: Request,
                 "verification_skipped": session.status == "completed",
                 "verified_level": session.verified_level,
                 "levels": sorted({q["level"] for q in questions}),
-                "question_count": len(questions) + len(coding),
+                "question_count": len(questions) + len(coding) + len(written),
                 "mcq_count": len(questions),
                 "coding_count": len(coding),
+                "written_count": len(written),
                 "questions": questions,
-                "coding_questions": coding}
+                "coding_questions": coding,
+                "written_questions": written}
     except DomainError as exc:
         raise _domain_error(exc)
 
@@ -90,7 +95,8 @@ def submit_placement(placement_id: str, body: PlacementSubmitRequest,
                      request: Request, user_id: str = Depends(current_user_id)):
     try:
         s, analysis = _svc(request).submit_placement(
-            user_id, placement_id, body.answers, code=body.code)
+            user_id, placement_id, body.answers, code=body.code,
+            written=body.written)
         return {
             "placement_id": s.id, "status": s.status,
             "correct": s.correct, "total": s.total,

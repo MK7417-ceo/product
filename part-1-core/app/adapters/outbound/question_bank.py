@@ -9,13 +9,56 @@ a random spread from basic to advanced.
 """
 from __future__ import annotations
 
-from app.domain.profile import Question
+from app.domain.profile import Question, WrittenQuestion
 
 
 def _q(qid: str, topic: str, level: str, skill: str, prompt: str,
        choices: list[str], answer: int) -> Question:
     return Question(id=qid, topic=topic, level=level, skill=skill,
                     prompt=prompt, choices=tuple(choices), answer_index=answer)
+
+
+def _wq(qid: str, topic: str, level: str, prompt: str,
+        key_concepts: list[str], sample_answer: str) -> WrittenQuestion:
+    return WrittenQuestion(id=qid, topic=topic, level=level, prompt=prompt,
+                           key_concepts=tuple(key_concepts),
+                           sample_answer=sample_answer)
+
+
+# ---- written (subjective) bank: 1 per level for python (F6d v4) ----
+_WRITTEN_BANK: list[WrittenQuestion] = [
+    _wq(
+        "py-w1", "python", "beginner",
+        "Explain the difference between a list and a tuple in Python. "
+        "When would you choose one over the other?",
+        ["mutable", "immutable", "ordered", "square brackets", "parentheses",
+         "fixed data"],
+        "A list is mutable and written with square brackets; a tuple is "
+        "immutable and written with parentheses. Both are ordered. Use a list "
+        "when the collection changes, a tuple for fixed data like coordinates.",
+    ),
+    _wq(
+        "py-w2", "python", "intermediate",
+        "Explain how a Python dictionary lookup works. What makes it fast, "
+        "and what can go wrong?",
+        ["hash", "hash table", "key", "average O(1)", "collision",
+         "immutable keys"],
+        "Dicts are hash tables: the key is hashed to find a bucket, giving "
+        "average O(1) lookup. Collisions are resolved internally. Keys must be "
+        "hashable (immutable); unhashable keys raise TypeError.",
+    ),
+    _wq(
+        "py-w3", "python", "advanced",
+        "What is Python's GIL? How does it affect multithreaded programs, "
+        "and what are the common workarounds?",
+        ["global interpreter lock", "thread", "CPU-bound", "I/O-bound",
+         "multiprocessing", "single core"],
+        "The GIL is a mutex allowing only one thread to execute Python "
+        "bytecode at a time. CPU-bound threads don't speed up (single core); "
+        "I/O-bound threads still benefit. Workarounds: multiprocessing, "
+        "C extensions releasing the GIL, or nogil builds.",
+    ),
+]
 
 
 _BANK: list[Question] = [
@@ -200,6 +243,10 @@ class StaticQuestionBank:
     def pool(self, topic: str, level: str) -> list[Question]:
         """Full pool for a topic/level (used for random placement sampling)."""
         return [q for q in self._questions if q.topic == topic and q.level == level]
+
+    def written_pool(self, topic: str, level: str) -> list[WrittenQuestion]:
+        """Written-question pool for a topic/level (F6d v4)."""
+        return [q for q in _WRITTEN_BANK if q.topic == topic and q.level == level]
 
     def get(self, question_id: str) -> Question | None:
         return self._by_id.get(question_id)

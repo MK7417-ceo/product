@@ -75,12 +75,16 @@ def test_placement_full_verify_flow():
     assert body["verification_skipped"] is False
     assert len(body["questions"]) == 15
     assert len(body["coding_questions"]) == 5
+    assert len(body["written_questions"]) == 3
     assert body["mcq_count"] == 15
     assert body["coding_count"] == 5
-    assert body["question_count"] == 20
+    assert body["written_count"] == 3
+    assert body["question_count"] == 23
     assert body["levels"] == ["advanced", "beginner", "intermediate"]
     assert all("answer_index" not in q for q in body["questions"])
     assert all("hidden_tests" not in q for q in body["coding_questions"])
+    assert all("key_concepts" not in q for q in body["written_questions"])
+    assert all("sample_answer" not in q for q in body["written_questions"])
 
     # answer everything wrong, no code -> verified beginner, coding not_attempted
     r = c.post(f"/api/v1/placement/{body['placement_id']}/submit",
@@ -106,7 +110,8 @@ def test_placement_start_spread_for_advanced_claim():
                headers=_authz(c))
     assert r.status_code == 201, r.text
     body = r.json()
-    assert body["question_count"] == 20
+    assert body["question_count"] == 23
+    assert body["written_count"] == 3
     assert body["levels"] == ["advanced", "beginner", "intermediate"]
 
 

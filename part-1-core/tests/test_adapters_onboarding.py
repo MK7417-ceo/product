@@ -77,7 +77,7 @@ def test_get_missing_profile(svc):
 
 def test_start_placement_beginner_skips_questions(svc):
     # beginners start from scratch: session completes immediately, no questions
-    session, questions, coding = svc.start_placement("u1", "python", "beginner")
+    session, questions, coding, written = svc.start_placement("u1", "python", "beginner")
     assert questions == []
     assert coding == []
     assert session.status == "completed"
@@ -85,7 +85,7 @@ def test_start_placement_beginner_skips_questions(svc):
 
 
 def test_start_placement_v3_counts(svc):
-    session, questions, coding = svc.start_placement(
+    session, questions, coding, written = svc.start_placement(
         "u1", "python", "intermediate")
     assert len(questions) == 15  # 5 per level x B/I/A
     assert len(coding) == 5  # 2 easy + 2 medium + 1 hard
@@ -95,14 +95,14 @@ def test_start_placement_v3_counts(svc):
 
 
 def test_start_placement_spread_beginner_to_advanced(svc):
-    _, questions, _ = svc.start_placement("u1", "python", "advanced")
+    _, questions, _, _ = svc.start_placement("u1", "python", "advanced")
     levels = [q["level"] for q in questions]
     assert levels == (["beginner"] * 5 + ["intermediate"] * 5
                       + ["advanced"] * 5)
 
 
 def test_start_placement_coding_mix(svc):
-    _, _, coding = svc.start_placement("u1", "python", "intermediate")
+    _, _, coding, _ = svc.start_placement("u1", "python", "intermediate")
     from collections import Counter
     assert dict(Counter(c["difficulty"] for c in coding)) == {
         "easy": 2, "medium": 2, "hard": 1}
@@ -110,7 +110,7 @@ def test_start_placement_coding_mix(svc):
 
 def test_start_placement_expert_claim_gets_v3_spread(svc):
     # expert claim also draws the B/I/A v3 spread (no expert MCQs in v3)
-    _, questions, coding = svc.start_placement("u1", "python", "expert")
+    _, questions, coding, _ = svc.start_placement("u1", "python", "expert")
     assert len(questions) == 15
     assert len(coding) == 5
     assert "expert" not in {q["level"] for q in questions}
@@ -126,7 +126,7 @@ def test_coding_redrived_on_submit():
     s = OnboardingServiceImpl(
         FakeProfiles(), FakePlacements(), StaticQuestionBank(),
         dsa_bank=DSA_BANK, code_runner=FakeRunner())
-    session, _, coding_at_start = s.start_placement("u1", "python", "advanced")
+    session, _, coding_at_start, _ = s.start_placement("u1", "python", "advanced")
     _, analysis = s.submit_placement("u1", session.id, {}, code={})
     at_submit = [c["problem_id"] for c in analysis["coding"]]
     assert at_submit == [c["id"] for c in coding_at_start]
@@ -134,7 +134,7 @@ def test_coding_redrived_on_submit():
 
 def test_submit_all_correct_verifies_claim(svc):
     bank = StaticQuestionBank()
-    session, _, _ = svc.start_placement("u1", "python", "intermediate")
+    session, _, _, _ = svc.start_placement("u1", "python", "intermediate")
     answers = {q.id: q.answer_index for q in
                [bank.get(qid) for qid in session.question_ids]}
     done, analysis = svc.submit_placement("u1", session.id, answers)
@@ -165,7 +165,7 @@ def test_submit_coding_accepted_with_fake_runner(svc):
     s = OnboardingServiceImpl(
         FakeProfiles(), FakePlacements(), StaticQuestionBank(),
         dsa_bank=DSA_BANK, code_runner=None)  # replaced below
-    session, _, coding = s.start_placement("u1", "python", "advanced")
+    session, _, coding, _ = s.start_placement("u1", "python", "advanced")
     problems = sample_placement_coding(DSA_BANK, session.id)
     s._runner = OrderedRunner(problems)
     code = {c["id"]: {"language": "python", "code": "print('x')"}
@@ -177,7 +177,7 @@ def test_submit_coding_accepted_with_fake_runner(svc):
 
 
 def test_submit_coding_not_attempted_without_code(svc):
-    session, _, _ = svc.start_placement("u1", "python", "advanced")
+    session, _, _, _ = svc.start_placement("u1", "python", "advanced")
     _, analysis = svc.submit_placement("u1", session.id, {})
     assert analysis["coding_accepted"] == 0
     assert all(c["verdict"] == "not_attempted"
@@ -188,7 +188,7 @@ def test_submit_coding_engine_error_without_runner():
     s = OnboardingServiceImpl(
         FakeProfiles(), FakePlacements(), StaticQuestionBank(),
         dsa_bank=DSA_BANK, code_runner=None)
-    session, _, coding = s.start_placement("u1", "python", "advanced")
+    session, _, coding, _ = s.start_placement("u1", "python", "advanced")
     code = {c["id"]: {"language": "python", "code": "print(1)"}
             for c in coding}
     done, analysis = s.submit_placement("u1", session.id, {}, code=code)
@@ -198,7 +198,7 @@ def test_submit_coding_engine_error_without_runner():
 
 
 def test_submit_all_wrong_steps_down(svc):
-    session, _, _ = svc.start_placement("u1", "python", "advanced")
+    session, _, _, _ = svc.start_placement("u1", "python", "advanced")
     answers = {qid: 99 for qid in session.question_ids}  # nothing matches
     done, analysis = svc.submit_placement("u1", session.id, answers)
     assert done.verified_level == "beginner"
@@ -207,7 +207,7 @@ def test_submit_all_wrong_steps_down(svc):
 
 def test_submit_partial_finds_true_level(svc):
     bank = StaticQuestionBank()
-    session, _, _ = svc.start_placement("u1", "python", "advanced")
+    session, _, _, _ = svc.start_placement("u1", "python", "advanced")
     answers = {}
     for qid in session.question_ids:
         q = bank.get(qid)
@@ -219,13 +219,96 @@ def test_submit_partial_finds_true_level(svc):
 
 
 def test_double_submit_rejected(svc):
-    session, _, _ = svc.start_placement("u1", "python", "intermediate")
+    session, _, _, _ = svc.start_placement("u1", "python", "intermediate")
     svc.submit_placement("u1", session.id, {})
     with pytest.raises(DomainError, match="already completed"):
         svc.submit_placement("u1", session.id, {})
 
 
 def test_other_users_session_rejected(svc):
-    session, _, _ = svc.start_placement("u1", "python", "intermediate")
+    session, _, _, _ = svc.start_placement("u1", "python", "intermediate")
     with pytest.raises(DomainError, match="not found"):
         svc.submit_placement("u2", session.id, {})
+
+
+# ---- F6d v4: written (subjective) questions ----
+
+def test_start_placement_v4_written_counts(svc):
+    _, _, _, written = svc.start_placement("u1", "python", "intermediate")
+    assert len(written) == 3  # 1 per level x B/I/A
+    assert [w["level"] for w in written] == ["beginner", "intermediate", "advanced"]
+    # rubric never leaks
+    assert all("key_concepts" not in w for w in written)
+    assert all("sample_answer" not in w for w in written)
+
+
+def test_written_rubric_grader_scores_concepts():
+    from app.domain.profile import WrittenQuestion, grade_written
+    q = WrittenQuestion(
+        id="w1", topic="python", level="beginner", prompt="p",
+        key_concepts=("mutable", "immutable", "ordered"),
+        sample_answer="s",
+    )
+    r = grade_written(q, "A list is mutable and ordered, while a tuple is immutable.")
+    assert r.status == "scored"
+    assert r.coverage == 1.0
+    assert set(r.matched) == {"mutable", "immutable", "ordered"}
+
+
+def test_written_rubric_partial_coverage():
+    from app.domain.profile import WrittenQuestion, grade_written
+    q = WrittenQuestion(
+        id="w1", topic="python", level="beginner", prompt="p",
+        key_concepts=("mutable", "immutable", "ordered", "hash table"),
+        sample_answer="s",
+    )
+    r = grade_written(q, "Lists are mutable and ordered collections in Python.")
+    assert r.status == "scored"
+    assert r.coverage == 0.5
+    assert "hash table" in r.missed
+
+
+def test_written_blank_and_short():
+    from app.domain.profile import WrittenQuestion, grade_written
+    q = WrittenQuestion(
+        id="w1", topic="python", level="beginner", prompt="p",
+        key_concepts=("mutable",), sample_answer="s",
+    )
+    assert grade_written(q, "").status == "not_attempted"
+    assert grade_written(q, "   ").status == "not_attempted"
+    assert grade_written(q, "idk").status == "too_short"
+
+
+def test_submit_placement_grades_written(svc):
+    session, _, _, written = svc.start_placement("u1", "python", "intermediate")
+    qid = written[0]["id"]
+    done, analysis = svc.submit_placement(
+        "u1", session.id, {},
+        written={qid: "A list is mutable and ordered, a tuple is immutable."},
+    )
+    assert done.status == "completed"
+    assert analysis["written_total"] == 3
+    by_id = {w["question_id"]: w for w in analysis["written"]}
+    assert by_id[qid]["status"] == "scored"
+    assert by_id[qid]["coverage"] > 0
+    # unanswered written -> not_attempted, not a failure
+    others = [w for w in analysis["written"] if w["question_id"] != qid]
+    assert all(w["status"] == "not_attempted" for w in others)
+    # verified level still comes from MCQ
+    assert done.verified_level == "beginner"
+
+
+def test_written_does_not_move_verified_level(svc):
+    # perfect written answers cannot lift the verified level above MCQ evidence
+    from app.adapters.outbound.question_bank import StaticQuestionBank
+    bank = StaticQuestionBank()
+    session, _, _, written = svc.start_placement("u1", "python", "advanced")
+    answers = {}
+    for qid in session.question_ids:
+        q = bank.get(qid)
+        answers[qid] = q.answer_index if q.level == "beginner" else 99
+    written_answers = {w["id"]: "mutable immutable ordered hash table key collision "
+                                "global interpreter lock thread CPU-bound multiprocessing"
+                       for w in written}
+    done, _ = svc.submit_placement("u1", session.id, answers, written=written_answers)
+    assert done.verified_level == "beginner"
