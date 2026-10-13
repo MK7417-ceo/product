@@ -1,9 +1,11 @@
 """Outbound adapter: curated diagnostic question bank.
 
 Seed of the hybrid strategy (curated bank first, AI-generated questions
-later). 32 questions: Python (8 x beginner/intermediate/advanced) +
-ML basics (4 x beginner/intermediate). Every question carries a skill tag
-used for gap reports.
+later). 54 questions: Python (8 beginner / 8 intermediate / 8 advanced /
+6 expert) + ML basics (6 per level across beginner/intermediate/advanced/
+expert). Every question carries a skill tag used for gap reports. Every
+topic/level pool holds at least 4 questions so placement sessions can draw
+a random spread from basic to advanced.
 """
 from __future__ import annotations
 
@@ -105,6 +107,78 @@ _BANK: list[Question] = [
     _q("ml-i4", "ml-basics", "intermediate", "ml-metrics", "Why can accuracy mislead on imbalanced data?",
        ["it cannot", "the majority class dominates the score",
         "it is too slow", "it needs more epochs"], 1),
+    # ---- ml-basics / beginner (top-up) ----
+    _q("ml-b5", "ml-basics", "beginner", "ml-concepts", "In a dataset of houses, what is a 'feature'?",
+       ["the price to predict", "an input attribute like area or rooms",
+        "the model's name", "the training error"], 1),
+    _q("ml-b6", "ml-basics", "beginner", "ml-workflow", "What are the three standard data splits?",
+       ["train / validation / test", "input / output / error",
+        "small / medium / large", "raw / clean / final"], 0),
+    # ---- ml-basics / intermediate (top-up) ----
+    _q("ml-i5", "ml-basics", "intermediate", "ml-concepts", "What is the bias-variance tradeoff about?",
+       ["speed vs memory", "underfitting vs overfitting as model complexity changes",
+        "CPU vs GPU training", "batch size vs epochs"], 1),
+    _q("ml-i6", "ml-basics", "intermediate", "ml-workflow", "What does k-fold cross-validation do?",
+       ["trains k models on k different datasets",
+        "rotates which fold is held out for validation to use all data",
+        "copies the dataset k times", "tests k hyperparameters at once"], 1),
+    # ---- ml-basics / advanced ----
+    _q("ml-a1", "ml-basics", "advanced", "ml-concepts", "What does L2 regularization (ridge) do?",
+       ["removes features entirely", "penalizes large weights to reduce overfitting",
+        "speeds up training", "adds more layers"], 1),
+    _q("ml-a2", "ml-basics", "advanced", "ml-metrics", "When is F1-score preferred over accuracy?",
+       ["always", "when classes are imbalanced and both precision and recall matter",
+        "only for regression", "when the dataset is tiny"], 1),
+    _q("ml-a3", "ml-basics", "advanced", "ml-concepts", "What problem does batch normalization address?",
+       ["slow disk I/O", "internal covariate shift, stabilizing layer inputs",
+        "too many features", "label noise"], 1),
+    _q("ml-a4", "ml-basics", "advanced", "ml-concepts", "Why do deep networks suffer from vanishing gradients?",
+       ["too much data", "repeated multiplication of small derivatives through layers",
+        "large batch sizes", "high learning rates"], 1),
+    _q("ml-a5", "ml-basics", "advanced", "ml-concepts", "What is the core idea of the attention mechanism?",
+       ["random weight init", "weighing input parts by relevance when producing output",
+        "dropping random neurons", "sorting the training data"], 1),
+    _q("ml-a6", "ml-basics", "advanced", "ml-workflow", "What is data leakage in ML evaluation?",
+       ["a slow data pipeline", "test information leaking into training, inflating scores",
+        "losing data files", "a security breach only"], 1),
+    # ---- ml-basics / expert ----
+    _q("ml-e1", "ml-basics", "expert", "ml-systems", "What is the main idea behind LoRA fine-tuning?",
+       ["training from scratch", "learning low-rank updates while freezing base weights",
+        "deleting layers", "quantizing to 1 bit"], 1),
+    _q("ml-e2", "ml-basics", "expert", "ml-systems", "Why use mixed-precision training?",
+       ["it is more accurate", "faster training and lower memory with minimal accuracy loss",
+        "it needs no GPU", "it removes hyperparameters"], 1),
+    _q("ml-e3", "ml-basics", "expert", "ml-concepts", "What do neural scaling laws describe?",
+       ["exact test accuracy", "power-law gains from more parameters, data and compute",
+        "optimal batch size", "learning rate schedules"], 1),
+    _q("ml-e4", "ml-basics", "expert", "ml-workflow", "In distributed data-parallel training, what is synchronized?",
+       ["the datasets", "gradients averaged across workers each step",
+        "the random seeds only", "the model architectures"], 1),
+    _q("ml-e5", "ml-basics", "expert", "ml-metrics", "What does a high ROC-AUC with poor calibration mean?",
+       ["the model is useless", "good ranking of positives vs negatives, but probabilities are off",
+        "perfect predictions", "underfitting"], 1),
+    _q("ml-e6", "ml-basics", "expert", "ml-concepts", "What is the key risk of offline evaluation for recommender systems?",
+       ["it is too slow", "feedback loops and position bias differ from live behavior",
+        "it needs labels", "it only works for movies"], 1),
+    # ---- python / expert ----
+    _q("py-e1", "python", "expert", "advanced-python", "What is a metaclass in Python?",
+       ["a fast loop", "a class whose instances are classes, customizing class creation",
+        "a type of decorator", "a C extension"], 1),
+    _q("py-e2", "python", "expert", "advanced-python", "What does the descriptor protocol (__get__/__set__) enable?",
+       ["faster imports", "custom attribute access, powering properties and slots",
+        "multiple inheritance", "async I/O"], 1),
+    _q("py-e3", "python", "expert", "advanced-python", "Why can asyncio not speed up CPU-bound work alone?",
+       ["it can", "the event loop is single-threaded; CPU work blocks it",
+        "it needs more RAM", "it only works on Linux"], 1),
+    _q("py-e4", "python", "expert", "advanced-python", "What does __init_subclass__ let a base class do?",
+       ["skip __init__", "hook into subclass creation for registration or validation",
+        "prevent inheritance", "speed up instantiation"], 1),
+    _q("py-e5", "python", "expert", "advanced-python", "In typing, what is a Protocol used for?",
+       ["runtime speed", "structural subtyping: matching by methods, not inheritance",
+        "data validation", "network protocols"], 1),
+    _q("py-e6", "python", "expert", "advanced-python", "What happens during import of a module with circular imports?",
+       ["always an error", "partially initialized module objects may be seen; order matters",
+        "infinite loop", "nothing special"], 1),
 ]
 
 
@@ -122,6 +196,10 @@ class StaticQuestionBank:
     def questions(self, topic: str, level: str, count: int) -> list[Question]:
         pool = [q for q in self._questions if q.topic == topic and q.level == level]
         return pool[:count]
+
+    def pool(self, topic: str, level: str) -> list[Question]:
+        """Full pool for a topic/level (used for random placement sampling)."""
+        return [q for q in self._questions if q.topic == topic and q.level == level]
 
     def get(self, question_id: str) -> Question | None:
         return self._by_id.get(question_id)

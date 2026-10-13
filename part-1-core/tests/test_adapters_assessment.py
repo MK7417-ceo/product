@@ -37,9 +37,23 @@ def test_start_unknown_topic(svc):
         svc.start_assessment("u1", "cobol", "beginner")
 
 
-def test_start_missing_level(svc):
+def test_start_ml_basics_advanced_now_available(svc):
+    # bank expansion (F2c): ml-basics now has advanced questions
+    session, qs = svc.start_assessment("u1", "ml-basics", "advanced", count=4)
+    assert session.status == "open"
+    assert len(qs) == 4
+    assert all(q["level"] == "advanced" for q in qs)
+
+
+def test_start_missing_level():
+    from app.domain.profile import Question
+    thin = StaticQuestionBank([
+        Question(id="x1", topic="python", level="beginner", prompt="p",
+                 choices=("a", "b"), answer_index=0),
+    ])
+    svc = AssessmentServiceImpl(FakeAssessments(), thin)
     with pytest.raises(DomainError, match="no advanced questions"):
-        svc.start_assessment("u1", "ml-basics", "advanced")
+        svc.start_assessment("u1", "python", "advanced")
 
 
 def test_submit_scores_and_gaps(svc):
