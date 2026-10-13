@@ -9,6 +9,24 @@ export interface Question {
   choices: string[];
 }
 
+export interface CodingExample {
+  stdin: string;
+  stdout: string;
+  explanation: string;
+}
+
+export interface CodingQuestion {
+  id: string;
+  title: string;
+  difficulty: string;
+  description: string;
+  examples: CodingExample[];
+  starter_code: string;
+  hidden_test_count: number;
+  topic_tags: string[];
+  hints: string[];
+}
+
 export interface PlacementStart {
   placement_id: string;
   topic: string;
@@ -18,7 +36,10 @@ export interface PlacementStart {
   verified_level: string | null;
   levels: string[];
   question_count: number;
+  mcq_count: number;
+  coding_count: number;
   questions: Question[];
+  coding_questions: CodingQuestion[];
 }
 
 /** Router-state contract for /verification (set by MakePlan via navigate). */
@@ -27,12 +48,22 @@ export interface VerificationState {
   topic: string;
   claimed_level: string;
   questions: Question[];
+  coding_questions: CodingQuestion[];
 }
 
 export interface LevelResult {
   correct: number;
   total: number;
   ratio: number;
+}
+
+export interface CodingResult {
+  problem_id: string;
+  title: string;
+  difficulty: string;
+  verdict: string;
+  passed: number;
+  total: number;
 }
 
 export interface PlacementAnalysis {
@@ -42,6 +73,9 @@ export interface PlacementAnalysis {
   total: number;
   summary: string;
   levels: Record<string, LevelResult>;
+  coding_accepted: number;
+  coding_total: number;
+  coding: CodingResult[];
 }
 
 export interface PlacementSubmitResult {

@@ -24,13 +24,13 @@ const LEVELS = [
     id: 'intermediate',
     icon: '🚀',
     name: 'Intermediate',
-    desc: '8 questions — 4 beginner + 4 intermediate. We verify exactly where you stand before planning.',
+    desc: '20 questions — 15 MCQ (beginner → advanced) + 5 coding. We verify exactly where you stand before planning.',
   },
   {
     id: 'advanced',
     icon: '⚡',
     name: 'Advanced',
-    desc: '12 questions — 4 across each level from beginner to advanced. Prove the depth, skip the basics.',
+    desc: '20 questions — 15 MCQ + 5 coding across all levels. Prove the depth, skip the basics.',
   },
 ] as const;
 
@@ -96,6 +96,7 @@ export default function MakePlan() {
             topic: res.topic,
             claimed_level: res.claimed_level,
             questions: res.questions,
+            coding_questions: res.coding_questions ?? [],
           },
         });
       }
