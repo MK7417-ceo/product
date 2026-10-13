@@ -15,6 +15,12 @@ interface SubscriptionData {
 
 const ORDER = ['free', 'pro', 'expert'];
 
+const TIER_BLURB: Record<string, string> = {
+  free: 'Start your journey',
+  pro: 'For serious builders',
+  expert: 'Maximum velocity',
+};
+
 export default function Billing() {
   const [data, setData] = useState<SubscriptionData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -65,10 +71,19 @@ export default function Billing() {
           <div className="tier-grid" style={{ maxWidth: 960 }}>
             {ordered.map((key) => {
               const t = tiers[key];
+              const isCurrent = key === current;
+              const isPopular = key === 'pro' && !isCurrent;
               return (
-                <div key={key} className={`tier-card${key === current ? ' current' : ''}`}>
-                  {key === current && <span className="tier-now">CURRENT</span>}
+                <div
+                  key={key}
+                  className={`tier-card${isCurrent ? ' current' : ''}${isPopular ? ' popular' : ''}`}
+                >
+                  {isCurrent && <span className="tier-now">CURRENT</span>}
+                  {isPopular && <span className="tier-flag">MOST POPULAR</span>}
                   <h3>{t.name}</h3>
+                  {TIER_BLURB[key] && (
+                    <div className="tier-desc">{TIER_BLURB[key]}</div>
+                  )}
                   <div className="price">
                     ₹{t.price_inr}
                     <small>/month</small>
