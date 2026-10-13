@@ -11,7 +11,7 @@ class UserModel(Base):
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
     email: Mapped[str] = mapped_column(String(320), unique=True, nullable=False, index=True)
-    password_hash: Mapped[str] = mapped_column(Text, nullable=False)
+    password_hash: Mapped[str | None] = mapped_column(Text, nullable=True)  # NULL for OAuth users
     role: Mapped[str] = mapped_column(String(16), nullable=False, default="user")
     tier: Mapped[str] = mapped_column(String(16), nullable=False, default="free")
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)

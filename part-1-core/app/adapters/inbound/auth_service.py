@@ -52,14 +52,14 @@ class JwtAuthService:
         email = validate_email(email)
         user = self._users.find_by_email(email)
         if not user:
-            user = new_user(uuid.uuid4().hex, email, "")
+            user = new_user(uuid.uuid4().hex, email, None)
             self._users.save(user)
         return self._issue_pair(user)
 
     def login(self, email: str, password: str) -> AuthResult:
         email = validate_email(email)
         user = self._users.find_by_email(email)
-        if not user or not self._hasher.verify(password, user.password_hash):
+        if not user or not user.password_hash or not self._hasher.verify(password, user.password_hash):
             raise DomainError("invalid credentials")
         return self._issue_pair(user)
 

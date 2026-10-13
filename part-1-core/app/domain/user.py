@@ -21,7 +21,7 @@ class DomainError(Exception):
 class User:
     id: str
     email: str
-    password_hash: str
+    password_hash: str | None  # None for OAuth users (no password)
     role: str = "user"
     tier: str = "free"
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
@@ -52,6 +52,6 @@ def validate_role(role: str) -> str:
     return role
 
 
-def new_user(user_id: str, email: str, password_hash: str) -> User:
+def new_user(user_id: str, email: str, password_hash: str | None) -> User:
     """Factory: every new user starts as role 'user'. No other default exists."""
     return User(id=user_id, email=validate_email(email), password_hash=password_hash, role="user")
