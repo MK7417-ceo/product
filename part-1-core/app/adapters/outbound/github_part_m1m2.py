@@ -104,12 +104,12 @@ locally and fast.
                         "qtype": "mcq",
                         "prompt": "What is the PRIMARY purpose of a version control system?",
                         "choices": [
-                            "To compile source code into executable programs",
                             "To record changes to files over time so any version can be recalled later",
                             "To deploy applications to production servers automatically",
                             "To encrypt source code so only team members can read it",
+                            "To compile source code into executable programs",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 0,
                         "difficulty": 1,
                         "explanation": "A VCS records who changed what, when, and why, letting you recall or restore any earlier version. Compilation, deployment, and encryption are separate tools' jobs, not the VCS's purpose.",
                         "company_tags": ["tcs", "infosys"],
@@ -118,12 +118,12 @@ locally and fast.
                         "qtype": "mcq",
                         "prompt": "Which statement BEST describes the difference between Git and SVN (Subversion)?",
                         "choices": [
+                            "Git requires a paid license while SVN is always free",
                             "Git is distributed (every clone has the full history), while SVN is centralized (history lives on one server)",
                             "Git can only track Python files while SVN tracks any file type",
                             "SVN is faster than Git because it keeps all data on a central server",
-                            "Git requires a paid license while SVN is always free",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 1,
                         "difficulty": 3,
                         "explanation": "Git is distributed: `git clone` copies the entire history, so local operations like `git log` work offline. SVN is centralized: most operations need to reach the server. The other options mix up facts — both track any file type and both are free.",
                         "company_tags": ["wipro", "accenture"],
@@ -132,12 +132,12 @@ locally and fast.
                         "qtype": "mcq",
                         "prompt": "You are on a flight with no internet. Which of these git commands can you still run successfully in a cloned repository?",
                         "choices": [
-                            "git log --oneline and git status",
-                            "git push origin main",
                             "git fetch --all",
                             "git clone https://github.com/user/repo.git",
+                            "git log --oneline and git status",
+                            "git push origin main",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 2,
                         "difficulty": 2,
                         "explanation": "`git log` and `git status` only read your LOCAL clone, which contains the full history — the whole point of a distributed VCS. Push, fetch, and clone all need network access to a remote server.",
                         "company_tags": ["tcs", "wipro"],
@@ -146,12 +146,12 @@ locally and fast.
                         "qtype": "mcq",
                         "prompt": "A teammate says: \"I committed my changes but my coworker can't see them.\" What is the most likely explanation?",
                         "choices": [
-                            "They need to run `git config` again before committing",
-                            "A local commit stays on their machine until they `git push` it to the shared remote",
                             "Git automatically pushes every commit within 5 minutes",
                             "The coworker needs to delete their local repository first",
+                            "They need to run `git config` again before committing",
+                            "A local commit stays on their machine until they `git push` it to the shared remote",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 3,
                         "difficulty": 4,
                         "explanation": "In Git, `commit` writes to the LOCAL repository only; `push` publishes commits to the remote. This is the direct consequence of the distributed model — local history and shared history are separate until you sync them.",
                         "company_tags": ["infosys", "accenture"],
@@ -160,12 +160,12 @@ locally and fast.
                         "qtype": "mcq",
                         "prompt": "Which of the following is NOT something Git does?",
                         "choices": [
-                            "Records who changed which lines and when",
-                            "Lets you restore a file to an earlier version",
                             "Tracks an empty directory that contains no files",
                             "Merges work from multiple contributors",
+                            "Records who changed which lines and when",
+                            "Lets you restore a file to an earlier version",
                         ],
-                        "answer_index": 2,
+                        "answer_index": 0,
                         "difficulty": 3,
                         "explanation": "Git tracks file CONTENT, not directories — an empty folder is invisible to Git (people add a placeholder `.gitkeep` file as a workaround). Recording history, restoring versions, and merging collaboration are core VCS jobs.",
                         "company_tags": ["amazon", "flipkart"],
@@ -272,12 +272,12 @@ history later.
                         "qtype": "mcq",
                         "prompt": "Which two commands set your identity for every Git repository on the machine?",
                         "choices": [
+                            "`git user --add \"Name\" \"a@b.com\"`",
                             "`git config --global user.name \"Name\"` and `git config --global user.email \"a@b.com\"`",
                             "`git set identity --name \"Name\" --email \"a@b.com\"`",
                             "`git init --author \"Name <a@b.com>\"`",
-                            "`git user --add \"Name\" \"a@b.com\"`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 1,
                         "difficulty": 1,
                         "explanation": "`git config --global user.name` and `user.email` are THE real commands — every commit embeds these as author metadata. The other three commands do not exist in Git.",
                         "company_tags": ["tcs", "infosys"],
@@ -293,19 +293,19 @@ history later.
                         ],
                         "answer_index": 2,
                         "difficulty": 2,
-                        "explanation": "`--global` writes to `~/.gitconfig`, the current user's machine-wide config. It's not per-system, not synced to GitHub, and never expires.",
+                        "explanation": "`--global` writes to `~/.gitconfig`, the current user's machine-wide config, so every repository you touch inherits it. It's not per-system, not synced to GitHub, and never expires — it's simply your identity everywhere on this machine.",
                         "company_tags": ["wipro", "accenture"],
                     },
                     {
                         "qtype": "mcq",
                         "prompt": "You want your work laptop to use `mohit@company.com` for the current project only, but keep your personal email everywhere else. Which command does this?",
                         "choices": [
-                            "`git config --global user.email \"mohit@company.com\"`",
-                            "`git config user.email \"mohit@company.com\"` (run inside the project)",
                             "`git config --system user.email \"mohit@company.com\"`",
                             "`git email --set-local \"mohit@company.com\"`",
+                            "`git config --global user.email \"mohit@company.com\"`",
+                            "`git config user.email \"mohit@company.com\"` (run inside the project)",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 3,
                         "difficulty": 4,
                         "explanation": "Without `--global` (run inside a repo), the setting is written to that repo's `.git/config` and overrides the global value just there — Git's precedence is local > global > system. `--system` would affect all users, and the last option doesn't exist.",
                         "company_tags": ["amazon", "microsoft"],
@@ -342,12 +342,12 @@ history later.
                         "qtype": "mcq",
                         "prompt": "A fresh `git init` on your machine creates new repos with branch `master`, but your team standard is `main`. Which setting fixes this permanently?",
                         "choices": [
-                            "`git config --global init.defaultBranch main`",
-                            "`git config --global branch.default main`",
                             "`git branch --rename master main` run in every repo",
                             "`git init --branch main --global`",
+                            "`git config --global init.defaultBranch main`",
+                            "`git config --global branch.default main`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 2,
                         "difficulty": 5,
                         "explanation": "`init.defaultBranch` (added in Git 2.28) sets the initial branch name for all future `git init` calls — the real, persistent fix. The other commands either don't exist or only fix one repo at a time.",
                         "company_tags": ["microsoft", "flipkart"],
@@ -433,12 +433,12 @@ commands.
                         "qtype": "mcq",
                         "prompt": "What does `git init` actually do?",
                         "choices": [
+                            "Creates a new branch called main",
                             "Downloads the latest code from GitHub",
                             "Creates a hidden `.git/` directory that will hold the repo's history and metadata",
                             "Commits all files in the folder automatically",
-                            "Creates a new branch called main",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 2,
                         "difficulty": 1,
                         "explanation": "`git init` creates the `.git/` directory — Git's private database for commits, branches, and history — in the current folder. It doesn't download anything, commit anything, or create branches by itself.",
                         "company_tags": ["tcs", "wipro"],
@@ -447,12 +447,12 @@ commands.
                         "qtype": "mcq",
                         "prompt": "How do you initialize a new repository whose first branch is named `main` in one command?",
                         "choices": [
-                            "`git init -b main`",
                             "`git init --first-branch main`",
                             "`git create --branch main`",
                             "`git init` followed by `git branch main`",
+                            "`git init -b main`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 3,
                         "difficulty": 2,
                         "explanation": "`git init -b main` (Git 2.28+) initializes the repo and names the unborn first branch `main` in one step — a real flag. The alternatives are invented or produce an extra branch.",
                         "company_tags": ["infosys", "accenture"],
@@ -461,12 +461,12 @@ commands.
                         "qtype": "mcq",
                         "prompt": "A developer runs `git init` inside `my-app/`, then again inside `my-app/backend/`. What is wrong with this?",
                         "choices": [
-                            "Nothing — nested repositories are the recommended structure",
                             "It creates a nested repository; the inner repo's files become invisible to the outer repo's tracking",
                             "Git deletes the outer repository automatically",
                             "The inner init overwrites the outer repo's entire history",
+                            "Nothing — nested repositories are the recommended structure",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 0,
                         "difficulty": 4,
                         "explanation": "Nested repos are a classic mistake: the outer Git treats `backend/` as an untracked item containing its own `.git/`, so its files never show in outer commits. One project root = one repository (submodules exist for real multi-repo setups, but that's deliberate).",
                         "company_tags": ["amazon", "microsoft"],
@@ -489,12 +489,12 @@ commands.
                         "qtype": "mcq",
                         "prompt": "Which statement about the `.git/` directory is TRUE?",
                         "choices": [
+                            "Deleting it only removes the current branch, not history",
                             "It should be committed and pushed so teammates get your branches",
                             "It is Git's private database (commits, branches, config) and should only be changed via Git commands",
                             "It contains a plain-text copy of your latest files",
-                            "Deleting it only removes the current branch, not history",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 2,
                         "difficulty": 3,
                         "explanation": "`.git/` stores the object database, refs, and config — everything Git knows. Committing it makes no sense (it holds machine-specific state), editing it by hand corrupts history, and deleting it destroys the ENTIRE repo history, leaving plain files behind.",
                         "company_tags": ["google", "flipkart"],
@@ -503,12 +503,12 @@ commands.
                         "qtype": "mcq",
                         "prompt": "Which sequence correctly turns an existing folder into a repo with a first commit?",
                         "choices": [
-                            "`git add .` → `git init` → `git commit -m \"init\"`",
-                            "`git init -b main` → `git add .` → `git commit -m \"Initial commit\"`",
                             "`git commit -m \"Initial commit\"` → `git init`",
                             "`git init` → `git commit -m \"Initial commit\"` → `git add .`",
+                            "`git add .` → `git init` → `git commit -m \"init\"`",
+                            "`git init -b main` → `git add .` → `git commit -m \"Initial commit\"`",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 3,
                         "difficulty": 6,
                         "explanation": "Order matters: initialize the repo first, stage files with `git add` (there's nothing to commit before staging), then commit. Committing before `init` fails (not a repo), and committing before `add` commits nothing.",
                         "company_tags": ["microsoft", "accenture"],
@@ -599,12 +599,12 @@ before sealing it into history.
                         "qtype": "mcq",
                         "prompt": "What is the staging area (index) in Git?",
                         "choices": [
-                            "A backup folder where Git copies your files every hour",
-                            "An intermediate area holding a proposed snapshot of what will go into the next commit",
                             "The remote server where you push finished work",
                             "A temporary branch created automatically before each merge",
+                            "A backup folder where Git copies your files every hour",
+                            "An intermediate area holding a proposed snapshot of what will go into the next commit",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 3,
                         "difficulty": 1,
                         "explanation": "The staging area is the middle step of the flow: `git add` puts changes there, and `git commit` snapshots exactly what's staged. It exists so you can craft precise commits rather than committing everything blindly.",
                         "company_tags": ["tcs", "infosys"],
@@ -613,12 +613,12 @@ before sealing it into history.
                         "qtype": "mcq",
                         "prompt": "You edit `app.py` (already tracked) and run `git status`. Under which heading will it appear?",
                         "choices": [
-                            "Changes to be committed",
                             "Changes not staged for commit",
                             "Untracked files",
                             "It won't appear; tracked files are always clean",
+                            "Changes to be committed",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 0,
                         "difficulty": 2,
                         "explanation": "Editing a tracked file puts it in \"Changes not staged\" — Git noticed the modification but you haven't proposed it yet. `git add app.py` moves it to \"Changes to be committed\". New, never-added files show as \"Untracked\".",
                         "company_tags": ["wipro", "tcs"],
@@ -641,12 +641,12 @@ before sealing it into history.
                         "qtype": "mcq",
                         "prompt": "What is the difference between `git diff` and `git diff --staged`?",
                         "choices": [
-                            "`git diff` compares working directory vs staging area; `git diff --staged` compares staging area vs the last commit",
-                            "They are identical; --staged is just an alias",
                             "`git diff --staged` compares against the remote server",
                             "`git diff` only works on untracked files",
+                            "`git diff` compares working directory vs staging area; `git diff --staged` compares staging area vs the last commit",
+                            "They are identical; --staged is just an alias",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 2,
                         "difficulty": 5,
                         "explanation": "`git diff` (no args) shows unstaged changes — what you'd ADD next. `git diff --staged` shows what's staged — what the next COMMIT will contain. Checking both is how you verify a commit before sealing it.",
                         "company_tags": ["microsoft", "accenture"],
@@ -655,12 +655,12 @@ before sealing it into history.
                         "qtype": "mcq",
                         "prompt": "Which command lets you stage changes hunk-by-hunk within a single file, for surgical commits?",
                         "choices": [
-                            "`git add -p <file>`",
                             "`git add --whole <file>`",
                             "`git stage --partial <file>`",
                             "`git commit --hunks <file>`",
+                            "`git add -p <file>`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 3,
                         "difficulty": 6,
                         "explanation": "`git add -p` (patch mode) walks you through each hunk of a file asking whether to stage it — the real command for crafting minimal, reviewable commits from a messy working tree. The other flags don't exist.",
                         "company_tags": ["google", "flipkart"],
@@ -669,12 +669,12 @@ before sealing it into history.
                         "qtype": "mcq",
                         "prompt": "A new file `report.txt` was created but never added. What does `git commit -m \"save\"` do with it?",
                         "choices": [
-                            "Commits it automatically since it's in the working directory",
                             "Ignores it — only staged changes are committed, and untracked files are never staged by a plain commit",
                             "Moves it to the staging area but doesn't commit",
                             "Deletes it as a safety measure",
+                            "Commits it automatically since it's in the working directory",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 0,
                         "difficulty": 3,
                         "explanation": "A plain `git commit` snapshots ONLY the staging area. Untracked files aren't staged, so they're silently left out — the #1 beginner surprise. (Note: `git commit -a` auto-stages MODIFIED tracked files, but still never new untracked ones.)",
                         "company_tags": ["infosys", "wipro"],
@@ -774,12 +774,12 @@ your reviewers) will be grateful.
                         "qtype": "mcq",
                         "prompt": "What does `git commit -m \"Fix bug\"` snapshot?",
                         "choices": [
-                            "Every file in the working directory",
                             "Exactly what is currently in the staging area",
                             "Only the files changed in the last hour",
                             "All tracked files, staged or not",
+                            "Every file in the working directory",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 0,
                         "difficulty": 1,
                         "explanation": "A commit snapshots the STAGING AREA — nothing more, nothing less. Files you changed but didn't `git add` are left out, which is why staging deliberately is a core Git skill.",
                         "company_tags": ["tcs", "infosys"],
@@ -802,12 +802,12 @@ your reviewers) will be grateful.
                         "qtype": "mcq",
                         "prompt": "You just committed, then realized you forgot to include `fix.py` and the message has a typo. Nothing is pushed yet. What's the cleanest fix?",
                         "choices": [
-                            "`git add fix.py` then `git commit --amend -m \"Correct message\"`",
-                            "Delete the repo and start over",
                             "`git revert HEAD` and redo everything manually",
                             "Make a second commit titled \"fix previous commit\"",
+                            "`git add fix.py` then `git commit --amend -m \"Correct message\"`",
+                            "Delete the repo and start over",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 2,
                         "difficulty": 4,
                         "explanation": "`git commit --amend` rewrites the last commit — adding newly staged files and/or fixing the message — keeping history to one clean commit. It's safe because nothing is pushed yet; never amend already-shared commits.",
                         "company_tags": ["amazon", "microsoft"],
@@ -816,12 +816,12 @@ your reviewers) will be grateful.
                         "qtype": "mcq",
                         "prompt": "Which commit message style follows professional convention?",
                         "choices": [
-                            "`git commit -m \"asdf final\"`",
-                            "`git commit -m \"Fix crash when username is empty\"`",
                             "`git commit -m \"updated stuff today, see diff\"`",
                             "`git commit -m \"changes\"`",
+                            "`git commit -m \"asdf final\"`",
+                            "`git commit -m \"Fix crash when username is empty\"`",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 3,
                         "difficulty": 3,
                         "explanation": "Good messages use imperative mood and say WHAT and WHY — the diff already shows how. Vague messages like \"update\" or \"fix\" make `git log` useless for future debugging and code review.",
                         "company_tags": ["google", "flipkart"],
@@ -830,12 +830,12 @@ your reviewers) will be grateful.
                         "qtype": "mcq",
                         "prompt": "What is `git commit --allow-empty -m \"Trigger CI\"` used for?",
                         "choices": [
-                            "It is an error — Git refuses empty commits",
                             "Creating a commit with no file changes, commonly to re-trigger a CI pipeline",
                             "Committing only empty files",
                             "Deleting all staged changes safely",
+                            "It is an error — Git refuses empty commits",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 0,
                         "difficulty": 6,
                         "explanation": "`--allow-empty` is a real flag that creates a commit object with no content changes. Teams use it to force CI/CD reruns or mark deployment events without touching code — Git normally blocks changeless commits.",
                         "company_tags": ["microsoft", "google"],
@@ -950,12 +950,12 @@ like a story — they are one.
                         "qtype": "mcq",
                         "prompt": "What is the difference in purpose between `git status` and `git log`?",
                         "choices": [
+                            "`git status` requires internet; `git log` works offline",
                             "`git status` shows the current working-tree/staging state; `git log` shows the commit history",
                             "They show the same information in different colors",
                             "`git log` shows uncommitted changes; `git status` shows old commits",
-                            "`git status` requires internet; `git log` works offline",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 1,
                         "difficulty": 1,
                         "explanation": "`git status` = the present (untracked/modified/staged files right now). `git log` = the past (the chain of commits). Both are purely local — neither needs the network.",
                         "company_tags": ["tcs", "infosys"],
@@ -964,12 +964,12 @@ like a story — they are one.
                         "qtype": "mcq",
                         "prompt": "In `git status --short` output, what does ` M utils.py` (space then M) mean?",
                         "choices": [
+                            "utils.py was merged",
                             "utils.py is staged for commit",
                             "utils.py is modified but NOT staged",
                             "utils.py is untracked",
-                            "utils.py was merged",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 2,
                         "difficulty": 3,
                         "explanation": "Short status has two columns: LEFT = staged, RIGHT = working tree. `M ` (M in left column) means staged; ` M` (M in right column) means modified but unstaged. `??` marks untracked files.",
                         "company_tags": ["wipro", "accenture"],
@@ -978,12 +978,12 @@ like a story — they are one.
                         "qtype": "mcq",
                         "prompt": "Which command shows a compact one-line-per-commit history with an ASCII branch graph?",
                         "choices": [
-                            "`git log --graph --oneline --all`",
                             "`git status --graph`",
                             "`git log --full --pretty`",
                             "`git branch --graph`",
+                            "`git log --graph --oneline --all`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 3,
                         "difficulty": 2,
                         "explanation": "`--oneline` compresses each commit to hash + message, `--graph` draws the branch/merge structure in ASCII, and `--all` includes every branch. It's the standard \"see the whole repo at a glance\" command.",
                         "company_tags": ["tcs", "wipro"],
@@ -1020,12 +1020,12 @@ like a story — they are one.
                         "qtype": "mcq",
                         "prompt": "Which command shows the full diff and metadata of a specific commit `a3f9c21`?",
                         "choices": [
-                            "`git show a3f9c21`",
-                            "`git log a3f9c21 --diff`",
                             "`git status a3f9c21`",
                             "`git diff a3f9c21`",
+                            "`git show a3f9c21`",
+                            "`git log a3f9c21 --diff`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 2,
                         "difficulty": 6,
                         "explanation": "`git show <commit>` displays that commit's message, author, date, and complete diff. (`git diff a3f9c21` compares that commit against the working tree — related but different.) It's the fastest way to inspect what one commit actually did.",
                         "company_tags": ["flipkart", "accenture"],
@@ -1124,12 +1124,12 @@ Your history should contain source, not build output or secrets.
                         "qtype": "mcq",
                         "prompt": "What is the purpose of a `.gitignore` file?",
                         "choices": [
+                            "To ignore merge conflicts automatically",
                             "To delete files from the repository permanently",
                             "To list patterns of files Git should not track (build output, logs, secrets, dependencies)",
                             "To encrypt sensitive files before committing",
-                            "To ignore merge conflicts automatically",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 2,
                         "difficulty": 1,
                         "explanation": "`.gitignore` tells Git which paths to skip — so `git add .` doesn't sweep up `node_modules/`, logs, or `.env`. It neither deletes nor encrypts anything; it's a filter on what gets tracked.",
                         "company_tags": ["tcs", "infosys"],
@@ -1138,12 +1138,12 @@ Your history should contain source, not build output or secrets.
                         "qtype": "mcq",
                         "prompt": "In `.gitignore`, what does the pattern `!important.log` mean?",
                         "choices": [
+                            "Mark important.log as a binary file",
                             "Delete important.log from the repository",
                             "Comment out the pattern for documentation",
                             "Negation: track important.log even though an earlier `*.log` rule ignores it",
-                            "Mark important.log as a binary file",
                         ],
-                        "answer_index": 2,
+                        "answer_index": 3,
                         "difficulty": 3,
                         "explanation": "Leading `!` negates a pattern — it's how you carve exceptions (\"ignore all logs EXCEPT this one\"). Later lines take precedence, so the `!` rule must come after the rule it overrides.",
                         "company_tags": ["wipro", "accenture"],
@@ -1152,12 +1152,12 @@ Your history should contain source, not build output or secrets.
                         "qtype": "mcq",
                         "prompt": "`debug.log` was committed last week. Today you add `*.log` to `.gitignore`, but `git status` still shows `debug.log` as tracked. Why, and how do you fix it?",
                         "choices": [
-                            ".gitignore is broken; you must delete and recreate the repo",
                             ".gitignore only applies to untracked files; run `git rm --cached debug.log` to stop tracking it while keeping the local file",
                             "You need `git add .gitignore --force` for it to take effect",
                             "Git ignores .gitignore until the next clone",
+                            ".gitignore is broken; you must delete and recreate the repo",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 0,
                         "difficulty": 5,
                         "explanation": "Once tracked, always tracked — `.gitignore` can't untrack. `git rm --cached` removes the file from the INDEX (so future commits skip it) but leaves your working-tree copy intact. A plain `git rm` would delete your local file too.",
                         "company_tags": ["amazon", "google"],
@@ -1166,12 +1166,12 @@ Your history should contain source, not build output or secrets.
                         "qtype": "mcq",
                         "prompt": "Which `.gitignore` pattern ignores the `build/` directory everywhere in the repo, but only the root-level `/config.json`?",
                         "choices": [
+                            "`build` and `*/config.json`",
                             "`build/` and `/config.json`",
                             "`build/*` and `config.json`",
                             "`**/build` and `config.json/`",
-                            "`build` and `*/config.json`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 1,
                         "difficulty": 4,
                         "explanation": "Trailing `/` marks a directory (`build/` matches at any depth); leading `/` anchors to the repo root (`/config.json`). Bare `config.json` would match at ANY depth — the anchor is the whole point.",
                         "company_tags": ["microsoft", "flipkart"],
@@ -1180,12 +1180,12 @@ Your history should contain source, not build output or secrets.
                         "qtype": "mcq",
                         "prompt": "How do you find out WHICH rule in `.gitignore` is ignoring `debug.log`?",
                         "choices": [
-                            "`git check-ignore -v debug.log`",
-                            "`git ignore --why debug.log`",
                             "`git status --explain debug.log`",
                             "`git log --ignored debug.log`",
+                            "`git check-ignore -v debug.log`",
+                            "`git ignore --why debug.log`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 2,
                         "difficulty": 6,
                         "explanation": "`git check-ignore -v <path>` prints the exact file, line number, and pattern that ignores a path — the real debugging tool when a file mysteriously won't stage. The others aren't real commands.",
                         "company_tags": ["google", "microsoft"],
@@ -1194,12 +1194,12 @@ Your history should contain source, not build output or secrets.
                         "qtype": "mcq",
                         "prompt": "Should the `.gitignore` file itself be committed to the repository?",
                         "choices": [
-                            "No — it's personal config and must stay local",
-                            "Yes — teammates need the same ignore rules so everyone's history stays clean",
                             "Only on public repositories",
                             "Only if it contains more than 10 lines",
+                            "No — it's personal config and must stay local",
+                            "Yes — teammates need the same ignore rules so everyone's history stays clean",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 3,
                         "difficulty": 2,
                         "explanation": "`.gitignore` is shared project policy — committing it means every clone ignores the same junk. Personal-only ignores (your editor's temp files) belong in the global `~/.gitignore` via `core.excludesFile`, not the repo's file.",
                         "company_tags": ["infosys", "tcs"],
@@ -1300,12 +1300,12 @@ pushed commits → `revert`. Match the tool to the blast radius.
                         "qtype": "mcq",
                         "prompt": "You edited `app.py` but haven't staged anything, and want to throw away those edits. Which command?",
                         "choices": [
-                            "`git restore app.py`",
                             "`git revert app.py`",
                             "`git reset app.py`",
                             "`git clean app.py`",
+                            "`git restore app.py`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 3,
                         "difficulty": 2,
                         "explanation": "`git restore <file>` discards unstaged working-tree changes, returning the file to its last committed state. `revert` undoes commits, and `reset` moves the branch pointer — different tools for different layers.",
                         "company_tags": ["tcs", "wipro"],
@@ -1314,12 +1314,12 @@ pushed commits → `revert`. Match the tool to the blast radius.
                         "qtype": "mcq",
                         "prompt": "What's the difference between `git reset --soft HEAD~1` and `git reset --hard HEAD~1`?",
                         "choices": [
-                            "No difference; both delete the last commit permanently",
                             "`--soft` keeps the changes staged (you can re-commit); `--hard` discards all changes in working tree and staging permanently",
                             "`--soft` works on pushed commits; `--hard` only works locally",
                             "`--soft` deletes the file; `--hard` keeps it",
+                            "No difference; both delete the last commit permanently",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 0,
                         "difficulty": 4,
                         "explanation": "`--soft` moves the branch pointer back but leaves index and working tree alone (changes stay staged). `--hard` also wipes the index and working tree — unrecoverable. `--mixed` (the default) sits between: unstaged but kept.",
                         "company_tags": ["infosys", "accenture"],
@@ -1342,12 +1342,12 @@ pushed commits → `revert`. Match the tool to the blast radius.
                         "qtype": "mcq",
                         "prompt": "You staged `secrets.py` by accident but haven't committed. How do you unstage it while KEEPING your edits?",
                         "choices": [
-                            "`git restore --staged secrets.py`",
-                            "`git restore secrets.py`",
                             "`git revert HEAD`",
                             "`git rm secrets.py`",
+                            "`git restore --staged secrets.py`",
+                            "`git restore secrets.py`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 2,
                         "difficulty": 3,
                         "explanation": "`git restore --staged` moves the file from staging back to the working directory — edits intact, just no longer proposed. Plain `git restore` would also discard the edits (too destructive here), and `git rm` deletes the file.",
                         "company_tags": ["microsoft", "tcs"],
@@ -1356,12 +1356,12 @@ pushed commits → `revert`. Match the tool to the blast radius.
                         "qtype": "mcq",
                         "prompt": "What does `git restore --source=HEAD~3 app.py` do?",
                         "choices": [
-                            "Deletes app.py from the last 3 commits",
-                            "Restores app.py's working-tree copy to its content as of 3 commits ago, without touching history",
                             "Reverts the last 3 commits that touched app.py",
                             "Shows a diff of app.py across the last 3 commits",
+                            "Deletes app.py from the last 3 commits",
+                            "Restores app.py's working-tree copy to its content as of 3 commits ago, without touching history",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 3,
                         "difficulty": 7,
                         "explanation": "`--source` picks which commit to restore FROM — a real, surgical flag. It only rewrites the working-tree file (unstaged change you can review); history is untouched. Perfect for \"give me the old version of this one file.\"",
                         "company_tags": ["google", "flipkart"],
@@ -1370,12 +1370,12 @@ pushed commits → `revert`. Match the tool to the blast radius.
                         "qtype": "mcq",
                         "prompt": "Why is `git reset --hard` on an already-pushed branch considered dangerous in a team?",
                         "choices": [
-                            "It permanently deletes the remote repository",
                             "It rewrites shared history, so teammates' clones diverge and their next pull/merge breaks",
                             "It locks the branch for 24 hours",
                             "It emails the admin about your mistake",
+                            "It permanently deletes the remote repository",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 0,
                         "difficulty": 6,
                         "explanation": "Reset moves YOUR branch pointer; teammates still have the old history. When they pull, Git sees divergent histories and forces painful reconciliations — or they unknowingly re-push the \"removed\" commits. Shared history is append-only: use `revert`.",
                         "company_tags": ["accenture", "amazon"],
@@ -1482,12 +1482,12 @@ rebasing, and detached HEAD all click.
                         "qtype": "mcq",
                         "prompt": "What IS a Git branch, technically?",
                         "choices": [
-                            "A full copy of all project files",
                             "A lightweight movable pointer (reference) to a commit",
                             "A separate repository stored on the server",
                             "A backup of the working directory",
+                            "A full copy of all project files",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 0,
                         "difficulty": 1,
                         "explanation": "A branch is literally a tiny file containing a commit hash — a pointer. That's why creating branches is instant and cheap in Git, unlike older VCSs that copied whole trees.",
                         "company_tags": ["tcs", "infosys"],
@@ -1510,12 +1510,12 @@ rebasing, and detached HEAD all click.
                         "qtype": "mcq",
                         "prompt": "What does HEAD represent in Git?",
                         "choices": [
+                            "The largest file in the repository",
                             "The first commit ever made in the repository",
                             "A pointer to the currently checked-out branch (or commit) — i.e., \"where you are\"",
                             "The remote server's main branch",
-                            "The largest file in the repository",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 2,
                         "difficulty": 3,
                         "explanation": "HEAD points at your current branch (normally) — new commits advance whichever branch HEAD references. That's why `git log` shows `(HEAD -> main)`: you're on main.",
                         "company_tags": ["accenture", "infosys"],
@@ -1524,12 +1524,12 @@ rebasing, and detached HEAD all click.
                         "qtype": "mcq",
                         "prompt": "Why is creating a branch in Git nearly instantaneous even in huge repositories?",
                         "choices": [
-                            "Git compresses all files before branching",
-                            "A branch is just a 41-byte file holding a commit hash — no files are copied",
                             "Branches are created on a remote server with more power",
                             "Git skips creating a branch until the first commit",
+                            "Git compresses all files before branching",
+                            "A branch is just a 41-byte file holding a commit hash — no files are copied",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 3,
                         "difficulty": 4,
                         "explanation": "Because a branch = one tiny ref file with a SHA, creation is O(1) regardless of repo size. This cheapness is exactly what makes feature-branch workflows practical.",
                         "company_tags": ["google", "amazon"],
@@ -1671,12 +1671,12 @@ driver. Always confirm your starting point before branching, and use
                         "qtype": "mcq",
                         "prompt": "What is the difference between `git branch feature-x` and `git switch -c feature-x`?",
                         "choices": [
+                            "`git switch -c` deletes the old branch",
                             "No difference at all",
                             "`git branch` only creates the branch (you stay where you are); `git switch -c` creates it AND moves you onto it",
                             "`git branch` creates a remote branch; `git switch -c` creates a local one",
-                            "`git switch -c` deletes the old branch",
                         ],
-                        "answer_index": 1,
+                        "answer_index": 2,
                         "difficulty": 2,
                         "explanation": "Creation vs creation+checkout: `git branch <name>` leaves HEAD untouched, so your next commit still lands on the old branch — a classic beginner trap. `-c` moves you onto the new branch immediately.",
                         "company_tags": ["wipro", "accenture"],
@@ -1685,12 +1685,12 @@ driver. Always confirm your starting point before branching, and use
                         "qtype": "mcq",
                         "prompt": "You want a `hotfix` branch starting from the tip of `main`, but you're currently on `feature-x`. Which command is correct?",
                         "choices": [
-                            "`git switch -c hotfix main`",
                             "`git switch -c hotfix`",
                             "`git branch hotfix` then merge main",
                             "`git checkout main -- hotfix`",
+                            "`git switch -c hotfix main`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 3,
                         "difficulty": 4,
                         "explanation": "`git switch -c <new> <start-point>` branches from an explicit start point — here `main`'s tip. Without the start-point argument, the branch would fork from your current spot on `feature-x`, which is wrong for a hotfix.",
                         "company_tags": ["amazon", "microsoft"],
@@ -1727,15 +1727,1110 @@ driver. Always confirm your starting point before branching, and use
                         "qtype": "mcq",
                         "prompt": "Which command lists BOTH local branches and remote-tracking branches?",
                         "choices": [
-                            "`git branch -a`",
-                            "`git branch`",
                             "`git branch -l`",
                             "`git remote --branches`",
+                            "`git branch -a`",
+                            "`git branch`",
                         ],
-                        "answer_index": 0,
+                        "answer_index": 2,
                         "difficulty": 6,
                         "explanation": "`git branch -a` (all) shows local branches plus `remotes/origin/...` tracking refs — essential for seeing what exists on the server. Plain `git branch` shows locals only.",
                         "company_tags": ["accenture", "wipro"],
                     },
                 ],
             },
+            {
+                "slug": "git-branching-branching-model",
+                "title": "The Branching Model: main → Feature → Merge",
+                "theory_md": """## The Branching Model: main → Feature → Merge
+
+This is THE workflow of professional software teams — the pattern
+behind every pull request you'll ever open. Learn it cold.
+
+### The core loop
+
+```
+        (feature branch grows here)
+       /-- D -- E -- F   <-- feature-login
+      /
+A -- B -- C             <-- main (stays deployable)
+              \\
+               G -- H   <-- feature-darkmode
+```
+
+1. **`main` is sacred.** It always holds deployable, reviewed code.
+   Nobody commits directly to it (enforced by branch protection on
+   GitHub).
+2. **Branch off for each unit of work.** One branch = one feature, fix,
+   or experiment: `feature-login`, `fix-crash-142`, `experiment-cache`.
+3. **Work and commit freely** on your branch. Break things — `main`
+   doesn't care.
+4. **Merge back via review.** Open a pull request; after review + CI,
+   merge into `main`.
+5. **Delete the branch.** Its commits now live on `main`'s history.
+
+### The commands behind the diagram
+
+```bash
+# 1. Start from a fresh main
+git switch main
+git pull origin main
+
+# 2. Branch off
+git switch -c feature-login
+
+# 3. Work: commits D, E, F happen here
+git add login.py
+git commit -m "Add login form"
+git commit -m "Wire up session handling"
+
+# 4. Keep the branch fresh while you work (avoid stale-branch pain)
+git fetch origin
+git merge origin/main        # or: git rebase origin/main (see later lesson)
+
+# 5. Publish for review
+git push -u origin feature-login
+# -> open a Pull Request on GitHub: feature-login -> main
+
+# 6. After the merge lands, clean up locally
+git switch main
+git pull
+git branch -d feature-login
+```
+
+### Why not just commit to main?
+
+- **Isolation:** half-done work never breaks the deployable branch.
+- **Parallelism:** 10 developers, 10 branches, zero stepping on toes.
+- **Review:** the pull request is the quality gate — discussion, CI
+  tests, required approvals.
+- **Revertability:** a bad feature = revert one merge commit, not surgery.
+
+### Naming conventions teams use
+
+```bash
+feature/<name>    # feature/login-oauth
+fix/<issue>       # fix/142-crash-on-empty-user
+hotfix/<name>     # hotfix/payment-timeout
+experiment/<name> # experiment/redis-cache
+```
+
+Consistent names make `git branch -a` readable at a glance.
+
+### Long-lived vs short-lived
+
+- **Short-lived** (the norm): feature branches live hours to days.
+- **Long-lived** (the exceptions): `main`, sometimes `develop` or
+  `release/*` — these are integration points, not workspaces.
+
+**Takeaway:** `main` stays green; work happens on short-lived feature
+branches; everything returns through review. This single diagram
+explains 90% of professional Git usage.
+""",
+                "difficulty_min": 2,
+                "difficulty_max": 7,
+                "is_important": True,
+                "has_visual": True,
+                "questions": [
+                    {
+                        "qtype": "mcq",
+                        "prompt": "In the standard feature-branch model, what is the role of the `main` branch?",
+                        "choices": [
+                            "The branch where merge conflicts are stored",
+                            "A scratch area where developers commit half-done experiments",
+                            "The always-deployable source of truth; work reaches it only through reviewed merges",
+                            "A backup branch updated once a month",
+                        ],
+                        "answer_index": 2,
+                        "difficulty": 2,
+                        "explanation": "`main` must always be in a releasable state — that's why direct commits are blocked (branch protection) and every change arrives via a reviewed pull request. Isolation of unfinished work is the model's whole purpose.",
+                        "company_tags": ["tcs", "infosys"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What is the correct sequence in the feature-branch workflow?",
+                        "choices": [
+                            "Push to main → create branch → merge branch into itself",
+                            "Delete main → work on feature → recreate main",
+                            "Commit to main → branch off → push → delete main",
+                            "Update main → create feature branch → commit work → push → pull request → merge → delete branch",
+                        ],
+                        "answer_index": 3,
+                        "difficulty": 3,
+                        "explanation": "Start from fresh `main`, branch off, do the work in isolated commits, publish the branch, get it reviewed via PR, merge, then delete the branch. Every step protects `main`'s integrity.",
+                        "company_tags": ["wipro", "accenture"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "Why do teams prohibit committing directly to `main`?",
+                        "choices": [
+                            "Unreviewed, possibly broken work would land straight in the deployable branch with no quality gate",
+                            "It makes `git log` run slower",
+                            "Direct commits to main are deleted automatically",
+                            "Git technically cannot commit to a branch named main",
+                        ],
+                        "answer_index": 0,
+                        "difficulty": 4,
+                        "explanation": "The PR is the quality gate — code review, CI tests, approvals. Direct commits bypass all of it, so one bad commit can break production for everyone. Branch protection rules enforce this on GitHub.",
+                        "company_tags": ["amazon", "google"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "Your feature branch has been open for a week and `main` moved forward. Before opening the PR, what's the best practice?",
+                        "choices": [
+                            "Nothing — Git handles stale branches automatically",
+                            "Sync: `git fetch origin` then merge or rebase `origin/main` into your branch to resolve drift early",
+                            "Delete the branch and start over",
+                            "Force-push main into your branch",
+                        ],
+                        "answer_index": 1,
+                        "difficulty": 5,
+                        "explanation": "Long-lived branches drift from `main`, making the final merge painful. Periodically integrating `main` into your branch surfaces conflicts while they're small — the standard \"keep your branch fresh\" habit.",
+                        "company_tags": ["microsoft", "flipkart"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "After your pull request is merged into `main`, what should you do with the feature branch?",
+                        "choices": [
+                            "Merge main back into it",
+                            "Keep it forever as documentation",
+                            "Delete it locally (`git branch -d`) and remotely — its commits now live in main's history",
+                            "Rename it to main",
+                        ],
+                        "answer_index": 2,
+                        "difficulty": 3,
+                        "explanation": "Once merged, the branch's commits are part of `main`'s history — the branch pointer itself is disposable. Deleting keeps `git branch -a` readable; GitHub even offers a one-click delete after merge.",
+                        "company_tags": ["infosys", "tcs"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "A team needs an URGENT production fix while feature branches are mid-work. How does the branching model handle this?",
+                        "choices": [
+                            "Pause all feature branches until the fix is tested",
+                            "Apply the fix inside someone's feature branch",
+                            "Commit the fix directly to main, bypassing review",
+                            "Branch `hotfix/<name>` off `main`, fix, review quickly, merge to `main` (and to develop/long-lived branches if they exist), then delete it",
+                        ],
+                        "answer_index": 3,
+                        "difficulty": 7,
+                        "explanation": "Hotfixes follow the SAME model at high speed: branch from `main` (production's state), minimal fix, expedited review, merge, delete. The model doesn't break for emergencies — it just runs faster, keeping `main`'s integrity intact.",
+                        "company_tags": ["google", "accenture"],
+                    },
+                ],
+            },
+            {
+                "slug": "git-branching-merging-and-fast-forward",
+                "title": "Merging Branches & Fast-Forward",
+                "theory_md": """## Merging Branches & Fast-Forward
+
+**Merging** combines two branches' histories. You merge the feature
+branch **into** `main` (direction matters — say it that way).
+
+### The basic merge
+
+```bash
+git switch main
+git merge feature-login
+```
+
+What Git does depends on history shape:
+
+### Case 1: Fast-forward (the simple case)
+
+`main` hasn't moved since you branched — its tip is an ancestor of the
+feature branch:
+
+```
+Before:  A -- B          <-- main
+              \\
+               C -- D    <-- feature-login
+
+git switch main && git merge feature-login
+
+After:   A -- B -- C -- D   <-- main, feature-login
+```
+
+No new commit needed — Git just **slides the `main` pointer forward**.
+Clean, linear history.
+
+### Case 2: True merge (3-way)
+
+Both branches moved — Git creates a **merge commit** with two parents:
+
+```
+        C -- D   <-- feature-login
+       /      \\
+A -- B         M   <-- main (merge commit)
+       \\      /
+        E -- F     (main had moved too)
+```
+
+```bash
+git switch main
+git merge feature-login
+# Merge made by the 'ort' strategy.
+```
+
+Inspect it:
+
+```bash
+git log --graph --oneline
+git show M          # a merge commit shows both parents' diffs
+```
+
+### Controlling the behavior
+
+```bash
+git merge --ff-only feature-login
+# merge ONLY if fast-forward is possible; abort otherwise (safe default for some teams)
+
+git merge --no-ff feature-login
+# ALWAYS create a merge commit, even when fast-forward is possible
+# -> preserves the visual "this was a feature" grouping in history
+```
+
+Many teams use `--no-ff` (or GitHub's \"create a merge commit\" PR
+option) so each feature is one visible merge bubble.
+
+### Aborting a merge gone wrong
+
+```bash
+git merge --abort    # only during an uncommitted conflicted merge
+# back to the pre-merge state, as if it never happened
+```
+
+### Merge vs pull
+
+```bash
+git pull = git fetch + git merge   # (default; configurable to rebase)
+```
+
+`git pull` merges the remote branch into yours — which is why pulls can
+produce merge commits and conflicts. Understanding merge = understanding
+half of what `pull` does.
+
+### Deleting after merge
+
+```bash
+git branch -d feature-login   # safe: Git verifies it's fully merged
+```
+
+**Takeaway:** fast-forward = pointer slide (linear); true merge = new
+merge commit joining two lines. Use `--ff-only` when you demand linear,
+`--no-ff` when you want features visible as units, `--abort` as your
+escape hatch.
+""",
+                "difficulty_min": 1,
+                "difficulty_max": 6,
+                "is_important": False,
+                "has_visual": False,
+                "questions": [
+                    {
+                        "qtype": "mcq",
+                        "prompt": "When does Git perform a fast-forward merge?",
+                        "choices": [
+                            "When there are merge conflicts to resolve",
+                            "Only when merging remote branches",
+                            "When both branches have diverged with new commits",
+                            "When the target branch (e.g. main) hasn't moved since the feature branch was created — its tip is an ancestor of the feature tip",
+                        ],
+                        "answer_index": 3,
+                        "difficulty": 2,
+                        "explanation": "Fast-forward needs a straight line: `main`'s tip must be an ancestor of the feature tip. Then Git just slides the `main` pointer forward — no merge commit, perfectly linear history.",
+                        "company_tags": ["tcs", "infosys"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What is a merge commit?",
+                        "choices": [
+                            "A commit with TWO parents, created when Git joins two diverged lines of history",
+                            "A commit that is automatically deleted after pushing",
+                            "Any commit whose message starts with \"Merge\"",
+                            "A commit that only exists on the remote server",
+                        ],
+                        "answer_index": 0,
+                        "difficulty": 1,
+                        "explanation": "When both sides moved, Git can't fast-forward, so it creates a commit with two parents tying the histories together. `git log --graph` shows it as the junction point.",
+                        "company_tags": ["wipro", "accenture"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What does `git merge --ff-only feature-x` do?",
+                        "choices": [
+                            "Forces a merge commit even when fast-forward is possible",
+                            "Merges only if a fast-forward is possible; aborts without changing anything otherwise",
+                            "Deletes the feature branch after merging",
+                            "Merges without checking for conflicts",
+                        ],
+                        "answer_index": 1,
+                        "difficulty": 4,
+                        "explanation": "`--ff-only` is the \"linear history or nothing\" option — great for keeping `main` clean. If the branches diverged, it exits safely instead of creating a surprise merge commit.",
+                        "company_tags": ["google", "microsoft"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "Why do some teams always merge with `--no-ff`?",
+                        "choices": [
+                            "It's required by GitHub",
+                            "It makes merges faster",
+                            "It always creates a merge commit, preserving each feature as a visible unit in history even when fast-forward was possible",
+                            "It prevents all merge conflicts",
+                        ],
+                        "answer_index": 2,
+                        "difficulty": 5,
+                        "explanation": "With `--no-ff`, `git log --graph` shows every feature as a distinct merge bubble — you can see exactly which commits belonged to which feature and revert a whole feature with one commit. Traceability over minimalism.",
+                        "company_tags": ["amazon", "flipkart"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "You started a merge, hit a wall of conflicts, and want to pretend the merge never happened. Which command?",
+                        "choices": [
+                            "`git reset --hard origin/main`",
+                            "`git revert HEAD`",
+                            "`git stash --merge`",
+                            "`git merge --abort`",
+                        ],
+                        "answer_index": 3,
+                        "difficulty": 3,
+                        "explanation": "`git merge --abort` is the dedicated escape hatch — it works only while a merge is in progress and uncommitted, restoring the exact pre-merge state. Reach for it before trying anything destructive.",
+                        "company_tags": ["infosys", "tcs"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What does `git pull` do by default?",
+                        "choices": [
+                            "`git fetch` followed by `git merge` of the remote branch into your current branch",
+                            "Deletes your local commits and replaces them with remote ones",
+                            "Creates a new branch from the remote",
+                            "Only downloads objects without changing your branch",
+                        ],
+                        "answer_index": 0,
+                        "difficulty": 6,
+                        "explanation": "`git pull` = fetch + merge. That's why pulls can produce merge commits or conflicts — it's literally running a merge under the hood. (It can be configured to rebase instead via `pull.rebase`.)",
+                        "company_tags": ["accenture", "wipro"],
+                    },
+                ],
+            },
+            {
+                "slug": "git-branching-merge-conflicts",
+                "title": "Merge Conflicts: Resolve Them Step by Step",
+                "theory_md": """## Merge Conflicts: Resolve Them Step by Step
+
+A **conflict** happens when Git can't automatically decide whose change
+wins — typically two branches edited the **same lines** of the same file.
+Conflicts are normal, not emergencies. Resolve them calmly, every time,
+with this recipe.
+
+### Step 0: See the conflict
+
+```bash
+git switch main
+git merge feature-login
+# Auto-merging app.py
+# CONFLICT (content): Merge conflict in app.py
+# Automatic merge failed; fix conflicts and then commit the result.
+```
+
+### Step 1: Find the conflicted files
+
+```bash
+git status
+# Unmerged paths:
+#   both modified:   app.py
+```
+
+### Step 2: Open the file — read the markers
+
+```python
+<<<<<<< HEAD
+timeout = 30          # main's version
+=======
+timeout = 60          # feature-login's version
+>>>>>>> feature-login
+```
+
+- `<<<<<<< HEAD` → `=======`: **your** current branch's content.
+- `=======` → `>>>>>>> feature-login`: the **incoming** branch's content.
+
+### Step 3: Edit to the correct final content
+
+This is a **human decision**, not a Git decision. Keep one side, keep
+both, or write something new entirely:
+
+```python
+timeout = 45          # you decide — maybe neither original was right
+```
+
+Delete ALL the `<<<<<<<`, `=======`, `>>>>>>>` marker lines. Leftover
+markers = broken code (and an embarrassing commit).
+
+### Step 4: Mark resolved and commit
+
+```bash
+git add app.py                 # tells Git: "I resolved this"
+git status                     # confirm "all conflicts fixed"
+git commit                     # completes the merge commit (no -m needed;
+                               # Git prepared a default merge message)
+```
+
+### The full recipe as a checklist
+
+```bash
+git merge feature-x        # 1. attempt
+git status                 # 2. list conflicted files
+# 3. edit each file, remove markers, choose final content
+git add <resolved files>   # 4. stage resolutions
+git commit                 # 5. finish the merge
+git log --graph --oneline  # 6. verify history looks right
+```
+
+### Tools that help
+
+```bash
+git diff                   # shows conflict markers with context
+git diff --check           # finds LEFTOVER markers / whitespace errors
+
+# For a visual 3-way merge tool (meld, vscode, etc.):
+git mergetool              # launches your configured merge tool
+```
+
+Configure one once:
+
+```bash
+git config --global merge.tool vscode
+git config --global mergetool.vscode.cmd 'code --wait $MERGED'
+```
+
+### Preventing conflicts (mostly)
+
+- **Pull/merge `main` into your branch often** — small conflicts beat big ones.
+- **Communicate:** two people rewriting the same function = conflict guaranteed.
+- **Small, focused commits** make conflicts localized and obvious.
+
+**Takeaway:** conflict = Git asking a human to decide. Status → edit
+(remove markers) → add → commit. Never fear conflicts; fear committing
+unresolved markers.
+""",
+                "difficulty_min": 2,
+                "difficulty_max": 7,
+                "is_important": True,
+                "has_visual": False,
+                "questions": [
+                    {
+                        "qtype": "mcq",
+                        "prompt": "When does Git report a merge conflict?",
+                        "choices": [
+                            "When both branches changed the same LINES (or adjacent lines) of the same file and Git can't reconcile them automatically",
+                            "Whenever you merge any branch",
+                            "Only when merging remote branches",
+                            "Whenever two branches touch the same FILE at all",
+                        ],
+                        "answer_index": 0,
+                        "difficulty": 2,
+                        "explanation": "Git auto-merges happily when changes are in different parts of a file. Conflicts arise only where both sides edited overlapping regions and Git can't know which intent wins — that's precisely when a human must decide.",
+                        "company_tags": ["tcs", "infosys"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "In a conflicted file, what do the sections between `<<<<<<< HEAD` / `=======` / `>>>>>>> feature-x` represent?",
+                        "choices": [
+                            "Corrupted data that must be deleted entirely",
+                            "HEAD's version (your current branch) above `=======`, and the incoming branch's version below it",
+                            "The incoming branch's version above, yours below",
+                            "Two copies of the same content for backup",
+                        ],
+                        "answer_index": 1,
+                        "difficulty": 3,
+                        "explanation": "Markers delimit the two competing versions: from `<<<<<<< HEAD` to `=======` is YOUR branch's content; from `=======` to `>>>>>>> branch` is the incoming branch's. You edit the region into the correct final content and delete all markers.",
+                        "company_tags": ["wipro", "accenture"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What is the correct order of steps to resolve a merge conflict?",
+                        "choices": [
+                            "Delete the conflicted files → `git commit` → restore from backup",
+                            "`git commit` → edit files → `git add` → `git merge --continue`",
+                            "Edit conflicted files (remove markers, choose final content) → `git add` the resolved files → `git commit` to finish the merge",
+                            "`git add` everything → `git reset --hard` → `git merge` again",
+                        ],
+                        "answer_index": 2,
+                        "difficulty": 4,
+                        "explanation": "The recipe: 1) `git status` to find conflicted files, 2) edit each into correct final content with markers removed, 3) `git add` marks them resolved, 4) `git commit` seals the merge commit. `git add` BEFORE editing would stage the raw markers — wrong order.",
+                        "company_tags": ["amazon", "google"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What happens if you commit a file that still contains `<<<<<<<` conflict markers?",
+                        "choices": [
+                            "Git strips the markers silently during commit",
+                            "The merge is automatically aborted",
+                            "Git blocks the commit automatically in all cases",
+                            "The markers become part of your code — usually breaking it — because Git trusts your resolution",
+                        ],
+                        "answer_index": 3,
+                        "difficulty": 5,
+                        "explanation": "Once you `git add` a file, Git assumes YOU resolved it correctly — markers included. Committed markers mean broken code in history. Always run `git diff --check` before the final commit to catch leftovers.",
+                        "company_tags": ["microsoft", "flipkart"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "Which command checks for leftover conflict markers and whitespace errors before you finalize a merge?",
+                        "choices": [
+                            "`git diff --check`",
+                            "`git status --verify`",
+                            "`git merge --dry-run`",
+                            "`git log --check`",
+                        ],
+                        "answer_index": 0,
+                        "difficulty": 6,
+                        "explanation": "`git diff --check` is the real pre-commit sanity scan — it flags whitespace errors AND leftover conflict markers. The other three commands don't exist in this form.",
+                        "company_tags": ["google", "accenture"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What's the most effective habit for AVOIDING large, painful merge conflicts?",
+                        "choices": [
+                            "Never merge; always work on main directly",
+                            "Frequently merge/rebase the latest `main` into your feature branch so drift stays small",
+                            "Commit only once at the very end",
+                            "Use `git merge --abort` every time a conflict appears",
+                        ],
+                        "answer_index": 1,
+                        "difficulty": 7,
+                        "explanation": "Conflicts grow with divergence: a week-old branch conflicts everywhere. Syncing `main` into your branch daily keeps conflicts tiny and localized. Aborting doesn't resolve anything, and avoiding merges just defers the pain.",
+                        "company_tags": ["amazon", "microsoft"],
+                    },
+                ],
+            },
+            {
+                "slug": "git-branching-rebase-vs-merge",
+                "title": "Rebase vs Merge & the Golden Rule",
+                "theory_md": """## Rebase vs Merge & the Golden Rule
+
+Merge and rebase both combine histories — but produce **different
+history shapes**. Choosing between them is a team-culture decision;
+understanding both is an interview requirement.
+
+### Merge: preserve history as it happened
+
+```bash
+git switch feature-login
+git merge main
+```
+
+Keeps every commit exactly as created, joined by merge commits. History
+is truthful but can look like spaghetti.
+
+### Rebase: replay commits on a new base
+
+```bash
+git switch feature-login
+git rebase main
+```
+
+Git **re-writes** your branch's commits as if they were created on top
+of `main`'s latest tip:
+
+```
+Before rebase:          After rebase:
+      D -- E  (feature)       D' -- E'  (feature, NEW hashes)
+     /                      /
+A -- B -- C  (main)    A -- B -- C  (main)
+```
+
+D and E become D' and E' — **new commit hashes**, same changes, linear
+story. Your feature now applies cleanly onto the latest `main`.
+
+### Side-by-side
+
+| | Merge | Rebase |
+|---|---|---|
+| History | truthful, with merge commits | linear, rewritten |
+| Commit hashes | unchanged | **new hashes** (rewritten!) |
+| Conflicts | resolved once in merge commit | resolved **per commit** replayed |
+| Best for | shared branches (`main`) | cleaning up YOUR branch before review |
+
+### The golden rule of rebasing
+
+> **Never rebase commits that exist outside your repository**
+> (i.e., commits you've pushed to a shared branch).
+
+Why? Rebase creates NEW hashes. Teammates holding the OLD hashes now
+have divergent history — merges break, work gets duplicated, people get
+angry. Rebase is for **private, local** cleanup only.
+
+### The professional rebase flow
+
+```bash
+# On YOUR feature branch, before opening the PR:
+git fetch origin
+git rebase origin/main      # replay my commits onto latest main
+# resolve any conflicts per-commit, then:
+git rebase --continue
+# (if you already pushed the branch: git push --force-with-lease)
+```
+
+`--force-with-lease` (not bare `--force`) refuses to overwrite if someone
+else pushed meanwhile — the polite force-push.
+
+### Interactive rebase: history surgery
+
+```bash
+git rebase -i HEAD~3
+# pick, reword, squash, fixup, drop commits — rewrite your last 3 commits
+```
+
+Use it to squash \"wip\" commits into clean ones BEFORE review. Never
+on shared history.
+
+### Abort a bad rebase
+
+```bash
+git rebase --abort    # back to pre-rebase state
+```
+
+**Takeaway:** rebase = replay my private commits onto a fresh base for
+a clean linear story; merge = join histories truthfully. Golden rule:
+rebase only what you haven't shared.
+""",
+                "difficulty_min": 2,
+                "difficulty_max": 8,
+                "is_important": False,
+                "has_visual": False,
+                "questions": [
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What does `git rebase main` do while you're on `feature-x`?",
+                        "choices": [
+                            "Merges main into feature-x with a merge commit",
+                            "Rewrites feature-x's commits as new commits replayed on top of main's latest tip",
+                            "Deletes feature-x and recreates it from main",
+                            "Pushes feature-x to the remote",
+                        ],
+                        "answer_index": 1,
+                        "difficulty": 2,
+                        "explanation": "Rebase takes your branch's commits and replays them one by one onto the new base, producing NEW commit hashes (D becomes D'). The result reads as a clean linear story: \"my work, on top of latest main.\"",
+                        "company_tags": ["tcs", "infosys"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What is the Golden Rule of rebasing?",
+                        "choices": [
+                            "Never rebase more than 3 commits at once",
+                            "Always rebase instead of merging",
+                            "Never rebase commits that have been pushed to a shared branch (only rebase local/private commits)",
+                            "Rebase at least once per day",
+                        ],
+                        "answer_index": 2,
+                        "difficulty": 3,
+                        "explanation": "Rebase rewrites hashes; teammates with the old hashes get divergent history, broken merges, and duplicated work. Local-only commits are safe to rewrite because nobody else has them.",
+                        "company_tags": ["wipro", "accenture"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "Why does rebasing pushed commits break teammates' repositories?",
+                        "choices": [
+                            "It locks the remote repository",
+                            "It changes file permissions on their machines",
+                            "It deletes their local branches automatically",
+                            "Rebased commits get NEW hashes, so their clones see divergent history and can't cleanly pull/merge anymore",
+                        ],
+                        "answer_index": 3,
+                        "difficulty": 5,
+                        "explanation": "Git identifies commits by hash. After a rebase, \"the same\" changes exist under new hashes — Git treats them as different commits, so teammates' history forks from the rewritten one. Recovery means everyone reconciling by hand.",
+                        "company_tags": ["google", "amazon"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "During a rebase you hit conflicts on the second of five replayed commits. How does conflict resolution differ from a merge?",
+                        "choices": [
+                            "Conflicts are resolved PER COMMIT as each is replayed, running `git rebase --continue` after each",
+                            "Rebase never has conflicts",
+                            "You must abort and use merge instead",
+                            "It's identical — one resolution for everything",
+                        ],
+                        "answer_index": 0,
+                        "difficulty": 6,
+                        "explanation": "Rebase replays commits sequentially, so each commit can conflict independently — resolve, `git add`, `git rebase --continue`, repeat. More steps than a merge's single resolution, but each conflict is smaller and attributed to its own commit.",
+                        "company_tags": ["microsoft", "flipkart"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What does `git rebase -i HEAD~3` let you do?",
+                        "choices": [
+                            "Ignore the last 3 commits during merge",
+                            "Interactively pick, reword, squash, or drop your last 3 commits — rewriting local history before review",
+                            "Install 3 plugins for rebasing",
+                            "Rebase across 3 different remotes",
+                        ],
+                        "answer_index": 1,
+                        "difficulty": 4,
+                        "explanation": "Interactive rebase opens an editor listing the last 3 commits where you can `pick`/`reword`/`squash`/`fixup`/`drop` each — the standard way to turn messy \"wip\" commits into a clean review-ready series. Local-only, per the golden rule.",
+                        "company_tags": ["google", "infosys"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "After rebasing a feature branch you had already pushed (solo branch, no teammates), which push is correct?",
+                        "choices": [
+                            "You can never push after a rebase",
+                            "`git push` — it will work normally",
+                            "`git push --force-with-lease` — overwrites the remote branch but refuses if someone else pushed meanwhile",
+                            "`git push --delete origin feature-x`",
+                        ],
+                        "answer_index": 2,
+                        "difficulty": 8,
+                        "explanation": "Rebase rewrote the hashes, so a normal push is rejected (histories diverged). `--force-with-lease` is the safe overwrite: it pushes your rewritten history but aborts if the remote moved since your last fetch — unlike bare `--force`, which blindly clobbers.",
+                        "company_tags": ["amazon", "accenture"],
+                    },
+                ],
+            },
+            {
+                "slug": "git-branching-git-stash",
+                "title": "Stashing: Park Work in Progress",
+                "theory_md": """## Stashing: Park Work in Progress
+
+You're mid-feature with dirty files when an urgent fix lands on `main`.
+You can't switch branches with conflicting uncommitted changes — and
+you don't want a half-baked commit. **`git stash`** shelves your work
+safely so the tree goes clean, then restores it later.
+
+### The basic cycle
+
+```bash
+# ... half-done work, files modified ...
+git stash              # park everything; working tree is clean now
+git switch main
+# ... do the urgent fix, commit ...
+git switch feature-x
+git stash pop          # restore the parked changes, drop the stash
+```
+
+### What's in the stash?
+
+```bash
+git stash list
+# stash@{0}: WIP on feature-x: a3f9c21 Add login form
+# stash@{1}: WIP on main: 7d2e4aa Fix typo
+
+git stash show -p stash@{0}   # see the DIFF inside a stash entry
+```
+
+A stash is a stack — `stash@{0}` is the newest.
+
+### pop vs apply
+
+```bash
+git stash pop     # restore AND delete the stash entry (usual choice)
+git stash apply   # restore but KEEP the entry (safer if unsure)
+git stash drop    # delete an entry without applying
+```
+
+`pop` can conflict if the tree changed meanwhile — resolve like a merge,
+then the entry is dropped only on clean apply... actually: `pop` drops
+the entry only if applying succeeded without conflicts.
+
+### Stashing selectively
+
+```bash
+git stash push -m "half-done oauth wiring"   # named stash — do this!
+git stash -u                                 # include UNTRACKED files too
+git stash --keep-index                        # stash unstaged only, keep staged
+```
+
+Default `git stash` ignores untracked files — the #1 stash surprise.
+Use `-u` when new files matter.
+
+Named stashes (`-m`) save you from the \"which WIP was which?\" guessing
+game in `git stash list`.
+
+### Stash one file only
+
+```bash
+git stash push -- app.py    # stash changes to just app.py
+```
+
+### Real-world scenario
+
+```bash
+git stash push -m "WIP: dark mode toggle"
+git switch main
+git pull
+git switch -c hotfix/payment-timeout
+# ... fix, commit, push, PR ...
+git switch feature-x
+git stash pop
+# continue where you left off
+```
+
+**Takeaway:** stash = clipboard for uncommitted work. Name your stashes,
+remember `-u` for untracked files, and prefer `pop` for the clean
+park-and-restore cycle.
+""",
+                "difficulty_min": 1,
+                "difficulty_max": 6,
+                "is_important": False,
+                "has_visual": False,
+                "questions": [
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What does `git stash` do?",
+                        "choices": [
+                            "Pushes your work to the remote server",
+                            "Commits your changes to a temporary branch",
+                            "Temporarily shelves uncommitted changes, restoring a clean working tree, so you can re-apply them later",
+                            "Deletes all uncommitted changes permanently",
+                        ],
+                        "answer_index": 2,
+                        "difficulty": 1,
+                        "explanation": "Stash records your dirty working-tree state onto a stack and reverts the tree to HEAD — no commit created. `git stash pop` brings it back. It's the tool for \"I need a clean tree RIGHT NOW but my work isn't committable yet.\"",
+                        "company_tags": ["tcs", "wipro"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What's the difference between `git stash pop` and `git stash apply`?",
+                        "choices": [
+                            "They are identical aliases",
+                            "`apply` deletes the stash; `pop` keeps it",
+                            "`pop` only works on the newest stash",
+                            "`pop` restores and REMOVES the stash entry; `apply` restores but KEEPS it on the stack",
+                        ],
+                        "answer_index": 3,
+                        "difficulty": 3,
+                        "explanation": "`pop` = apply + drop (the usual park-and-restore). `apply` leaves the entry in place — handy when you want to restore the same changes in two places or aren't sure the restore is safe yet.",
+                        "company_tags": ["infosys", "accenture"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "You stashed your work, but a brand-new file `draft.md` is still sitting in your working tree. Why?",
+                        "choices": [
+                            "By default `git stash` only stashes TRACKED changes; untracked files need `git stash -u`",
+                            "New files can never be stashed",
+                            "You must commit new files before stashing",
+                            "The stash command failed silently",
+                        ],
+                        "answer_index": 0,
+                        "difficulty": 4,
+                        "explanation": "Default stash covers modified tracked files only — untracked files are left behind (the classic surprise). `git stash -u` (or `--include-untracked`) includes them in the stash.",
+                        "company_tags": ["amazon", "google"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "How do you create a stash with a descriptive name instead of the generic \"WIP\" message?",
+                        "choices": [
+                            "`git stash --title \"half-done oauth wiring\"`",
+                            "`git stash push -m \"half-done oauth wiring\"`",
+                            "`git stash --name \"half-done oauth wiring\"`",
+                            "`git stash save-name \"half-done oauth wiring\"`",
+                        ],
+                        "answer_index": 1,
+                        "difficulty": 2,
+                        "explanation": "`git stash push -m \"message\"` is the real syntax — `push` is the modern subcommand, `-m` the message. Named stashes make `git stash list` actually readable when several are stacked.",
+                        "company_tags": ["microsoft", "tcs"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "How do you inspect the diff contained in the second stash entry without applying it?",
+                        "choices": [
+                            "`git stash view 1`",
+                            "`git log stash@{1}`",
+                            "`git stash show -p stash@{1}`",
+                            "`git diff stash@{1}`",
+                        ],
+                        "answer_index": 2,
+                        "difficulty": 6,
+                        "explanation": "`git stash show -p <entry>` prints the patch stored in that stash — the safe way to peek before popping. The stack is zero-indexed, so `stash@{1}` is the second-newest.",
+                        "company_tags": ["flipkart", "accenture"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "You only want to stash changes to `app.py` and leave everything else dirty. Which command?",
+                        "choices": [
+                            "`git stash --only app.py`",
+                            "`git stash app.py --single`",
+                            "Stash can't be limited to one file",
+                            "`git stash push -- app.py`",
+                        ],
+                        "answer_index": 3,
+                        "difficulty": 5,
+                        "explanation": "`git stash push -- <pathspec>` stashes only matching paths — a real, underused form. The `--` separates options from paths, just like with `git log --`.",
+                        "company_tags": ["google", "wipro"],
+                    },
+                ],
+            },
+            {
+                "slug": "git-branching-detached-head",
+                "title": "Detached HEAD: Visiting History",
+                "theory_md": """## Detached HEAD: Visiting History
+
+Normally HEAD points to a **branch** (`main`), and commits advance that
+branch. **Detached HEAD** means HEAD points directly at a **commit**
+instead — you're visiting history, not standing on a branch.
+
+### How you get there
+
+```bash
+git switch --detach a3f9c21     # modern, explicit
+git checkout a3f9c21            # classic — same effect
+
+# Git warns you:
+# Note: switching to 'a3f9c21'.
+# You are in 'detached HEAD' state...
+# HEAD is now at a3f9c21 Fix crash when username is empty
+```
+
+### What it looks like
+
+```
+Normal:        HEAD -> main -> C
+Detached:      HEAD -> B        (main still -> C)
+```
+
+### Why it's useful
+
+- **Inspect old code:** build/test exactly what shipped in v1.2.
+- **Bisect bugs:** `git bisect` hops between commits in detached HEAD.
+- **Review a PR's commits** without creating a branch.
+
+```bash
+git switch --detach v2.0.0    # look at the tagged release
+# ... run the old code, read files ...
+git switch main               # back to normal — nothing lost
+```
+
+### The danger: committing while detached
+
+Commits made in detached HEAD belong to **no branch**:
+
+```
+HEAD -> X (new commit, floating)
+main -> C
+```
+
+Switch branches and X becomes **orphaned** — reachable only via the
+reflog. To keep such work, create a branch BEFORE leaving:
+
+```bash
+git switch -c rescue-branch    # attach a branch to your commits
+# or: git branch rescue-branch  (then switch to it)
+```
+
+### Getting back to safety
+
+```bash
+git switch main        # re-attach HEAD to a branch — done
+```
+
+### Recovering orphaned commits (the safety net)
+
+Nothing is truly lost for ~90 days thanks to the **reflog**:
+
+```bash
+git reflog
+# a3f9c21 HEAD@{0}: commit: experimental fix   <- your orphan!
+git switch -c recovery a3f9c21   # resurrect it onto a branch
+```
+
+### When you'll see this in real life
+
+- CI systems check out specific commits (detached by design).
+- `git checkout <tag>` detaches — tags aren't branches.
+- Accidentally: `git checkout a3f9c21` while exploring history.
+
+**Takeaway:** detached HEAD = read-only time travel. Look around freely;
+if you commit something worth keeping, give it a branch before you
+leave. `git reflog` is your time machine's backup.
+""",
+                "difficulty_min": 2,
+                "difficulty_max": 7,
+                "is_important": False,
+                "has_visual": False,
+                "questions": [
+                    {
+                        "qtype": "mcq",
+                        "prompt": "What does \"detached HEAD\" state mean?",
+                        "choices": [
+                            "The main branch was deleted",
+                            "Your working tree is corrupted",
+                            "The repository has no commits",
+                            "HEAD points directly at a commit instead of at a branch — you're visiting history, not standing on a branch",
+                        ],
+                        "answer_index": 3,
+                        "difficulty": 2,
+                        "explanation": "Normally HEAD → branch → commit. Detached, HEAD → commit directly (e.g. after `git checkout a3f9c21`). You can look around freely, but new commits won't belong to any branch.",
+                        "company_tags": ["tcs", "infosys"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "Which command intentionally enters detached HEAD state at commit `a3f9c21`?",
+                        "choices": [
+                            "`git switch --detach a3f9c21`",
+                            "`git branch --detach a3f9c21`",
+                            "`git detach a3f9c21`",
+                            "`git checkout -b a3f9c21`",
+                        ],
+                        "answer_index": 0,
+                        "difficulty": 3,
+                        "explanation": "`git switch --detach <commit>` is the modern explicit spelling (classic: `git checkout <commit>`). `-b` would CREATE a branch named a3f9c21 — the opposite of detaching.",
+                        "company_tags": ["wipro", "accenture"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "You committed twice while in detached HEAD, then switched back to `main`. What happened to those two commits?",
+                        "choices": [
+                            "They were merged into main automatically",
+                            "They're orphaned — on no branch — but recoverable via `git reflog` for ~90 days",
+                            "They were deleted permanently and instantly",
+                            "They were pushed to the remote",
+                        ],
+                        "answer_index": 1,
+                        "difficulty": 5,
+                        "explanation": "Detached commits belong to no branch, so leaving detaches you from them too — but Git keeps them in the reflog (default 90 days). `git reflog` finds the hash, then `git switch -c recovery <hash>` resurrects them.",
+                        "company_tags": ["google", "amazon"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "You're in detached HEAD and just made an experimental commit you want to KEEP. What's the right move before switching away?",
+                        "choices": [
+                            "Nothing — the commit is safe on its own",
+                            "`git stash` the commit",
+                            "`git switch -c experiment` to create a branch pointing at your commit",
+                            "`git push` immediately",
+                        ],
+                        "answer_index": 2,
+                        "difficulty": 4,
+                        "explanation": "Creating a branch attaches a permanent ref to your commit, so it can't be orphaned. Push won't work well (no upstream branch), and stash only handles uncommitted changes — not commits.",
+                        "company_tags": ["microsoft", "flipkart"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "How do you get OUT of detached HEAD state and back to normal?",
+                        "choices": [
+                            "`git head --attach`",
+                            "Delete the .git/HEAD file",
+                            "`git rebase --abort`",
+                            "`git switch main` (or any branch name)",
+                        ],
+                        "answer_index": 3,
+                        "difficulty": 3,
+                        "explanation": "Switching to any branch re-attaches HEAD to that branch — that's the entire fix. Nothing is lost; you were only ever \"visiting\" the commit.",
+                        "company_tags": ["infosys", "tcs"],
+                    },
+                    {
+                        "qtype": "mcq",
+                        "prompt": "A CI pipeline checks out the exact commit `9f2b1aa` to run tests. Why is detached HEAD the CORRECT state there?",
+                        "choices": [
+                            "The pipeline needs the exact commit's code reproducibly; no branch work happens, so no branch pointer is needed or wanted",
+                            "Detached HEAD makes tests run faster",
+                            "It's a bug in the CI configuration",
+                            "CI servers are not allowed to create branches",
+                        ],
+                        "answer_index": 0,
+                        "difficulty": 7,
+                        "explanation": "CI wants byte-exact reproducibility of one commit — checking out the hash directly (detached) guarantees that, with no branch that could move. Detached HEAD isn't an error state; it's the right tool for read-only inspection.",
+                        "company_tags": ["accenture", "google"],
+                    },
+                ],
+            },
+        ],
+    },
+]

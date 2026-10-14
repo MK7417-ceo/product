@@ -12,14 +12,14 @@ from __future__ import annotations
 
 MODULES = [
     {
-        "slug": "git-remote",
-        "name": "Remote & Collaboration",
-        "description": "Work with remotes, forks, pull requests, and branch policies like a professional team member.",
-        "lessons": [
+        'slug': 'git-remote',
+        'name': 'Remote & Collaboration',
+        'description': 'Work with remotes, forks, pull requests, and branch policies like a professional team member.',
+        'lessons': [
             {
-                "slug": "git-remote-remotes-origin",
-                "title": "Remotes: origin and git remote",
-                "theory_md": """## What is a remote?
+                'slug': 'git-remote-remotes-origin',
+                'title': 'Remotes: origin and git remote',
+                'theory_md': """## What is a remote?
 
 A **remote** is a named reference to another copy of your repository, usually
 hosted on a server like GitHub. Your local clone is a full copy; the remote is
@@ -65,101 +65,119 @@ git remote set-url origin git@github.com:org/repo.git
 Useful when switching from HTTPS to SSH, or when a repo moves to a new
 owner/org.
 """,
-                "difficulty_min": 1,
-                "difficulty_max": 4,
-                "is_important": False,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 1,
+                'difficulty_max': 7,
+                'is_important': False,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does `git remote -v` display?",
-                        "choices": [
-                            "The list of remote names with their fetch and push URLs",
-                            "The full commit history of every branch",
-                            "A visual graph of local branches",
-                            "The list of files staged for commit",
+                        'qtype': 'mcq',
+                        'prompt': 'What does `git remote -v` display?',
+                        'choices': [
+                            'The full commit history of every branch',
+                            'A visual graph of local branches',
+                            'The list of files staged for commit',
+                            'The list of remote names with their fetch and push URLs',
                         ],
-                        "answer_index": 0,
-                        "difficulty": 1,
-                        "explanation": "`git remote -v` lists each configured remote along with the URLs used for fetch and push. The `-v` flag means verbose — without it you only see the remote names.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 3,
+                        'difficulty': 1,
+                        'explanation': '`git remote -v` lists each configured remote along with the URLs used for fetch and push. The `-v` flag means verbose — without it you only see the remote names.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "In a typical `git clone`, what does the remote named `origin` refer to?",
-                        "choices": [
-                            "The first branch you created locally",
-                            "A special merge-only branch on GitHub",
-                            "The default name Git gives to the repository you cloned from",
+                        'qtype': 'mcq',
+                        'prompt': 'In a typical `git clone`, what does the remote named `origin` refer to?',
+                        'choices': [
+                            'The first branch you created locally',
+                            'A special merge-only branch on GitHub',
+                            'The default name Git gives to the repository you cloned from',
                             "The main author's fork of the project",
                         ],
-                        "answer_index": 2,
-                        "difficulty": 2,
-                        "explanation": "`origin` is simply the conventional name Git assigns automatically to the source you cloned from. It is a convention, not a requirement — you can rename it.",
-                        "company_tags": ["wipro", "accenture"],
+                        'answer_index': 2,
+                        'difficulty': 2,
+                        'explanation': '`origin` is simply the conventional name Git assigns automatically to the source you cloned from. It is a convention, not a requirement — you can rename it.',
+                        'company_tags': [
+                            'wipro',
+                            'accenture',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "You cloned a repo, then the project moved to a different organization. Which command updates the stored URL?",
-                        "choices": [
-                            "git remote add origin <new-url>",
-                            "git remote set-url origin <new-url>",
-                            "git pull --rebase <new-url>",
-                            "git clone --replace origin <new-url>",
+                        'qtype': 'mcq',
+                        'prompt': 'You cloned a repo, then the project moved to a different organization. Which command updates the stored URL?',
+                        'choices': [
+                            'git clone --replace origin <new-url>',
+                            'git remote add origin <new-url>',
+                            'git remote set-url origin <new-url>',
+                            'git pull --rebase <new-url>',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "`git remote set-url` rewrites the URL stored for an existing remote. `git remote add` fails here because `origin` already exists, and the other options are not real Git commands.",
-                        "company_tags": ["amazon", "flipkart"],
+                        'answer_index': 2,
+                        'difficulty': 4,
+                        'explanation': '`git remote set-url` rewrites the URL stored for an existing remote. `git remote add` fails here because `origin` already exists, and the other options are not real Git commands.',
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What happens to your local work if you run `git remote remove upstream`?",
-                        "choices": [
-                            "Your local commits and branches are deleted",
-                            "Only the remote reference is deleted; local work is untouched",
-                            "All commits are force-pushed to origin",
-                            "The repository is re-cloned from origin",
+                        'qtype': 'mcq',
+                        'prompt': 'What happens to your local work if you run `git remote remove upstream`?',
+                        'choices': [
+                            'All commits are force-pushed to origin',
+                            'The repository is re-cloned from origin',
+                            'Your local commits and branches are deleted',
+                            'Only the remote reference is deleted; local work is untouched',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "A remote is just a named pointer to a URL. Removing it deletes the pointer and its tracking refs' configuration — your objects, commits, and branches remain intact.",
-                        "company_tags": ["tcs", "zoho"],
+                        'answer_index': 3,
+                        'difficulty': 4,
+                        'explanation': "A remote is just a named pointer to a URL. Removing it deletes the pointer and its tracking refs' configuration — your objects, commits, and branches remain intact.",
+                        'company_tags': [
+                            'tcs',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why might a repo need two remotes like `origin` and `upstream`?",
-                        "choices": [
-                            "Git requires two remotes for every repository",
-                            "So that two users can share one local clone",
-                            "To separate your fork (origin) from the original project (upstream) you sync with",
-                            "Because one remote handles fetch and the other handles push only",
+                        'qtype': 'mcq',
+                        'prompt': 'Why might a repo need two remotes like `origin` and `upstream`?',
+                        'choices': [
+                            'So that two users can share one local clone',
+                            'To separate your fork (origin) from the original project (upstream) you sync with',
+                            'Because one remote handles fetch and the other handles push only',
+                            'Git requires two remotes for every repository',
                         ],
-                        "answer_index": 2,
-                        "difficulty": 6,
-                        "explanation": "Fork contributors push to their own fork (`origin`) but pull updates from the original project's `upstream` remote. The two-remotes pattern keeps those flows separate.",
-                        "company_tags": ["microsoft", "google"],
+                        'answer_index': 1,
+                        'difficulty': 6,
+                        'explanation': "Fork contributors push to their own fork (`origin`) but pull updates from the original project's `upstream` remote. The two-remotes pattern keeps those flows separate.",
+                        'company_tags': [
+                            'microsoft',
+                            'google',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "`git remote show origin` reports that the remote's default branch is `main`. What does that information actually tell Git to do?",
-                        "choices": [
-                            "It deletes any other remote-tracking branches",
-                            "It sets what `git clone` checks out initially and what HEAD refers to for the remote",
-                            "It force-syncs all local branches to match main",
-                            "It creates a local branch called origin",
+                        'qtype': 'mcq',
+                        'prompt': "`git remote show origin` reports that the remote's default branch is `main`. What does that information actually tell Git to do?",
+                        'choices': [
+                            'It deletes any other remote-tracking branches',
+                            'It sets what `git clone` checks out initially and what HEAD refers to for the remote',
+                            'It force-syncs all local branches to match main',
+                            'It creates a local branch called origin',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 7,
-                        "explanation": "`git remote show origin` displays the remote's HEAD (default branch), which Git uses when cloning to decide which branch to check out initially. It does not modify anything.",
-                        "company_tags": ["amazon", "microsoft"],
+                        'answer_index': 1,
+                        'difficulty': 7,
+                        'explanation': "`git remote show origin` displays the remote's HEAD (default branch), which Git uses when cloning to decide which branch to check out initially. It does not modify anything.",
+                        'company_tags': [
+                            'amazon',
+                            'microsoft',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "git-remote-clone-push-pull",
-                "title": "Clone, Push, Pull & Fetch",
-                "theory_md": """## Cloning a repository
+                'slug': 'git-remote-clone-push-pull',
+                'title': 'Clone, Push, Pull & Fetch',
+                'theory_md': """## Cloning a repository
 
 ```bash
 git clone https://github.com/org/repo.git
@@ -205,101 +223,120 @@ git push --force-with-lease origin main
 you last fetched — a much safer force push. Use only on your own feature
 branches, never on shared branches.
 """,
-                "difficulty_min": 1,
-                "difficulty_max": 6,
-                "is_important": True,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 2,
+                'difficulty_max': 8,
+                'is_important': True,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "What is the key difference between `git fetch` and `git pull`?",
-                        "choices": [
-                            "fetch uploads commits; pull downloads them",
-                            "fetch only downloads remote changes without merging; pull fetches and merges them into the current branch",
-                            "fetch works offline; pull requires internet",
-                            "There is no difference — they are aliases",
+                        'qtype': 'mcq',
+                        'prompt': 'What is the key difference between `git fetch` and `git pull`?',
+                        'choices': [
+                            'fetch works offline; pull requires internet',
+                            'There is no difference — they are aliases',
+                            'fetch uploads commits; pull downloads them',
+                            'fetch only downloads remote changes without merging; pull fetches and merges them into the current branch',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 2,
-                        "explanation": "Fetch updates remote-tracking branches only and never touches your working tree, while pull does fetch plus a merge into your current branch. Fetch-first is the safe way to review changes before merging.",
-                        "company_tags": ["tcs", "infosys", "wipro"],
+                        'answer_index': 3,
+                        'difficulty': 2,
+                        'explanation': 'Fetch updates remote-tracking branches only and never touches your working tree, while pull does fetch plus a merge into your current branch. Fetch-first is the safe way to review changes before merging.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                            'wipro',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "You want to download your teammate's changes but NOT merge them yet so you can inspect them first. Which command?",
-                        "choices": [
-                            "git pull origin main",
-                            "git merge --no-commit",
-                            "git fetch origin",
-                            "git checkout origin/main",
+                        'qtype': 'mcq',
+                        'prompt': "You want to download your teammate's changes but NOT merge them yet so you can inspect them first. Which command?",
+                        'choices': [
+                            'git merge --no-commit',
+                            'git fetch origin',
+                            'git checkout origin/main',
+                            'git pull origin main',
                         ],
-                        "answer_index": 2,
-                        "difficulty": 3,
-                        "explanation": "Fetch brings the new commits into remote-tracking branches like `origin/main` without touching your branch. You can then `git log main..origin/main` to inspect before merging.",
-                        "company_tags": ["accenture", "flipkart"],
+                        'answer_index': 1,
+                        'difficulty': 3,
+                        'explanation': 'Fetch brings the new commits into remote-tracking branches like `origin/main` without touching your branch. You can then `git log main..origin/main` to inspect before merging.',
+                        'company_tags': [
+                            'accenture',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does `git clone <url>` set up automatically?",
-                        "choices": [
-                            "Only the working files, without history",
-                            "Full history, all branches as remote-tracking refs, and a remote named origin",
-                            "A push-only connection to the server",
-                            "A fork of the repository under your account",
+                        'qtype': 'mcq',
+                        'prompt': 'What does `git clone <url>` set up automatically?',
+                        'choices': [
+                            'Only the working files, without history',
+                            'Full history, all branches as remote-tracking refs, and a remote named origin',
+                            'A push-only connection to the server',
+                            'A fork of the repository under your account',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 3,
-                        "explanation": "Clone copies the entire history and all branch tips into remote-tracking refs (like `origin/main`), checks out the default branch, and creates the `origin` remote. It is a full repo, not just files.",
-                        "company_tags": ["tcs", "zoho"],
+                        'answer_index': 1,
+                        'difficulty': 3,
+                        'explanation': 'Clone copies the entire history and all branch tips into remote-tracking refs (like `origin/main`), checks out the default branch, and creates the `origin` remote. It is a full repo, not just files.',
+                        'company_tags': [
+                            'tcs',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does `git push -u origin feature-x` do that plain `git push` does not?",
-                        "choices": [
-                            "It merges feature-x into main on the remote",
-                            "It pushes and also sets the upstream, so future plain `git push`/`git pull` know where to go",
-                            "It pushes without requiring any network connection",
-                            "It undoes the last pushed commit",
+                        'qtype': 'mcq',
+                        'prompt': 'What does `git push -u origin feature-x` do that plain `git push` does not?',
+                        'choices': [
+                            'It undoes the last pushed commit',
+                            'It merges feature-x into main on the remote',
+                            'It pushes and also sets the upstream, so future plain `git push`/`git pull` know where to go',
+                            'It pushes without requiring any network connection',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "The `-u` (`--set-upstream`) flag records `origin/feature-x` as the tracking upstream for your local branch. After that, bare `git push` and `git pull` know exactly which remote branch to use.",
-                        "company_tags": ["amazon", "microsoft"],
+                        'answer_index': 2,
+                        'difficulty': 5,
+                        'explanation': 'The `-u` (`--set-upstream`) flag records `origin/feature-x` as the tracking upstream for your local branch. After that, bare `git push` and `git pull` know exactly which remote branch to use.',
+                        'company_tags': [
+                            'amazon',
+                            'microsoft',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why is `git push --force-with-lease` preferred over `git push --force` on a personal feature branch?",
-                        "choices": [
-                            "It pushes faster",
-                            "It skips the CI checks",
-                            "It refuses to overwrite the remote if someone else pushed since your last fetch",
-                            "It automatically rebases your commits",
+                        'qtype': 'mcq',
+                        'prompt': 'Why is `git push --force-with-lease` preferred over `git push --force` on a personal feature branch?',
+                        'choices': [
+                            'It refuses to overwrite the remote if someone else pushed since your last fetch',
+                            'It automatically rebases your commits',
+                            'It pushes faster',
+                            'It skips the CI checks',
                         ],
-                        "answer_index": 2,
-                        "difficulty": 6,
-                        "explanation": "`--force-with-lease` verifies the remote tip still matches what you last fetched before rewriting history, so you cannot accidentally destroy commits pushed by someone else. Plain `--force` overwrites blindly.",
-                        "company_tags": ["google", "microsoft"],
+                        'answer_index': 0,
+                        'difficulty': 6,
+                        'explanation': '`--force-with-lease` verifies the remote tip still matches what you last fetched before rewriting history, so you cannot accidentally destroy commits pushed by someone else. Plain `--force` overwrites blindly.',
+                        'company_tags': [
+                            'google',
+                            'microsoft',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "After running `git fetch origin`, you run `git log --oneline main..origin/main`. What do the listed commits represent?",
-                        "choices": [
-                            "Commits you have locally that the remote lacks",
-                            "Commits on origin/main that you do not yet have in your local main",
-                            "All commits in both branches",
-                            "Commits that were deleted from the remote",
+                        'qtype': 'mcq',
+                        'prompt': 'After running `git fetch origin`, you run `git log --oneline main..origin/main`. What do the listed commits represent?',
+                        'choices': [
+                            'Commits on origin/main that you do not yet have in your local main',
+                            'All commits in both branches',
+                            'Commits that were deleted from the remote',
+                            'Commits you have locally that the remote lacks',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 8,
-                        "explanation": "The `A..B` range shows commits reachable from B but not from A. Since fetch updated `origin/main`, this lists exactly the new remote commits waiting to be merged into your local `main`.",
-                        "company_tags": ["amazon", "google"],
+                        'answer_index': 0,
+                        'difficulty': 8,
+                        'explanation': 'The `A..B` range shows commits reachable from B but not from A. Since fetch updated `origin/main`, this lists exactly the new remote commits waiting to be merged into your local `main`.',
+                        'company_tags': [
+                            'amazon',
+                            'google',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "git-remote-tracking-upstream",
-                "title": "Tracking Branches & Upstream",
-                "theory_md": """## Tracking branches
+                'slug': 'git-remote-tracking-upstream',
+                'title': 'Tracking Branches & Upstream',
+                'theory_md': """## Tracking branches
 
 A **tracking branch** is a local branch that has a direct relationship with a
 remote branch (its **upstream**). The upstream is what plain `git push` and
@@ -343,101 +380,119 @@ Branches like `origin/main` are **remote-tracking branches** — read-only
 snapshots of the remote's state at your last fetch. You never commit directly
 to them; you merge or rebase from them. They update only via `fetch`/`pull`.
 """,
-                "difficulty_min": 2,
-                "difficulty_max": 6,
-                "is_important": False,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 2,
+                'difficulty_max': 7,
+                'is_important': False,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does `git branch -vv` show that plain `git branch` does not?",
-                        "choices": [
+                        'qtype': 'mcq',
+                        'prompt': 'What does `git branch -vv` show that plain `git branch` does not?',
+                        'choices': [
+                            'Remote-only branch URLs',
                             "Each local branch's upstream tracking relationship",
-                            "The full commit history",
-                            "Deleted branches",
-                            "Remote-only branch URLs",
+                            'The full commit history',
+                            'Deleted branches',
                         ],
-                        "answer_index": 0,
-                        "difficulty": 2,
-                        "explanation": "The `-vv` flag displays each branch's upstream (e.g. `[origin/main]`) plus ahead/behind status. Plain `git branch` lists only branch names.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 1,
+                        'difficulty': 2,
+                        'explanation': "The `-vv` flag displays each branch's upstream (e.g. `[origin/main]`) plus ahead/behind status. Plain `git branch` lists only branch names.",
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "`git status` says: \"Your branch is ahead of 'origin/main' by 2 commits.\" What does this mean?",
-                        "choices": [
+                        'qtype': 'mcq',
+                        'prompt': '`git status` says: "Your branch is ahead of \'origin/main\' by 2 commits." What does this mean?',
+                        'choices': [
+                            'Your branch has diverged by 2 merge conflicts',
+                            '2 of your commits failed CI',
                             "The remote has 2 commits you haven't fetched",
-                            "You have 2 local commits on this branch that are not yet pushed",
-                            "Your branch has diverged by 2 merge conflicts",
-                            "2 of your commits failed CI",
+                            'You have 2 local commits on this branch that are not yet pushed',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 3,
-                        "explanation": "'Ahead by 2' means your local branch contains 2 commits the upstream does not — the classic un-pushed state. A `git push` would resolve it.",
-                        "company_tags": ["wipro", "accenture"],
+                        'answer_index': 3,
+                        'difficulty': 3,
+                        'explanation': "'Ahead by 2' means your local branch contains 2 commits the upstream does not — the classic un-pushed state. A `git push` would resolve it.",
+                        'company_tags': [
+                            'wipro',
+                            'accenture',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Which command links an existing local branch `main` to track `origin/main`?",
-                        "choices": [
-                            "git branch --set-upstream-to=origin/main main",
-                            "git push --track main",
-                            "git remote add origin/main main",
-                            "git checkout origin/main --track",
+                        'qtype': 'mcq',
+                        'prompt': 'Which command links an existing local branch `main` to track `origin/main`?',
+                        'choices': [
+                            'git push --track main',
+                            'git remote add origin/main main',
+                            'git checkout origin/main --track',
+                            'git branch --set-upstream-to=origin/main main',
                         ],
-                        "answer_index": 0,
-                        "difficulty": 5,
-                        "explanation": "`git branch --set-upstream-to=<upstream> <branch>` configures the tracking relationship on an existing branch. The other options are not valid Git syntax.",
-                        "company_tags": ["amazon", "flipkart"],
+                        'answer_index': 3,
+                        'difficulty': 5,
+                        'explanation': '`git branch --set-upstream-to=<upstream> <branch>` configures the tracking relationship on an existing branch. The other options are not valid Git syntax.',
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What is a remote-tracking branch like `origin/main`?",
-                        "choices": [
-                            "A branch you can commit to directly on the server",
+                        'qtype': 'mcq',
+                        'prompt': 'What is a remote-tracking branch like `origin/main`?',
+                        'choices': [
+                            'A branch you can commit to directly on the server',
                             "A read-only local snapshot of the remote branch's state at your last fetch",
-                            "A merge commit between two remotes",
-                            "A branch stored only on GitHub, not locally",
+                            'A merge commit between two remotes',
+                            'A branch stored only on GitHub, not locally',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "Remote-tracking branches live in your local repo but reflect the remote's tip as of the last fetch — you merge or rebase from them, never commit to them.",
-                        "company_tags": ["microsoft", "zoho"],
+                        'answer_index': 1,
+                        'difficulty': 5,
+                        'explanation': "Remote-tracking branches live in your local repo but reflect the remote's tip as of the last fetch — you merge or rebase from them, never commit to them.",
+                        'company_tags': [
+                            'microsoft',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "After `git push -u origin feature-x` once, why do later pushes on that branch work with plain `git push`?",
-                        "choices": [
-                            "Git remembers the last arguments typed in the terminal",
-                            "The upstream link is stored in the repo config, so Git knows the default destination",
-                            "feature-x becomes the default branch of the remote",
-                            "Git auto-detects the only remote",
+                        'qtype': 'mcq',
+                        'prompt': 'After `git push -u origin feature-x` once, why do later pushes on that branch work with plain `git push`?',
+                        'choices': [
+                            'Git auto-detects the only remote',
+                            'Git remembers the last arguments typed in the terminal',
+                            'The upstream link is stored in the repo config, so Git knows the default destination',
+                            'feature-x becomes the default branch of the remote',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "`-u` writes `branch.feature-x.remote=origin` and `branch.feature-x.merge=refs/heads/feature-x` into `.git/config`. Every later argument-less push reads that stored upstream.",
-                        "company_tags": ["google", "amazon"],
+                        'answer_index': 2,
+                        'difficulty': 6,
+                        'explanation': '`-u` writes `branch.feature-x.remote=origin` and `branch.feature-x.merge=refs/heads/feature-x` into `.git/config`. Every later argument-less push reads that stored upstream.',
+                        'company_tags': [
+                            'google',
+                            'amazon',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "You run `git checkout -b hotfix origin/main`. What tracking relationship is created?",
-                        "choices": [
-                            "No tracking — hotfix is a detached local branch",
-                            "hotfix tracks origin/hotfix",
-                            "hotfix tracks origin/main, since the start point was a remote-tracking branch",
-                            "origin/main is renamed to hotfix on the remote",
+                        'qtype': 'mcq',
+                        'prompt': 'You run `git checkout -b hotfix origin/main`. What tracking relationship is created?',
+                        'choices': [
+                            'hotfix tracks origin/main, since the start point was a remote-tracking branch',
+                            'origin/main is renamed to hotfix on the remote',
+                            'No tracking — hotfix is a detached local branch',
+                            'hotfix tracks origin/hotfix',
                         ],
-                        "answer_index": 2,
-                        "difficulty": 7,
-                        "explanation": "When the start point of a new branch is a remote-tracking branch, Git automatically sets that remote-tracking branch as the upstream. So `hotfix` tracks `origin/main`.",
-                        "company_tags": ["amazon", "microsoft"],
+                        'answer_index': 0,
+                        'difficulty': 7,
+                        'explanation': 'When the start point of a new branch is a remote-tracking branch, Git automatically sets that remote-tracking branch as the upstream. So `hotfix` tracks `origin/main`.',
+                        'company_tags': [
+                            'amazon',
+                            'microsoft',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "git-remote-fork-vs-clone",
-                "title": "Fork vs Clone",
-                "theory_md": """## Clone
+                'slug': 'git-remote-fork-vs-clone',
+                'title': 'Fork vs Clone',
+                'theory_md': """## Clone
 
 ```bash
 git clone https://github.com/org/repo.git
@@ -484,101 +539,119 @@ new work so your branch doesn't contain stale code.
 - **Fork**: you do NOT have push access (open source, another team's repo) and
   plan to propose changes via a pull request.
 """,
-                "difficulty_min": 1,
-                "difficulty_max": 5,
-                "is_important": False,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 2,
+                'difficulty_max': 7,
+                'is_important': False,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "What is the fundamental difference between forking and cloning a repository?",
-                        "choices": [
-                            "Fork creates a server-side copy under your GitHub account; clone copies it to your local machine",
-                            "Clone copies to your account; fork copies to your machine",
-                            "They are identical operations with different names",
-                            "Fork requires admin access; clone is public",
+                        'qtype': 'mcq',
+                        'prompt': 'What is the fundamental difference between forking and cloning a repository?',
+                        'choices': [
+                            'Fork creates a server-side copy under your GitHub account; clone copies it to your local machine',
+                            'Clone copies to your account; fork copies to your machine',
+                            'They are identical operations with different names',
+                            'Fork requires admin access; clone is public',
                         ],
-                        "answer_index": 0,
-                        "difficulty": 2,
-                        "explanation": "Forking is a GitHub-side action that duplicates the repo into your account so you own it; cloning is a Git action that copies a repo (any copy) onto your local disk.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 0,
+                        'difficulty': 2,
+                        'explanation': 'Forking is a GitHub-side action that duplicates the repo into your account so you own it; cloning is a Git action that copies a repo (any copy) onto your local disk.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "You want to contribute a bug fix to a popular open-source project where you have no write access. What is the correct first step?",
-                        "choices": [
-                            "git clone the repo and push directly to its main",
-                            "Fork the repo on GitHub, then clone your fork",
-                            "Download the ZIP and email the maintainer",
-                            "git push --force to their repository",
+                        'qtype': 'mcq',
+                        'prompt': 'You want to contribute a bug fix to a popular open-source project where you have no write access. What is the correct first step?',
+                        'choices': [
+                            'git push --force to their repository',
+                            'git clone the repo and push directly to its main',
+                            'Fork the repo on GitHub, then clone your fork',
+                            'Download the ZIP and email the maintainer',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 3,
-                        "explanation": "Without write access you cannot push to the original. Fork gives you a copy you own; you clone your fork, make changes, push to your fork, and open a pull request to the original.",
-                        "company_tags": ["wipro", "flipkart"],
+                        'answer_index': 2,
+                        'difficulty': 3,
+                        'explanation': 'Without write access you cannot push to the original. Fork gives you a copy you own; you clone your fork, make changes, push to your fork, and open a pull request to the original.',
+                        'company_tags': [
+                            'wipro',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "After cloning your fork, you run `git remote add upstream <original-url>`. What does `upstream` let you do?",
-                        "choices": [
+                        'qtype': 'mcq',
+                        'prompt': 'After cloning your fork, you run `git remote add upstream <original-url>`. What does `upstream` let you do?',
+                        'choices': [
+                            'Fetch updates from the original project into your local repo',
+                            'Merge your fork into the original automatically',
                             "Push directly to the original repo's main",
-                            "Delete the original repository",
-                            "Fetch updates from the original project into your local repo",
-                            "Merge your fork into the original automatically",
+                            'Delete the original repository',
                         ],
-                        "answer_index": 2,
-                        "difficulty": 4,
-                        "explanation": "The `upstream` remote points at the original project, so `git fetch upstream` brings in its latest commits. You then merge them into your fork to stay current — it grants no write access.",
-                        "company_tags": ["accenture", "amazon"],
+                        'answer_index': 0,
+                        'difficulty': 4,
+                        'explanation': 'The `upstream` remote points at the original project, so `git fetch upstream` brings in its latest commits. You then merge them into your fork to stay current — it grants no write access.',
+                        'company_tags': [
+                            'accenture',
+                            'amazon',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "When should you clone directly instead of forking?",
-                        "choices": [
-                            "When the repo is very large",
-                            "When you have push access to the repository",
-                            "When you only want to read the code",
-                            "When GitHub is down",
+                        'qtype': 'mcq',
+                        'prompt': 'When should you clone directly instead of forking?',
+                        'choices': [
+                            'When you have push access to the repository',
+                            'When you only want to read the code',
+                            'When GitHub is down',
+                            'When the repo is very large',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "If you already have write access (your own repo, your team's repo), a direct clone plus a feature branch is all you need. Forks exist to enable contribution where you lack push access.",
-                        "company_tags": ["tcs", "zoho"],
+                        'answer_index': 0,
+                        'difficulty': 4,
+                        'explanation': "If you already have write access (your own repo, your team's repo), a direct clone plus a feature branch is all you need. Forks exist to enable contribution where you lack push access.",
+                        'company_tags': [
+                            'tcs',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does GitHub's \"Sync fork\" button do under the hood?",
-                        "choices": [
-                            "Deletes your fork and re-forks from scratch",
+                        'qtype': 'mcq',
+                        'prompt': 'What does GitHub\'s "Sync fork" button do under the hood?',
+                        'choices': [
+                            'Deletes your fork and re-forks from scratch',
                             "Fetches the upstream's default branch and merges/fast-forwards it into your fork's branch",
                             "Pushes your fork's changes into the original repo",
                             "Rewrites your fork's history",
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "Syncing fast-forwards (or merges) the upstream default branch into your fork — the same `git fetch upstream && git merge upstream/main` flow, wrapped in a button.",
-                        "company_tags": ["microsoft", "google"],
+                        'answer_index': 1,
+                        'difficulty': 6,
+                        'explanation': 'Syncing fast-forwards (or merges) the upstream default branch into your fork — the same `git fetch upstream && git merge upstream/main` flow, wrapped in a button.',
+                        'company_tags': [
+                            'microsoft',
+                            'google',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Your fork's `main` is 15 commits behind the original, and you open a PR from a branch created off your stale main. What is the most likely consequence?",
-                        "choices": [
-                            "The PR is rejected automatically by GitHub",
-                            "Your PR may show merge conflicts or fail CI because it is based on outdated code",
-                            "The fork is deleted",
-                            "Your commits are lost",
+                        'qtype': 'mcq',
+                        'prompt': "Your fork's `main` is 15 commits behind the original, and you open a PR from a branch created off your stale main. What is the most likely consequence?",
+                        'choices': [
+                            'Your commits are lost',
+                            'The PR is rejected automatically by GitHub',
+                            'Your PR may show merge conflicts or fail CI because it is based on outdated code',
+                            'The fork is deleted',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 7,
-                        "explanation": "Stale bases cause real problems: the diff may be wrong, tests may fail against current upstream code, and conflicts appear on merge. Syncing first keeps the PR diff minimal and accurate.",
-                        "company_tags": ["amazon", "flipkart"],
+                        'answer_index': 2,
+                        'difficulty': 7,
+                        'explanation': 'Stale bases cause real problems: the diff may be wrong, tests may fail against current upstream code, and conflicts appear on merge. Syncing first keeps the PR diff minimal and accurate.',
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "git-remote-pr-workflow",
-                "title": "The Pull Request Workflow",
-                "theory_md": """## The PR lifecycle
+                'slug': 'git-remote-pr-workflow',
+                'title': 'The Pull Request Workflow',
+                'theory_md': """## The PR lifecycle
 
 1. **PR created** — You push a branch to your fork (or the shared repo) and open
    a pull request: base branch `main` ← your branch `feature-x`. GitHub shows
@@ -626,101 +699,119 @@ A fresh PR merges cleanly and CI tests the code against current `main`.
 
 Repos often standardize on one strategy via branch protection rules.
 """,
-                "difficulty_min": 2,
-                "difficulty_max": 7,
-                "is_important": True,
-                "has_visual": True,
-                "questions": [
+                'difficulty_min': 2,
+                'difficulty_max': 7,
+                'is_important': True,
+                'has_visual': True,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "In a pull request from `feature-x` into `main`, what do the \"base\" and \"compare\" branches refer to?",
-                        "choices": [
-                            "Base is your branch; compare is main",
-                            "Base is main (the target); compare is feature-x (the changes)",
-                            "Both must be on the same fork",
-                            "Base is the older commit; compare is the newer one",
+                        'qtype': 'mcq',
+                        'prompt': 'In a pull request from `feature-x` into `main`, what do the "base" and "compare" branches refer to?',
+                        'choices': [
+                            'Base is main (the target); compare is feature-x (the changes)',
+                            'Both must be on the same fork',
+                            'Base is the older commit; compare is the newer one',
+                            'Base is your branch; compare is main',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 2,
-                        "explanation": "The base branch is where changes will land (main); the compare branch holds the new commits (feature-x). Getting them backwards would propose the reverse merge.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 0,
+                        'difficulty': 2,
+                        'explanation': 'The base branch is where changes will land (main); the compare branch holds the new commits (feature-x). Getting them backwards would propose the reverse merge.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "A reviewer requests changes on your PR. How do you update the PR?",
-                        "choices": [
-                            "Open a brand new pull request",
-                            "Push new commits to the same branch — the PR updates automatically",
-                            "Delete the branch and start over",
+                        'qtype': 'mcq',
+                        'prompt': 'A reviewer requests changes on your PR. How do you update the PR?',
+                        'choices': [
+                            'Open a brand new pull request',
+                            'Push new commits to the same branch — the PR updates automatically',
+                            'Delete the branch and start over',
                             "Edit the PR's base branch",
                         ],
-                        "answer_index": 1,
-                        "difficulty": 3,
-                        "explanation": "A PR tracks a branch, not a fixed set of commits. Pushing more commits to the same branch appends them to the open PR's diff and re-runs CI automatically.",
-                        "company_tags": ["wipro", "accenture"],
-                    },
-                    {
-                        "qtype": "mcq",
-                        "prompt": "What is the purpose of marking a pull request as a draft?",
-                        "choices": [
-                            "To hide the PR from all reviewers",
-                            "To signal work-in-progress that collects CI feedback but cannot be merged yet",
-                            "To skip code review entirely",
-                            "To auto-merge it after 24 hours",
+                        'answer_index': 1,
+                        'difficulty': 3,
+                        'explanation': "A PR tracks a branch, not a fixed set of commits. Pushing more commits to the same branch appends them to the open PR's diff and re-runs CI automatically.",
+                        'company_tags': [
+                            'wipro',
+                            'accenture',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "Draft PRs are explicitly not mergeable, but they still run checks and invite early comments — ideal for getting feedback before the code is final.",
-                        "company_tags": ["amazon", "flipkart"],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Your PR shows \"This branch is out-of-date with the base branch.\" What is the safe fix?",
-                        "choices": [
-                            "Close the PR and recreate it",
-                            "Update your branch (merge or rebase main into it) so CI tests current code",
-                            "Force-push an empty commit",
-                            "Change the base branch to your feature branch",
+                        'qtype': 'mcq',
+                        'prompt': 'What is the purpose of marking a pull request as a draft?',
+                        'choices': [
+                            'To auto-merge it after 24 hours',
+                            'To hide the PR from all reviewers',
+                            'To signal work-in-progress that collects CI feedback but cannot be merged yet',
+                            'To skip code review entirely',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "An out-of-date PR was tested against old main. Rebasing/merging main into the branch refreshes it, re-runs CI on the real merge result, and prevents surprise conflicts.",
-                        "company_tags": ["microsoft", "google"],
+                        'answer_index': 2,
+                        'difficulty': 4,
+                        'explanation': 'Draft PRs are explicitly not mergeable, but they still run checks and invite early comments — ideal for getting feedback before the code is final.',
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "A repo's policy requires \"squash and merge\". What does this do to the PR's 12 commits?",
-                        "choices": [
-                            "Deletes the PR without merging",
+                        'qtype': 'mcq',
+                        'prompt': 'Your PR shows "This branch is out-of-date with the base branch." What is the safe fix?',
+                        'choices': [
+                            'Force-push an empty commit',
+                            'Change the base branch to your feature branch',
+                            'Close the PR and recreate it',
+                            'Update your branch (merge or rebase main into it) so CI tests current code',
+                        ],
+                        'answer_index': 3,
+                        'difficulty': 6,
+                        'explanation': 'An out-of-date PR was tested against old main. Rebasing/merging main into the branch refreshes it, re-runs CI on the real merge result, and prevents surprise conflicts.',
+                        'company_tags': [
+                            'microsoft',
+                            'google',
+                        ],
+                    },
+                    {
+                        'qtype': 'mcq',
+                        'prompt': 'A repo\'s policy requires "squash and merge". What does this do to the PR\'s 12 commits?',
+                        'choices': [
                             "Combines all 12 into a single commit on main, keeping main's history linear",
-                            "Merges each commit individually with 12 merge commits",
-                            "Rebases them but keeps all 12 separate",
+                            'Merges each commit individually with 12 merge commits',
+                            'Rebases them but keeps all 12 separate',
+                            'Deletes the PR without merging',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "Squash merge compresses the whole PR into one commit on the target branch. Main stays clean and readable, while the PR page preserves the full discussion history.",
-                        "company_tags": ["amazon", "microsoft"],
+                        'answer_index': 0,
+                        'difficulty': 6,
+                        'explanation': 'Squash merge compresses the whole PR into one commit on the target branch. Main stays clean and readable, while the PR page preserves the full discussion history.',
+                        'company_tags': [
+                            'amazon',
+                            'microsoft',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "A PR is approved but a required CI check is failing. What happens when you try to merge?",
-                        "choices": [
-                            "GitHub merges anyway since approval is enough",
-                            "The merge is blocked until the required check passes",
-                            "The PR is auto-closed",
-                            "Approval is revoked automatically",
+                        'qtype': 'mcq',
+                        'prompt': 'A PR is approved but a required CI check is failing. What happens when you try to merge?',
+                        'choices': [
+                            'GitHub merges anyway since approval is enough',
+                            'The merge is blocked until the required check passes',
+                            'The PR is auto-closed',
+                            'Approval is revoked automatically',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 7,
-                        "explanation": "Required status checks are a hard gate in branch protection: neither approvals nor admin habit bypass them. Fix the failing check, then merge.",
-                        "company_tags": ["google", "flipkart"],
+                        'answer_index': 1,
+                        'difficulty': 7,
+                        'explanation': 'Required status checks are a hard gate in branch protection: neither approvals nor admin habit bypass them. Fix the failing check, then merge.',
+                        'company_tags': [
+                            'google',
+                            'flipkart',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "git-remote-code-review",
-                "title": "Code Review Best Practices",
-                "theory_md": """## Why code review matters
+                'slug': 'git-remote-code-review',
+                'title': 'Code Review Best Practices',
+                'theory_md': """## Why code review matters
 
 Reviews catch bugs, spread knowledge across the team, and enforce standards.
 Every PR deserves at least one careful read — it's the cheapest quality gate
@@ -756,101 +847,119 @@ in software engineering.
 4. No secrets, debug prints, or dead code?
 5. Follows the repo's style and conventions?
 """,
-                "difficulty_min": 2,
-                "difficulty_max": 6,
-                "is_important": True,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 2,
+                'difficulty_max': 7,
+                'is_important': True,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "What is the single most effective way to get your pull request reviewed quickly?",
-                        "choices": [
-                            "Make it as large as possible so reviewers see everything",
-                            "Keep it small and focused — one logical change, ideally under ~400 lines",
-                            "Skip the description to save time",
-                            "Assign it to the whole company",
+                        'qtype': 'mcq',
+                        'prompt': 'What is the single most effective way to get your pull request reviewed quickly?',
+                        'choices': [
+                            'Skip the description to save time',
+                            'Assign it to the whole company',
+                            'Make it as large as possible so reviewers see everything',
+                            'Keep it small and focused — one logical change, ideally under ~400 lines',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 2,
-                        "explanation": "Small, focused PRs are easier to understand and approve, so they move through review fast. Large PRs get deferred because reviewing them is cognitively expensive.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 3,
+                        'difficulty': 2,
+                        'explanation': 'Small, focused PRs are easier to understand and approve, so they move through review fast. Large PRs get deferred because reviewing them is cognitively expensive.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "A reviewer writes \"nit: rename `tmp` to `pendingOrders`.\" What does the `nit:` prefix communicate?",
-                        "choices": [
-                            "The code is broken and must be fixed before merge",
-                            "A minor, optional suggestion that does not block approval",
-                            "The reviewer is rejecting the PR",
-                            "The change requires a security audit",
+                        'qtype': 'mcq',
+                        'prompt': 'A reviewer writes "nit: rename `tmp` to `pendingOrders`." What does the `nit:` prefix communicate?',
+                        'choices': [
+                            'A minor, optional suggestion that does not block approval',
+                            'The reviewer is rejecting the PR',
+                            'The change requires a security audit',
+                            'The code is broken and must be fixed before merge',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 3,
-                        "explanation": "`nit:` marks a trivial polish comment — the author can accept or decline it without it blocking the review. Separating nits from blockers keeps reviews efficient.",
-                        "company_tags": ["accenture", "zoho"],
+                        'answer_index': 0,
+                        'difficulty': 3,
+                        'explanation': '`nit:` marks a trivial polish comment — the author can accept or decline it without it blocking the review. Separating nits from blockers keeps reviews efficient.',
+                        'company_tags': [
+                            'accenture',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Which reviewer behavior best matches code-review best practices?",
-                        "choices": [
-                            "Approving a 2,000-line diff in 30 seconds to unblock the team",
-                            "Asking \"What happens if items is empty here?\" on unhandled input",
-                            "Commenting \"Fix this\" on every line",
+                        'qtype': 'mcq',
+                        'prompt': 'Which reviewer behavior best matches code-review best practices?',
+                        'choices': [
+                            'Approving a 2,000-line diff in 30 seconds to unblock the team',
+                            'Asking "What happens if items is empty here?" on unhandled input',
+                            'Commenting "Fix this" on every line',
                             "Resolving the author's threads for them",
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "Good reviews ask probing questions about behavior and edge cases. Rubber-stamping, commanding tone, and resolving others' threads all undermine the review's value.",
-                        "company_tags": ["amazon", "flipkart"],
+                        'answer_index': 1,
+                        'difficulty': 4,
+                        'explanation': "Good reviews ask probing questions about behavior and edge cases. Rubber-stamping, commanding tone, and resolving others' threads all undermine the review's value.",
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "As a PR author, a reviewer leaves a comment you disagree with. What should you do?",
-                        "choices": [
-                            "Ignore it and merge anyway",
+                        'qtype': 'mcq',
+                        'prompt': 'As a PR author, a reviewer leaves a comment you disagree with. What should you do?',
+                        'choices': [
+                            'Close the PR and open a new one',
+                            'Ignore it and merge anyway',
                             "Reply explaining your reasoning and discuss; don't silently resolve their thread",
-                            "Delete the comment",
-                            "Close the PR and open a new one",
+                            'Delete the comment',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "Disagreement is normal — discuss it in the thread with your reasoning. Silently resolving someone's comment hides the disagreement and breaks trust in the review process.",
-                        "company_tags": ["microsoft", "google"],
+                        'answer_index': 2,
+                        'difficulty': 5,
+                        'explanation': "Disagreement is normal — discuss it in the thread with your reasoning. Silently resolving someone's comment hides the disagreement and breaks trust in the review process.",
+                        'company_tags': [
+                            'microsoft',
+                            'google',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What should every good PR description include?",
-                        "choices": [
-                            "Only the Jira ticket number",
-                            "What changed, why it changed, and how to test it",
+                        'qtype': 'mcq',
+                        'prompt': 'What should every good PR description include?',
+                        'choices': [
                             "The author's resume and contact info",
-                            "A copy of the entire diff",
+                            'A copy of the entire diff',
+                            'Only the Jira ticket number',
+                            'What changed, why it changed, and how to test it',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "What/why/how-to-test gives reviewers context to evaluate the change instead of guessing intent. A ticket number alone forces them to go hunting for context.",
-                        "company_tags": ["amazon", "wipro"],
+                        'answer_index': 3,
+                        'difficulty': 5,
+                        'explanation': 'What/why/how-to-test gives reviewers context to evaluate the change instead of guessing intent. A ticket number alone forces them to go hunting for context.',
+                        'company_tags': [
+                            'amazon',
+                            'wipro',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "During review you spot a hardcoded API key in the diff. What is the correct response?",
-                        "choices": [
-                            "Approve and let the author rotate it later",
-                            "Block the PR, flag the secret, and require it removed and rotated before merge",
-                            "Merge it and open a cleanup ticket for next sprint",
-                            "Comment \"nit:\" and approve",
+                        'qtype': 'mcq',
+                        'prompt': 'During review you spot a hardcoded API key in the diff. What is the correct response?',
+                        'choices': [
+                            'Block the PR, flag the secret, and require it removed and rotated before merge',
+                            'Merge it and open a cleanup ticket for next sprint',
+                            'Comment "nit:" and approve',
+                            'Approve and let the author rotate it later',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 7,
-                        "explanation": "Secrets in git history are permanent once merged — they must be purged from history and rotated. This is always a blocking issue, never a nit or a later cleanup.",
-                        "company_tags": ["google", "microsoft"],
+                        'answer_index': 0,
+                        'difficulty': 7,
+                        'explanation': 'Secrets in git history are permanent once merged — they must be purged from history and rotated. This is always a blocking issue, never a nit or a later cleanup.',
+                        'company_tags': [
+                            'google',
+                            'microsoft',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "git-remote-protected-branches",
-                "title": "Protected Branches & Branch Policies",
-                "theory_md": """## What is branch protection?
+                'slug': 'git-remote-protected-branches',
+                'title': 'Protected Branches & Branch Policies',
+                'theory_md': """## What is branch protection?
 
 **Branch protection rules** are GitHub settings that prevent direct pushes to
 important branches (usually `main`) and enforce quality gates before a merge.
@@ -893,108 +1002,126 @@ If a push is rejected with "protected branch hook declined", check the
 repo's Settings → Branches or ask a maintainer — the rule set, not your
 credentials, is usually the cause.
 """,
-                "difficulty_min": 3,
-                "difficulty_max": 7,
-                "is_important": False,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 3,
+                'difficulty_max': 7,
+                'is_important': False,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "What is the main purpose of branch protection rules on `main`?",
-                        "choices": [
-                            "To hide the code from contributors",
-                            "To prevent direct pushes and enforce review + CI gates before merging",
-                            "To make the branch read-only forever",
-                            "To delete old branches automatically",
+                        'qtype': 'mcq',
+                        'prompt': 'What is the main purpose of branch protection rules on `main`?',
+                        'choices': [
+                            'To delete old branches automatically',
+                            'To hide the code from contributors',
+                            'To prevent direct pushes and enforce review + CI gates before merging',
+                            'To make the branch read-only forever',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 3,
-                        "explanation": "Protection rules turn the PR workflow into an enforced policy: every change to main must be reviewed and pass checks, which keeps the default branch stable.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 2,
+                        'difficulty': 3,
+                        'explanation': 'Protection rules turn the PR workflow into an enforced policy: every change to main must be reviewed and pass checks, which keeps the default branch stable.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Your `git push origin main` is rejected with \"protected branch hook declined\". What does this most likely mean?",
-                        "choices": [
-                            "Your SSH key is expired",
-                            "A branch protection rule forbids direct pushes to main — use a PR",
-                            "GitHub is down",
-                            "Your local repo is corrupted",
+                        'qtype': 'mcq',
+                        'prompt': 'Your `git push origin main` is rejected with "protected branch hook declined". What does this most likely mean?',
+                        'choices': [
+                            'GitHub is down',
+                            'Your local repo is corrupted',
+                            'Your SSH key is expired',
+                            'A branch protection rule forbids direct pushes to main — use a PR',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "That specific message comes from GitHub's server-side protection hooks, not from auth. It means the repo policy blocks direct pushes; the fix is a pull request.",
-                        "company_tags": ["wipro", "accenture"],
+                        'answer_index': 3,
+                        'difficulty': 4,
+                        'explanation': "That specific message comes from GitHub's server-side protection hooks, not from auth. It means the repo policy blocks direct pushes; the fix is a pull request.",
+                        'company_tags': [
+                            'wipro',
+                            'accenture',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does a `CODEOWNERS` file do?",
-                        "choices": [
-                            "Lists who wrote each line of code historically",
-                            "Auto-requests reviews from specified users/teams based on changed file paths",
-                            "Grants admin access to the repo",
-                            "Defines the license of the project",
+                        'qtype': 'mcq',
+                        'prompt': 'What does a `CODEOWNERS` file do?',
+                        'choices': [
+                            'Auto-requests reviews from specified users/teams based on changed file paths',
+                            'Grants admin access to the repo',
+                            'Defines the license of the project',
+                            'Lists who wrote each line of code historically',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "CODEOWNERS maps path patterns to owners, so PRs touching those paths automatically request review from the right people — the domain experts for that code.",
-                        "company_tags": ["amazon", "flipkart"],
+                        'answer_index': 0,
+                        'difficulty': 4,
+                        'explanation': 'CODEOWNERS maps path patterns to owners, so PRs touching those paths automatically request review from the right people — the domain experts for that code.',
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "A repo requires \"linear history\" on main. Which merge approach does this rule forbid?",
-                        "choices": [
-                            "Squash and merge",
-                            "Rebase and merge",
-                            "Merge commits",
-                            "Fast-forward-only pushes",
+                        'qtype': 'mcq',
+                        'prompt': 'A repo requires "linear history" on main. Which merge approach does this rule forbid?',
+                        'choices': [
+                            'Squash and merge',
+                            'Rebase and merge',
+                            'Merge commits',
+                            'Fast-forward-only pushes',
                         ],
-                        "answer_index": 2,
-                        "difficulty": 6,
-                        "explanation": "Linear history means no merge commits — every commit on main has exactly one parent. Squash and rebase merges satisfy this; regular merge commits violate it.",
-                        "company_tags": ["microsoft", "google"],
+                        'answer_index': 2,
+                        'difficulty': 6,
+                        'explanation': 'Linear history means no merge commits — every commit on main has exactly one parent. Squash and rebase merges satisfy this; regular merge commits violate it.',
+                        'company_tags': [
+                            'microsoft',
+                            'google',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why would a team enable \"Require conversation resolution\" before merging?",
-                        "choices": [
-                            "To make PRs merge faster",
-                            "To ensure no reviewer concern is left unaddressed when code lands",
-                            "To reduce the number of reviewers",
-                            "To skip CI checks",
+                        'qtype': 'mcq',
+                        'prompt': 'Why would a team enable "Require conversation resolution" before merging?',
+                        'choices': [
+                            'To skip CI checks',
+                            'To make PRs merge faster',
+                            'To ensure no reviewer concern is left unaddressed when code lands',
+                            'To reduce the number of reviewers',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "Unresolved threads often hide real objections. Requiring resolution forces every concern to be answered or fixed before the code reaches main.",
-                        "company_tags": ["amazon", "zoho"],
+                        'answer_index': 2,
+                        'difficulty': 6,
+                        'explanation': 'Unresolved threads often hide real objections. Requiring resolution forces every concern to be answered or fixed before the code reaches main.',
+                        'company_tags': [
+                            'amazon',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "In `CODEOWNERS`, you write `*.js @org/frontend-team`. A PR changes `app/main.py` and `ui/app.js`. Who is auto-requested?",
-                        "choices": [
-                            "Nobody — patterns only match the repo root",
-                            "Only @org/frontend-team, because ui/app.js matches *.js",
-                            "@org/frontend-team for both files",
-                            "The PR author",
+                        'qtype': 'mcq',
+                        'prompt': 'In `CODEOWNERS`, you write `*.js @org/frontend-team`. A PR changes `app/main.py` and `ui/app.js`. Who is auto-requested?',
+                        'choices': [
+                            '@org/frontend-team for both files',
+                            'The PR author',
+                            'Nobody — patterns only match the repo root',
+                            'Only @org/frontend-team, because ui/app.js matches *.js',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 7,
-                        "explanation": "CODEOWNERS patterns match anywhere in the repo unless anchored with `/`, so `*.js` matches `ui/app.js`. `main.py` matches no rule, so only the frontend team is requested.",
-                        "company_tags": ["google", "microsoft"],
+                        'answer_index': 3,
+                        'difficulty': 7,
+                        'explanation': 'CODEOWNERS patterns match anywhere in the repo unless anchored with `/`, so `*.js` matches `ui/app.js`. `main.py` matches no rule, so only the frontend team is requested.',
+                        'company_tags': [
+                            'google',
+                            'microsoft',
+                        ],
                     },
                 ],
             },
         ],
     },
     {
-        "slug": "github-actions",
-        "name": "GitHub Actions",
-        "description": "Automate CI/CD with workflows: triggers, jobs, secrets, caching, and full deployment pipelines.",
-        "lessons": [
+        'slug': 'github-actions',
+        'name': 'GitHub Actions',
+        'description': 'Automate CI/CD with workflows: triggers, jobs, secrets, caching, and full deployment pipelines.',
+        'lessons': [
             {
-                "slug": "github-actions-cicd-concepts",
-                "title": "CI/CD Concepts",
-                "theory_md": """## Continuous Integration (CI)
+                'slug': 'github-actions-cicd-concepts',
+                'title': 'CI/CD Concepts',
+                'theory_md': """## Continuous Integration (CI)
 
 **CI** means every change is automatically built and tested when pushed or
 proposed in a PR. Instead of discovering breakage at release time, the team
@@ -1040,101 +1167,119 @@ jobs:
 
 If any step fails, the whole job fails and the PR shows a red ✗.
 """,
-                "difficulty_min": 1,
-                "difficulty_max": 5,
-                "is_important": True,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 1,
+                'difficulty_max': 7,
+                'is_important': True,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "What is Continuous Integration (CI)?",
-                        "choices": [
-                            "Deploying to production every hour",
-                            "Automatically building and testing every change when it is pushed or proposed",
-                            "Writing code continuously without breaks",
-                            "Merging all branches once a year",
+                        'qtype': 'mcq',
+                        'prompt': 'What is Continuous Integration (CI)?',
+                        'choices': [
+                            'Deploying to production every hour',
+                            'Automatically building and testing every change when it is pushed or proposed',
+                            'Writing code continuously without breaks',
+                            'Merging all branches once a year',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 1,
-                        "explanation": "CI automatically builds and tests each change on push/PR, so breakage is caught within minutes rather than at release time.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 1,
+                        'difficulty': 1,
+                        'explanation': 'CI automatically builds and tests each change on push/PR, so breakage is caught within minutes rather than at release time.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What distinguishes Continuous Deployment from Continuous Delivery?",
-                        "choices": [
-                            "Deployment uses more servers",
-                            "Deployment releases automatically on every passing build; Delivery keeps a human approval step",
-                            "Delivery is faster than Deployment",
-                            "They are the same thing",
+                        'qtype': 'mcq',
+                        'prompt': 'What distinguishes Continuous Deployment from Continuous Delivery?',
+                        'choices': [
+                            'They are the same thing',
+                            'Deployment uses more servers',
+                            'Deployment releases automatically on every passing build; Delivery keeps a human approval step',
+                            'Delivery is faster than Deployment',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "Both require every build to be releasable. Delivery pauses for a manual go-ahead; Deployment ships automatically — the human step is the only difference.",
-                        "company_tags": ["wipro", "accenture"],
+                        'answer_index': 2,
+                        'difficulty': 4,
+                        'explanation': 'Both require every build to be releasable. Delivery pauses for a manual go-ahead; Deployment ships automatically — the human step is the only difference.',
+                        'company_tags': [
+                            'wipro',
+                            'accenture',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why does CI eliminate most \"works on my machine\" problems?",
-                        "choices": [
-                            "It bans local development",
-                            "Every change runs the same steps in a fresh, standardized environment",
+                        'qtype': 'mcq',
+                        'prompt': 'Why does CI eliminate most "works on my machine" problems?',
+                        'choices': [
                             "It runs tests on the developer's laptop",
-                            "It deletes local environments",
+                            'It deletes local environments',
+                            'It bans local development',
+                            'Every change runs the same steps in a fresh, standardized environment',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "CI runners start clean and follow the workflow file exactly, so environment-specific quirks of a developer's laptop cannot hide broken builds.",
-                        "company_tags": ["amazon", "flipkart"],
+                        'answer_index': 3,
+                        'difficulty': 4,
+                        'explanation': "CI runners start clean and follow the workflow file exactly, so environment-specific quirks of a developer's laptop cannot hide broken builds.",
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "In a typical CI pipeline, what order do build → test → lint → deploy follow, and why?",
-                        "choices": [
-                            "Deploy first to fail fast",
-                            "Build, then test, then lint, then deploy — each stage gates the next so broken code never ships",
+                        'qtype': 'mcq',
+                        'prompt': 'In a typical CI pipeline, what order do build → test → lint → deploy follow, and why?',
+                        'choices': [
+                            'Build, then test, then lint, then deploy — each stage gates the next so broken code never ships',
                             "Lint last because style doesn't matter",
-                            "Order is random and irrelevant",
+                            'Order is random and irrelevant',
+                            'Deploy first to fail fast',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "Pipeline stages are gates: if build or test fails, the job stops and nothing deploys. Ordering verification before deployment guarantees only proven code ships.",
-                        "company_tags": ["microsoft", "zoho"],
+                        'answer_index': 0,
+                        'difficulty': 5,
+                        'explanation': 'Pipeline stages are gates: if build or test fails, the job stops and nothing deploys. Ordering verification before deployment guarantees only proven code ships.',
+                        'company_tags': [
+                            'microsoft',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "A PR shows a red ✗ on its checks. What does that tell a reviewer?",
-                        "choices": [
-                            "The PR was approved",
-                            "At least one CI step failed — the change should not merge until it is green",
-                            "The PR is a draft",
-                            "The reviewer must merge immediately",
+                        'qtype': 'mcq',
+                        'prompt': 'A PR shows a red ✗ on its checks. What does that tell a reviewer?',
+                        'choices': [
+                            'The PR was approved',
+                            'At least one CI step failed — the change should not merge until it is green',
+                            'The PR is a draft',
+                            'The reviewer must merge immediately',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "Red checks mean the automated pipeline failed. Combined with branch protection requiring green checks, the PR is blocked until the failure is fixed.",
-                        "company_tags": ["google", "amazon"],
+                        'answer_index': 1,
+                        'difficulty': 5,
+                        'explanation': 'Red checks mean the automated pipeline failed. Combined with branch protection requiring green checks, the PR is blocked until the failure is fixed.',
+                        'company_tags': [
+                            'google',
+                            'amazon',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "A team moves from monthly big-bang releases to CI with small daily merges. Which risk does this primarily reduce?",
-                        "choices": [
-                            "Server hardware failure",
-                            "The blast radius of each change — bugs are isolated to small diffs and caught fast",
-                            "Hiring costs",
-                            "Internet outages",
+                        'qtype': 'mcq',
+                        'prompt': 'A team moves from monthly big-bang releases to CI with small daily merges. Which risk does this primarily reduce?',
+                        'choices': [
+                            'Internet outages',
+                            'Server hardware failure',
+                            'The blast radius of each change — bugs are isolated to small diffs and caught fast',
+                            'Hiring costs',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 7,
-                        "explanation": "Small frequent changes mean each failure maps to a tiny diff, making root-causing trivial and rollbacks cheap — the core safety argument for CI/CD.",
-                        "company_tags": ["google", "microsoft"],
+                        'answer_index': 2,
+                        'difficulty': 7,
+                        'explanation': 'Small frequent changes mean each failure maps to a tiny diff, making root-causing trivial and rollbacks cheap — the core safety argument for CI/CD.',
+                        'company_tags': [
+                            'google',
+                            'microsoft',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "github-actions-yaml-basics",
-                "title": "YAML Basics for Workflows",
-                "theory_md": """## YAML: the language of workflows
+                'slug': 'github-actions-yaml-basics',
+                'title': 'YAML Basics for Workflows',
+                'theory_md': """## YAML: the language of workflows
 
 GitHub Actions workflows are YAML files in `.github/workflows/`. YAML is
 indentation-sensitive — **spaces only, never tabs** — and structure is defined
@@ -1163,7 +1308,7 @@ jobs:                         # mapping of job id -> job
   are the #1 cause of "workflow not appearing".
 - **Lists** use `- ` (dash + space); **mappings** use `key: value`.
 - **Strings**: quote values that look like numbers or booleans:
-  `version: \"20\"` not `version: 20` (YAML would parse `20` as a number, and
+  `version: "20"` not `version: 20` (YAML would parse `20` as a number, and
   `on`/`off`/`yes`/`no` as booleans!).
 - **Comments** start with `#`.
 - **Multiline strings** use `|` (literal block):
@@ -1177,104 +1322,127 @@ run: |
 ## The `on` key gotcha
 
 `on` unquoted can be parsed as boolean `true` by some YAML parsers. GitHub
-handles `on:` fine in workflow files, but quoting (`\"on\"`) is the safe
+handles `on:` fine in workflow files, but quoting (`"on"`) is the safe
 habit in reusable YAML snippets.
 """,
-                "difficulty_min": 1,
-                "difficulty_max": 5,
-                "is_important": False,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 1,
+                'difficulty_max': 7,
+                'is_important': False,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "In YAML, what does indentation control?",
-                        "choices": [
-                            "Nothing — it is cosmetic",
-                            "The nesting/structure of the data",
-                            "The execution order of steps",
-                            "The font size in the GitHub UI",
+                        'qtype': 'mcq',
+                        'prompt': 'In YAML, what does indentation control?',
+                        'choices': [
+                            'The nesting/structure of the data',
+                            'The execution order of steps',
+                            'The font size in the GitHub UI',
+                            'Nothing — it is cosmetic',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 1,
-                        "explanation": "YAML has no braces; indentation alone defines which keys belong to which parent. Wrong indentation silently changes the structure or breaks parsing.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 0,
+                        'difficulty': 1,
+                        'explanation': 'YAML has no braces; indentation alone defines which keys belong to which parent. Wrong indentation silently changes the structure or breaks parsing.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Your workflow file doesn't show up in the Actions tab. What is the most likely cause?",
-                        "choices": [
-                            "The repo is private",
-                            "An indentation or syntax error in the YAML",
-                            "You need to restart GitHub",
-                            "Workflows only appear on weekends",
+                        'qtype': 'mcq',
+                        'prompt': "Your workflow file doesn't show up in the Actions tab. What is the most likely cause?",
+                        'choices': [
+                            'The repo is private',
+                            'An indentation or syntax error in the YAML',
+                            'You need to restart GitHub',
+                            'Workflows only appear on weekends',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 2,
-                        "explanation": "GitHub silently ignores workflow files that fail YAML parsing — and the overwhelmingly common cause is bad indentation. Validate the YAML before anything else.",
-                        "company_tags": ["wipro", "accenture"],
+                        'answer_index': 1,
+                        'difficulty': 2,
+                        'explanation': 'GitHub silently ignores workflow files that fail YAML parsing — and the overwhelmingly common cause is bad indentation. Validate the YAML before anything else.',
+                        'company_tags': [
+                            'wipro',
+                            'accenture',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why should you write `NODE_VERSION: \"20\"` with quotes instead of `NODE_VERSION: 20`?",
-                        "choices": [
-                            "Quotes make it run faster",
-                            "Unquoted 20 is parsed as a number, which can break string-only contexts",
-                            "GitHub requires all values quoted",
-                            "There is no difference",
+                        'qtype': 'mcq',
+                        'prompt': 'Why should you write `NODE_VERSION: "20"` with quotes instead of `NODE_VERSION: 20`?',
+                        'choices': [
+                            'There is no difference',
+                            'Quotes make it run faster',
+                            'Unquoted 20 is parsed as a number, which can break string-only contexts',
+                            'GitHub requires all values quoted',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "YAML auto-types unquoted scalars: `20` becomes an integer. Action inputs expecting strings can then misbehave, so quoting version-like values is the safe habit.",
-                        "company_tags": ["amazon", "flipkart"],
+                        'answer_index': 2,
+                        'difficulty': 4,
+                        'explanation': 'YAML auto-types unquoted scalars: `20` becomes an integer. Action inputs expecting strings can then misbehave, so quoting version-like values is the safe habit.',
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does the `|` (literal block scalar) do in this step?\n```yaml\nrun: |\n  npm ci\n  npm test\n```",
-                        "choices": [
-                            "Runs the commands in parallel",
-                            "Passes both lines as one multiline shell script, preserving line breaks",
-                            "Comments out the second line",
-                            "Pipes npm ci output into npm test",
+                        'qtype': 'mcq',
+                        'prompt': """What does the `|` (literal block scalar) do in this step?
+                        ```yaml
+                        run: |
+                          npm ci
+                          npm test
+                        ```""",
+                        'choices': [
+                            'Comments out the second line',
+                            'Pipes npm ci output into npm test',
+                            'Runs the commands in parallel',
+                            'Passes both lines as one multiline shell script, preserving line breaks',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "`|` keeps newlines, so the runner receives a two-line shell script executed top to bottom. Without it you'd need awkward quoting to run multiple commands.",
-                        "company_tags": ["microsoft", "zoho"],
+                        'answer_index': 3,
+                        'difficulty': 5,
+                        'explanation': "`|` keeps newlines, so the runner receives a two-line shell script executed top to bottom. Without it you'd need awkward quoting to run multiple commands.",
+                        'company_tags': [
+                            'microsoft',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "In YAML, what is the difference between `- run: npm test` (a list item) and `run: npm test` (a mapping key)?",
-                        "choices": [
-                            "No difference",
+                        'qtype': 'mcq',
+                        'prompt': 'In YAML, what is the difference between `- run: npm test` (a list item) and `run: npm test` (a mapping key)?',
+                        'choices': [
                             "The dash makes it an element of the steps list; without it, it's a key-value pair — steps must be a list of step mappings",
-                            "The dash version runs twice",
-                            "The dash is only for comments",
+                            'The dash version runs twice',
+                            'The dash is only for comments',
+                            'No difference',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "`steps:` must be a sequence, and each step is a mapping inside it. The `-` starts each list element; omitting it breaks the expected schema and the workflow is invalid.",
-                        "company_tags": ["google", "amazon"],
+                        'answer_index': 0,
+                        'difficulty': 6,
+                        'explanation': '`steps:` must be a sequence, and each step is a mapping inside it. The `-` starts each list element; omitting it breaks the expected schema and the workflow is invalid.',
+                        'company_tags': [
+                            'google',
+                            'amazon',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why is `on` (the workflow trigger key) considered a YAML gotcha?",
-                        "choices": [
+                        'qtype': 'mcq',
+                        'prompt': 'Why is `on` (the workflow trigger key) considered a YAML gotcha?',
+                        'choices': [
                             "It is a reserved GitHub keyword that can't be used",
-                            "Some YAML parsers interpret unquoted `on` as boolean true, so quoting it is the safe habit",
-                            "It must always be written in uppercase",
-                            "It only works on Tuesdays",
+                            'Some YAML parsers interpret unquoted `on` as boolean true, so quoting it is the safe habit',
+                            'It must always be written in uppercase',
+                            'It only works on Tuesdays',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 7,
-                        "explanation": "Per YAML 1.1, `on`/`off`/`yes`/`no` are booleans. GitHub's parser tolerates `on:`, but other tools may read it as `true:` — quoting avoids the ambiguity entirely.",
-                        "company_tags": ["google", "microsoft"],
+                        'answer_index': 1,
+                        'difficulty': 7,
+                        'explanation': "Per YAML 1.1, `on`/`off`/`yes`/`no` are booleans. GitHub's parser tolerates `on:`, but other tools may read it as `true:` — quoting avoids the ambiguity entirely.",
+                        'company_tags': [
+                            'google',
+                            'microsoft',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "github-actions-triggers",
-                "title": "Workflow Triggers",
-                "theory_md": """## Events that start workflows
+                'slug': 'github-actions-triggers',
+                'title': 'Workflow Triggers',
+                'theory_md': """## Events that start workflows
 
 The `on:` key declares **which events** trigger the workflow. Files live in
 `.github/workflows/*.yml`.
@@ -1319,101 +1487,119 @@ on:
 Multiple triggers = multiple entry points to the same workflow. `on: [push,
 pull_request]` is the classic CI combo: validate every push and every PR.
 """,
-                "difficulty_min": 2,
-                "difficulty_max": 6,
-                "is_important": True,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 2,
+                'difficulty_max': 7,
+                'is_important': True,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does `on: [push, pull_request]` mean?",
-                        "choices": [
-                            "The workflow runs only when a PR is merged",
-                            "The workflow runs on every push and on PR events (opened, updated)",
-                            "The workflow pushes code to a PR",
-                            "The workflow runs once, then deletes itself",
+                        'qtype': 'mcq',
+                        'prompt': 'What does `on: [push, pull_request]` mean?',
+                        'choices': [
+                            'The workflow pushes code to a PR',
+                            'The workflow runs once, then deletes itself',
+                            'The workflow runs only when a PR is merged',
+                            'The workflow runs on every push and on PR events (opened, updated)',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 2,
-                        "explanation": "Multiple triggers are OR'd: the workflow runs whenever ANY listed event occurs. Push + pull_request is the standard CI combo covering both direct pushes and PRs.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 3,
+                        'difficulty': 2,
+                        'explanation': "Multiple triggers are OR'd: the workflow runs whenever ANY listed event occurs. Push + pull_request is the standard CI combo covering both direct pushes and PRs.",
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "You want a nightly test run at 2 AM. Which trigger do you use, and in which timezone is the schedule evaluated?",
-                        "choices": [
-                            "schedule with cron, evaluated in UTC",
-                            "workflow_dispatch with a timer",
-                            "push with a delay",
-                            "schedule with cron, evaluated in your local timezone",
+                        'qtype': 'mcq',
+                        'prompt': 'You want a nightly test run at 2 AM. Which trigger do you use, and in which timezone is the schedule evaluated?',
+                        'choices': [
+                            'workflow_dispatch with a timer',
+                            'push with a delay',
+                            'schedule with cron, evaluated in your local timezone',
+                            'schedule with cron, evaluated in UTC',
                         ],
-                        "answer_index": 0,
-                        "difficulty": 4,
-                        "explanation": "`schedule` uses cron expressions and GitHub always evaluates them in UTC. For 2 AM IST you'd write the equivalent UTC cron (`30 20 * * *`).",
-                        "company_tags": ["wipro", "accenture"],
+                        'answer_index': 3,
+                        'difficulty': 4,
+                        'explanation': "`schedule` uses cron expressions and GitHub always evaluates them in UTC. For 2 AM IST you'd write the equivalent UTC cron (`30 20 * * *`).",
+                        'company_tags': [
+                            'wipro',
+                            'accenture',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What is `workflow_dispatch` used for?",
-                        "choices": [
-                            "Automatically dispatching emails",
-                            "Adding a manual \"Run workflow\" button in the Actions UI, optionally with inputs",
-                            "Dispatching runners to other repos",
-                            "Skipping CI on demand",
+                        'qtype': 'mcq',
+                        'prompt': 'What is `workflow_dispatch` used for?',
+                        'choices': [
+                            'Automatically dispatching emails',
+                            'Adding a manual "Run workflow" button in the Actions UI, optionally with inputs',
+                            'Dispatching runners to other repos',
+                            'Skipping CI on demand',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "workflow_dispatch makes a workflow manually runnable from the GitHub UI/API, with optional typed inputs — perfect for on-demand deploys or maintenance tasks.",
-                        "company_tags": ["amazon", "flipkart"],
+                        'answer_index': 1,
+                        'difficulty': 4,
+                        'explanation': 'workflow_dispatch makes a workflow manually runnable from the GitHub UI/API, with optional typed inputs — perfect for on-demand deploys or maintenance tasks.',
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Your CI runs on every push, including docs-only commits, wasting runner minutes. What is the cleanest fix?",
-                        "choices": [
-                            "Delete the workflow",
-                            "Add a paths filter so it only runs when relevant files change",
-                            "Make the repo private",
-                            "Run CI on a slower runner",
+                        'qtype': 'mcq',
+                        'prompt': 'Your CI runs on every push, including docs-only commits, wasting runner minutes. What is the cleanest fix?',
+                        'choices': [
+                            'Run CI on a slower runner',
+                            'Delete the workflow',
+                            'Add a paths filter so it only runs when relevant files change',
+                            'Make the repo private',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "`on.push.paths: ['src/**']` (or `paths-ignore` for docs) scopes the trigger to relevant changes — the standard way to cut wasted CI minutes without losing coverage.",
-                        "company_tags": ["microsoft", "zoho"],
+                        'answer_index': 2,
+                        'difficulty': 5,
+                        'explanation': "`on.push.paths: ['src/**']` (or `paths-ignore` for docs) scopes the trigger to relevant changes — the standard way to cut wasted CI minutes without losing coverage.",
+                        'company_tags': [
+                            'microsoft',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "In `on: pull_request: types: [opened, synchronize]`, what event does `synchronize` cover?",
-                        "choices": [
-                            "The PR being merged",
+                        'qtype': 'mcq',
+                        'prompt': 'In `on: pull_request: types: [opened, synchronize]`, what event does `synchronize` cover?',
+                        'choices': [
+                            'Two PRs being merged together',
+                            'The base branch changing',
+                            'The PR being merged',
                             "New commits pushed to the PR's branch",
-                            "Two PRs being merged together",
-                            "The base branch changing",
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "`synchronize` fires when the PR's head branch gets new commits. Without it, CI would run on PR creation but never re-run after the author pushes fixes.",
-                        "company_tags": ["google", "amazon"],
+                        'answer_index': 3,
+                        'difficulty': 6,
+                        'explanation': "`synchronize` fires when the PR's head branch gets new commits. Without it, CI would run on PR creation but never re-run after the author pushes fixes.",
+                        'company_tags': [
+                            'google',
+                            'amazon',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "A scheduled workflow uses the cron `0 6 * * *` but you notice it sometimes runs several minutes late. Why is this expected?",
-                        "choices": [
-                            "Cron syntax is broken in GitHub Actions",
-                            "Scheduled runs are best-effort: GitHub queues them and high load can delay execution",
-                            "The workflow file has a syntax error",
-                            "Schedule only works on private repos",
+                        'qtype': 'mcq',
+                        'prompt': 'A scheduled workflow uses the cron `0 6 * * *` but you notice it sometimes runs several minutes late. Why is this expected?',
+                        'choices': [
+                            'Scheduled runs are best-effort: GitHub queues them and high load can delay execution',
+                            'The workflow file has a syntax error',
+                            'Schedule only works on private repos',
+                            'Cron syntax is broken in GitHub Actions',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 7,
-                        "explanation": "GitHub documents that scheduled workflows may be delayed during periods of high load — cron triggers request a run, they don't guarantee exact start times.",
-                        "company_tags": ["google", "microsoft"],
+                        'answer_index': 0,
+                        'difficulty': 7,
+                        'explanation': "GitHub documents that scheduled workflows may be delayed during periods of high load — cron triggers request a run, they don't guarantee exact start times.",
+                        'company_tags': [
+                            'google',
+                            'microsoft',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "github-actions-jobs-steps-runners",
-                "title": "Jobs, Steps & Runners",
-                "theory_md": """## The hierarchy: workflow → jobs → steps
+                'slug': 'github-actions-jobs-steps-runners',
+                'title': 'Jobs, Steps & Runners',
+                'theory_md': """## The hierarchy: workflow → jobs → steps
 
 ```yaml
 jobs:
@@ -1481,101 +1667,119 @@ jobs:
 One job definition × 3 matrix values = 3 parallel jobs. Ideal for testing
 across versions or OSes.
 """,
-                "difficulty_min": 2,
-                "difficulty_max": 6,
-                "is_important": False,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 2,
+                'difficulty_max': 6,
+                'is_important': False,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "By default, how do multiple jobs in a workflow execute?",
-                        "choices": [
-                            "Sequentially, in file order",
-                            "In parallel, each on its own fresh runner",
-                            "Only one job ever runs",
-                            "Alphabetically by job id",
+                        'qtype': 'mcq',
+                        'prompt': 'By default, how do multiple jobs in a workflow execute?',
+                        'choices': [
+                            'Alphabetically by job id',
+                            'Sequentially, in file order',
+                            'In parallel, each on its own fresh runner',
+                            'Only one job ever runs',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 2,
-                        "explanation": "Jobs are independent and parallel by default — each gets a fresh runner. You opt into sequencing explicitly with `needs:`.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 2,
+                        'difficulty': 2,
+                        'explanation': 'Jobs are independent and parallel by default — each gets a fresh runner. You opt into sequencing explicitly with `needs:`.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What is the difference between a step with `run:` and a step with `uses:`?",
-                        "choices": [
-                            "run executes shell commands; uses runs a reusable published action",
-                            "They are identical",
-                            "run is faster",
-                            "uses only works on Windows",
+                        'qtype': 'mcq',
+                        'prompt': 'What is the difference between a step with `run:` and a step with `uses:`?',
+                        'choices': [
+                            'run is faster',
+                            'uses only works on Windows',
+                            'run executes shell commands; uses runs a reusable published action',
+                            'They are identical',
                         ],
-                        "answer_index": 0,
-                        "difficulty": 3,
-                        "explanation": "`run:` steps execute shell commands inline; `uses:` steps invoke a packaged action (like actions/checkout) that someone published for reuse.",
-                        "company_tags": ["wipro", "accenture"],
+                        'answer_index': 2,
+                        'difficulty': 3,
+                        'explanation': '`run:` steps execute shell commands inline; `uses:` steps invoke a packaged action (like actions/checkout) that someone published for reuse.',
+                        'company_tags': [
+                            'wipro',
+                            'accenture',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "You write a file in job `build` and try to read it in job `deploy`. It is missing. Why?",
-                        "choices": [
-                            "Files are deleted after 1 minute",
-                            "Each job runs on a fresh runner — filesystems are not shared between jobs",
-                            "You need sudo to share files",
+                        'qtype': 'mcq',
+                        'prompt': 'You write a file in job `build` and try to read it in job `deploy`. It is missing. Why?',
+                        'choices': [
+                            'Each job runs on a fresh runner — filesystems are not shared between jobs',
+                            'You need sudo to share files',
                             "YAML doesn't support files",
+                            'Files are deleted after 1 minute',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "Jobs are isolated VMs. To pass data between jobs you must upload it as an artifact in one job and download it in the other.",
-                        "company_tags": ["amazon", "flipkart"],
+                        'answer_index': 0,
+                        'difficulty': 5,
+                        'explanation': 'Jobs are isolated VMs. To pass data between jobs you must upload it as an artifact in one job and download it in the other.',
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does `needs: test` on the `deploy` job accomplish?",
-                        "choices": [
-                            "It runs test and deploy at the same time",
-                            "It makes deploy wait for test to succeed, and skips deploy if test fails",
+                        'qtype': 'mcq',
+                        'prompt': 'What does `needs: test` on the `deploy` job accomplish?',
+                        'choices': [
+                            'It runs test and deploy at the same time',
+                            'It makes deploy wait for test to succeed, and skips deploy if test fails',
                             "It copies test's logs into deploy",
-                            "It renames the job to test",
+                            'It renames the job to test',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "`needs` creates a dependency: deploy only starts after test completes successfully, and is skipped entirely if test fails — the standard build→test→deploy gate.",
-                        "company_tags": ["microsoft", "zoho"],
+                        'answer_index': 1,
+                        'difficulty': 5,
+                        'explanation': '`needs` creates a dependency: deploy only starts after test completes successfully, and is skipped entirely if test fails — the standard build→test→deploy gate.',
+                        'company_tags': [
+                            'microsoft',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "A matrix strategy lists `node: [18, 20, 22]`. How many jobs run, and how?",
-                        "choices": [
-                            "1 job that tests 3 versions sequentially",
-                            "3 parallel jobs, one per Node version",
-                            "22 jobs",
-                            "0 — matrix is documentation only",
+                        'qtype': 'mcq',
+                        'prompt': 'A matrix strategy lists `node: [18, 20, 22]`. How many jobs run, and how?',
+                        'choices': [
+                            '0 — matrix is documentation only',
+                            '1 job that tests 3 versions sequentially',
+                            '3 parallel jobs, one per Node version',
+                            '22 jobs',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "The matrix fans out: GitHub creates one job per combination (here 3), running in parallel, with `${{ matrix.node }}` resolving to each value.",
-                        "company_tags": ["google", "amazon"],
+                        'answer_index': 2,
+                        'difficulty': 6,
+                        'explanation': 'The matrix fans out: GitHub creates one job per combination (here 3), running in parallel, with `${{ matrix.node }}` resolving to each value.',
+                        'company_tags': [
+                            'google',
+                            'amazon',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why is `runs-on: ubuntu-latest` the most common choice for CI jobs?",
-                        "choices": [
-                            "It is the only free option",
-                            "Linux runners are the cheapest/fastest for most build toolchains and match typical deployment targets",
-                            "GitHub requires Linux for all workflows",
-                            "Windows runners cannot run YAML",
+                        'qtype': 'mcq',
+                        'prompt': 'Why is `runs-on: ubuntu-latest` the most common choice for CI jobs?',
+                        'choices': [
+                            'GitHub requires Linux for all workflows',
+                            'Windows runners cannot run YAML',
+                            'It is the only free option',
+                            'Linux runners are the cheapest/fastest for most build toolchains and match typical deployment targets',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "Most server toolchains are Linux-first, ubuntu runners are the most economical, and testing on the same OS family you deploy to catches environment bugs early.",
-                        "company_tags": ["google", "microsoft"],
+                        'answer_index': 3,
+                        'difficulty': 6,
+                        'explanation': 'Most server toolchains are Linux-first, ubuntu runners are the most economical, and testing on the same OS family you deploy to catches environment bugs early.',
+                        'company_tags': [
+                            'google',
+                            'microsoft',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "github-actions-using-actions",
-                "title": "Using Actions (checkout, setup-*)",
-                "theory_md": """## Reusable actions
+                'slug': 'github-actions-using-actions',
+                'title': 'Using Actions (checkout, setup-*)',
+                'theory_md': """## Reusable actions
 
 An **action** is a packaged, reusable step published to the GitHub
 Marketplace (or any repo). You reference it with `uses:` plus a version:
@@ -1634,101 +1838,119 @@ third-party action does — it runs with your repo's permissions.
 Runners start with an **empty workspace**. Without `actions/checkout`, there
 is no code to build or test — the most common beginner workflow bug.
 """,
-                "difficulty_min": 2,
-                "difficulty_max": 6,
-                "is_important": True,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 2,
+                'difficulty_max': 7,
+                'is_important': False,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why is `actions/checkout` almost always the first step in a job?",
-                        "choices": [
-                            "It installs Git on the runner",
-                            "Runners start with an empty workspace — checkout clones your repo so there is code to work on",
+                        'qtype': 'mcq',
+                        'prompt': 'Why is `actions/checkout` almost always the first step in a job?',
+                        'choices': [
+                            'It installs Git on the runner',
+                            'Runners start with an empty workspace — checkout clones your repo so there is code to work on',
                             "It is required by GitHub's terms of service",
-                            "It speeds up the runner",
+                            'It speeds up the runner',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 2,
-                        "explanation": "A fresh runner has no files. Without checkout, build/test steps run against an empty directory and fail — the classic beginner mistake.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 1,
+                        'difficulty': 2,
+                        'explanation': 'A fresh runner has no files. Without checkout, build/test steps run against an empty directory and fail — the classic beginner mistake.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does the `with:` block do in a `uses:` step?",
-                        "choices": [
-                            "It lists the files to ignore",
-                            "It passes input parameters to the action",
-                            "It defines environment variables for all jobs",
-                            "It sets the runner OS",
+                        'qtype': 'mcq',
+                        'prompt': 'What does the `with:` block do in a `uses:` step?',
+                        'choices': [
+                            'It sets the runner OS',
+                            'It lists the files to ignore',
+                            'It passes input parameters to the action',
+                            'It defines environment variables for all jobs',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 3,
-                        "explanation": "`with:` supplies the action's declared inputs (like `node-version`). Each action documents its own inputs; misspelled keys are silently ignored.",
-                        "company_tags": ["wipro", "accenture"],
+                        'answer_index': 2,
+                        'difficulty': 3,
+                        'explanation': "`with:` supplies the action's declared inputs (like `node-version`). Each action documents its own inputs; misspelled keys are silently ignored.",
+                        'company_tags': [
+                            'wipro',
+                            'accenture',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why should you write `actions/checkout@v4` instead of `actions/checkout@main`?",
-                        "choices": [
-                            "main is slower",
+                        'qtype': 'mcq',
+                        'prompt': 'Why should you write `actions/checkout@v4` instead of `actions/checkout@main`?',
+                        'choices': [
+                            'v4 is required for private repos',
+                            'There is no reason; both are identical',
+                            'main is slower',
                             "Pinning to a version prevents unexpected breaking changes when the action's default branch updates",
-                            "v4 is required for private repos",
-                            "There is no reason; both are identical",
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "Branches like `main` move. Pinning `@v4` (or a SHA) locks the behavior you tested, so an upstream change can't silently break your pipeline.",
-                        "company_tags": ["amazon", "flipkart"],
+                        'answer_index': 3,
+                        'difficulty': 4,
+                        'explanation': "Branches like `main` move. Pinning `@v4` (or a SHA) locks the behavior you tested, so an upstream change can't silently break your pipeline.",
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does `actions/setup-node@v4` with `node-version: \"20\"` actually do on the runner?",
-                        "choices": [
-                            "It deploys your app to Node hosting",
-                            "It installs the specified Node.js toolchain and adds it to PATH",
-                            "It writes your package.json",
-                            "It opens a Node REPL",
+                        'qtype': 'mcq',
+                        'prompt': 'What does `actions/setup-node@v4` with `node-version: "20"` actually do on the runner?',
+                        'choices': [
+                            'It installs the specified Node.js toolchain and adds it to PATH',
+                            'It writes your package.json',
+                            'It opens a Node REPL',
+                            'It deploys your app to Node hosting',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "Setup actions provision the language runtime on the fresh runner (download, install, PATH configuration) so subsequent `run:` steps can use `node`/`npm`.",
-                        "company_tags": ["microsoft", "zoho"],
+                        'answer_index': 0,
+                        'difficulty': 5,
+                        'explanation': 'Setup actions provision the language runtime on the fresh runner (download, install, PATH configuration) so subsequent `run:` steps can use `node`/`npm`.',
+                        'company_tags': [
+                            'microsoft',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "You pass `with: { nod-version: \"20\" }` (typo) to setup-node and the workflow uses the wrong Node version with no error. Why no error?",
-                        "choices": [
-                            "GitHub auto-corrects typos",
-                            "Unknown `with:` keys are silently ignored by actions",
-                            "Typos are only warnings in YAML",
-                            "The action defaults to v20 anyway",
+                        'qtype': 'mcq',
+                        'prompt': 'You pass `with: { nod-version: "20" }` (typo) to setup-node and the workflow uses the wrong Node version with no error. Why no error?',
+                        'choices': [
+                            'GitHub auto-corrects typos',
+                            'Unknown `with:` keys are silently ignored by actions',
+                            'Typos are only warnings in YAML',
+                            'The action defaults to v20 anyway',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "Actions only read the inputs they declare; anything else in `with:` is ignored without complaint. This silent behavior makes typos in input names notoriously hard to spot.",
-                        "company_tags": ["google", "amazon"],
+                        'answer_index': 1,
+                        'difficulty': 6,
+                        'explanation': 'Actions only read the inputs they declare; anything else in `with:` is ignored without complaint. This silent behavior makes typos in input names notoriously hard to spot.',
+                        'company_tags': [
+                            'google',
+                            'amazon',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Before using a third-party action like `docker/login-action@v3`, what security practice matters most?",
-                        "choices": [
-                            "Forking it first",
+                        'qtype': 'mcq',
+                        'prompt': 'Before using a third-party action like `docker/login-action@v3`, what security practice matters most?',
+                        'choices': [
+                            'Renaming it',
+                            'Forking it first',
                             "Verifying the publisher, pinning the version, and checking what permissions it needs — it runs with your repo's credentials",
-                            "Only using it on weekends",
-                            "Renaming it",
+                            'Only using it on weekends',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 7,
-                        "explanation": "Third-party actions execute arbitrary code with your workflow's token. A compromised or over-permissioned action can exfiltrate secrets — vet the source and pin the version.",
-                        "company_tags": ["google", "microsoft"],
+                        'answer_index': 2,
+                        'difficulty': 7,
+                        'explanation': "Third-party actions execute arbitrary code with your workflow's token. A compromised or over-permissioned action can exfiltrate secrets — vet the source and pin the version.",
+                        'company_tags': [
+                            'google',
+                            'microsoft',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "github-actions-secrets-environments",
-                "title": "Secrets & Environments",
-                "theory_md": """## Secrets
+                'slug': 'github-actions-secrets-environments',
+                'title': 'Secrets & Environments',
+                'theory_md': """## Secrets
 
 **Secrets** store sensitive values (API keys, tokens, passwords) encrypted.
 Set them in Settings → Secrets and variables → Actions. Reference them as:
@@ -1779,258 +2001,119 @@ jobs:
 - **Secrets**: encrypted, masked in logs (tokens, keys).
 - **Variables**: plain config, visible in logs (region names, feature flags).
 """,
-                "difficulty_min": 3,
-                "difficulty_max": 7,
-                "is_important": False,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 3,
+                'difficulty_max': 7,
+                'is_important': False,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "How do you reference a repository secret named `API_KEY` inside a workflow?",
-                        "choices": [
-                            "$API_KEY",
-                            "${{ secrets.API_KEY }}",
-                            "secrets.API_KEY",
-                            "{{ secrets[API_KEY] }}",
+                        'qtype': 'mcq',
+                        'prompt': 'How do you reference a repository secret named `API_KEY` inside a workflow?',
+                        'choices': [
+                            '${{ secrets.API_KEY }}',
+                            'secrets.API_KEY',
+                            '{{ secrets[API_KEY] }}',
+                            '$API_KEY',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 3,
-                        "explanation": "The `${{ }}` expression syntax evaluates contexts; `secrets.API_KEY` reads the encrypted secret. The other forms are not valid GitHub expressions.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 0,
+                        'difficulty': 3,
+                        'explanation': 'The `${{ }}` expression syntax evaluates contexts; `secrets.API_KEY` reads the encrypted secret. The other forms are not valid GitHub expressions.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "A workflow step accidentally prints a secret to the log. What does GitHub show?",
-                        "choices": [
-                            "The raw secret value",
-                            "The secret masked as ***",
-                            "An empty line",
-                            "The workflow is deleted",
+                        'qtype': 'mcq',
+                        'prompt': 'A workflow step accidentally prints a secret to the log. What does GitHub show?',
+                        'choices': [
+                            'The raw secret value',
+                            'The secret masked as ***',
+                            'An empty line',
+                            'The workflow is deleted',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 3,
-                        "explanation": "GitHub scans logs for known secret values and replaces them with `***`. Still, don't rely on masking — avoid printing secrets at all.",
-                        "company_tags": ["wipro", "accenture"],
+                        'answer_index': 1,
+                        'difficulty': 3,
+                        'explanation': "GitHub scans logs for known secret values and replaces them with `***`. Still, don't rely on masking — avoid printing secrets at all.",
+                        'company_tags': [
+                            'wipro',
+                            'accenture',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why are secrets NOT available to workflows triggered by pull requests from forks?",
-                        "choices": [
+                        'qtype': 'mcq',
+                        'prompt': 'Why are secrets NOT available to workflows triggered by pull requests from forks?',
+                        'choices': [
+                            'Secrets only work on main',
                             "Forks don't support YAML",
-                            "To prevent a malicious PR from exfiltrating secrets via modified workflow code",
-                            "It is a bug in GitHub Actions",
-                            "Secrets only work on main",
+                            'To prevent a malicious PR from exfiltrating secrets via modified workflow code',
+                            'It is a bug in GitHub Actions',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "Anyone can fork and open a PR; if secrets were exposed, an attacker could edit the workflow to print them. Withholding secrets from fork PRs closes that exfiltration path.",
-                        "company_tags": ["amazon", "google"],
+                        'answer_index': 2,
+                        'difficulty': 6,
+                        'explanation': 'Anyone can fork and open a PR; if secrets were exposed, an attacker could edit the workflow to print them. Withholding secrets from fork PRs closes that exfiltration path.',
+                        'company_tags': [
+                            'amazon',
+                            'google',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What protection can a GitHub Environment add that plain repository secrets cannot?",
-                        "choices": [
-                            "Stronger encryption",
-                            "Required human reviewers and wait timers before deployment jobs run",
-                            "Unlimited secret storage",
-                            "Faster runners",
+                        'qtype': 'mcq',
+                        'prompt': 'What protection can a GitHub Environment add that plain repository secrets cannot?',
+                        'choices': [
+                            'Unlimited secret storage',
+                            'Faster runners',
+                            'Stronger encryption',
+                            'Required human reviewers and wait timers before deployment jobs run',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "Environments add deployment gates — manual approvals, delays, branch restrictions — around the secrets they hold. Plain repo secrets have no such gating.",
-                        "company_tags": ["microsoft", "flipkart"],
+                        'answer_index': 3,
+                        'difficulty': 6,
+                        'explanation': 'Environments add deployment gates — manual approvals, delays, branch restrictions — around the secrets they hold. Plain repo secrets have no such gating.',
+                        'company_tags': [
+                            'microsoft',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "When should a value be a Variable rather than a Secret?",
-                        "choices": [
-                            "When it is a password",
-                            "When it is non-sensitive config (like a region name) that is fine to appear in logs",
-                            "When it is an API key",
-                            "Variables and secrets are interchangeable",
+                        'qtype': 'mcq',
+                        'prompt': 'When should a value be a Variable rather than a Secret?',
+                        'choices': [
+                            'When it is non-sensitive config (like a region name) that is fine to appear in logs',
+                            'When it is an API key',
+                            'Variables and secrets are interchangeable',
+                            'When it is a password',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "Variables are for plain configuration visible in logs; secrets are for sensitive values that get encrypted and masked. Using secrets for everything hides useful debugging info.",
-                        "company_tags": ["google", "zoho"],
+                        'answer_index': 0,
+                        'difficulty': 6,
+                        'explanation': 'Variables are for plain configuration visible in logs; secrets are for sensitive values that get encrypted and masked. Using secrets for everything hides useful debugging info.',
+                        'company_tags': [
+                            'google',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why set `permissions: contents: read` on a job that only runs tests?",
-                        "choices": [
-                            "It makes tests run faster",
-                            "Least privilege: the auto-issued GITHUB_TOKEN gets only the access the job needs, limiting damage if compromised",
-                            "It is required for npm",
-                            "It enables fork PRs to see secrets",
+                        'qtype': 'mcq',
+                        'prompt': 'Why set `permissions: contents: read` on a job that only runs tests?',
+                        'choices': [
+                            'It makes tests run faster',
+                            'Least privilege: the auto-issued GITHUB_TOKEN gets only the access the job needs, limiting damage if compromised',
+                            'It is required for npm',
+                            'It enables fork PRs to see secrets',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 7,
-                        "explanation": "The default GITHUB_TOKEN is broader than most jobs need. Scoping permissions down means a compromised step or action can't push code or modify releases.",
-                        "company_tags": ["amazon", "microsoft"],
+                        'answer_index': 1,
+                        'difficulty': 7,
+                        'explanation': "The default GITHUB_TOKEN is broader than most jobs need. Scoping permissions down means a compromised step or action can't push code or modify releases.",
+                        'company_tags': [
+                            'amazon',
+                            'microsoft',
+                        ],
                     },
                 ],
             },
             {
-                "slug": "github-actions-caching-artifacts",
-                "title": "Caching Dependencies & Artifacts",
-                "theory_md": """## Caching: skip redundant downloads
-
-**Caching** stores files (like `node_modules` or `~/.m2`) between runs so
-`npm ci` doesn't re-download the world every time. The classic action:
-
-```yaml
-- uses: actions/cache@v4
-  with:
-    path: ~/.npm
-    key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-    restore-keys: |
-      npm-${{ runner.os }}-
-```
-
-- **`key`**: cache identity. Include a hash of the lockfile so the cache
-  invalidates exactly when dependencies change.
-- **`restore-keys`**: fallback prefixes — reuse an older cache if no exact
-  match (better than starting cold).
-
-Many setup actions have caching built in:
-
-```yaml
-- uses: actions/setup-node@v4
-  with:
-    node-version: "20"
-    cache: npm        # enables npm caching automatically
-```
-
-## Artifacts: pass files between jobs
-
-**Artifacts** persist files beyond a single job/run for download or for
-later jobs:
-
-```yaml
-# job 1: build
-- uses: actions/upload-artifact@v4
-  with:
-    name: dist
-    path: dist/
-
-# job 2: deploy (needs: build)
-- uses: actions/download-artifact@v4
-  with:
-    name: dist
-    path: dist/
-```
-
-Artifacts also let humans download build outputs (zips, test reports, APKs)
-from the run's page.
-
-## Cache vs artifact
-
-| | Cache | Artifact |
-|---|---|---|
-| Purpose | Speed up repeat runs | Share outputs between jobs / with humans |
-| Lifetime | Until key changes or evicted | 90 days default retention |
-| Mutability | Immutable per key | New upload per run |
-
-## Cache invalidation
-
-Caches are **immutable**: writing to an existing key is a no-op. Change the
-key (via the lockfile hash) to get a fresh cache.
-""",
-                "difficulty_min": 3,
-                "difficulty_max": 7,
-                "is_important": False,
-                "has_visual": False,
-                "questions": [
-                    {
-                        "qtype": "mcq",
-                        "prompt": "What problem does dependency caching solve in CI?",
-                        "choices": [
-                            "It fixes failing tests",
-                            "It avoids re-downloading dependencies on every run, making builds faster",
-                            "It deploys the app",
-                            "It encrypts secrets",
-                        ],
-                        "answer_index": 1,
-                        "difficulty": 3,
-                        "explanation": "Fresh runners start empty, so installs re-download everything. A warm cache restores dependencies in seconds, cutting build times dramatically.",
-                        "company_tags": ["tcs", "infosys"],
-                    },
-                    {
-                        "qtype": "mcq",
-                        "prompt": "Why does the cache key include `hashFiles('package-lock.json')`?",
-                        "choices": [
-                            "To encrypt the cache",
-                            "So the cache automatically invalidates when dependencies change",
-                            "It is required syntax with no effect",
-                            "To make the key shorter",
-                        ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "The key identifies the cache. Hashing the lockfile means any dependency change produces a new key (fresh install), while unchanged deps hit the existing cache.",
-                        "company_tags": ["wipro", "accenture"],
-                    },
-                    {
-                        "qtype": "mcq",
-                        "prompt": "What are `restore-keys` for in actions/cache?",
-                        "choices": [
-                            "They delete old caches",
-                            "Fallback prefixes: if no exact key match, restore the newest cache with a matching prefix instead of starting cold",
-                            "They encrypt the cache",
-                            "They list files to cache",
-                        ],
-                        "answer_index": 1,
-                        "difficulty": 5,
-                        "explanation": "On a lockfile change there's no exact cache. restore-keys fall back to the previous cache — mostly right, and the job then updates the changed packages only.",
-                        "company_tags": ["amazon", "flipkart"],
-                    },
-                    {
-                        "qtype": "mcq",
-                        "prompt": "Job `build` produces `dist/` and job `deploy` (a different runner) needs it. What is the correct mechanism?",
-                        "choices": [
-                            "Caching dist/ with actions/cache",
-                            "Upload dist/ as an artifact in build and download it in deploy",
-                            "Commit dist/ to the repo",
-                            "Runners share a filesystem, so just use the path",
-                        ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "Jobs run on isolated runners, so files must be explicitly transferred. Artifacts are designed for this; caches are for speed, not reliable job-to-job transfer.",
-                        "company_tags": ["microsoft", "zoho"],
-                    },
-                    {
-                        "qtype": "mcq",
-                        "prompt": "Caches in GitHub Actions are immutable. What does that imply when dependencies change?",
-                        "choices": [
-                            "The old cache is updated in place",
-                            "You must use a new key — writes to an existing key are ignored",
-                            "Caches are deleted automatically",
-                            "The workflow fails",
-                        ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "You cannot overwrite a cache entry; saving with an existing key is a silent no-op. Key rotation (via lockfile hash) is the only way to refresh cached content.",
-                        "company_tags": ["google", "amazon"],
-                    },
-                    {
-                        "qtype": "mcq",
-                        "prompt": "A developer caches `node_modules` directly instead of npm's cache directory (`~/.npm`). What is the main risk?",
-                        "choices": [
-                            "It is always faster",
-                            "node_modules contains OS-specific binaries — a cache restored on a different runner OS/arch can break the build",
-                            "Caches cannot store node_modules",
-                            "There is no risk",
-                        ],
-                        "answer_index": 1,
-                        "difficulty": 8,
-                        "explanation": "node_modules may hold platform-specific native bindings. Caching the package manager's download cache (~/.npm) and reinstalling is portable; caching node_modules couples the cache to one OS/arch.",
-                        "company_tags": ["google", "microsoft"],
-                    },
-                ],
-            },
-            {
-                "slug": "github-actions-deployment-pipeline",
-                "title": "Deployment Pipeline Example (Build → Test → Deploy)",
-                "theory_md": """## Putting it all together
+                'slug': 'github-actions-deployment-pipeline',
+                'title': 'Deployment Pipeline: Build → Test → Deploy',
+                'theory_md': """## Putting it all together
 
 A complete pipeline: build once, test, then deploy to staging and production
 with an approval gate.
@@ -2110,95 +2193,140 @@ jobs:
 
 One artifact flows through every stage — the exact bits tested are the bits
 deployed. If any job fails, downstream jobs are skipped.
+
+## Pipeline optimization: caching & artifacts
+
+Two mechanisms make the pipeline above fast and reliable:
+
+**Caching** (`actions/cache@v4`) stores dependencies between runs so `npm ci`
+doesn't re-download the world:
+
+```yaml
+- uses: actions/cache@v4
+  with:
+    path: ~/.npm
+    key: npm-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+    restore-keys: |
+      npm-${{ runner.os }}-
+```
+
+The `key` includes a hash of the lockfile, so the cache invalidates exactly
+when dependencies change; `restore-keys` fall back to an older cache otherwise.
+Caches are **immutable** — writing to an existing key is a silent no-op, so key
+rotation is the only refresh mechanism. (Note: `actions/setup-node` also offers
+built-in caching via `cache: npm`.)
+
+**Artifacts** (`actions/upload-artifact@v4` / `download-artifact@v4`) pass files
+*between jobs* — each job runs on a fresh runner, so `dist/` built in `build`
+must be uploaded and re-downloaded in `deploy`. Rule of thumb: **cache** speeds
+up repeat runs; **artifacts** share outputs between jobs and with humans.
 """,
-                "difficulty_min": 4,
-                "difficulty_max": 8,
-                "is_important": True,
-                "has_visual": False,
-                "questions": [
+                'difficulty_min': 3,
+                'difficulty_max': 7,
+                'is_important': True,
+                'has_visual': False,
+                'questions': [
                     {
-                        "qtype": "mcq",
-                        "prompt": "In the example pipeline, why does `deploy-production` use `needs: deploy-staging`?",
-                        "choices": [
-                            "To run both deploys at the same time",
-                            "To enforce order: production only deploys after staging succeeds",
-                            "To share the same runner",
-                            "It is just documentation",
+                        'qtype': 'mcq',
+                        'prompt': 'In the example pipeline, why does `deploy-production` use `needs: deploy-staging`?',
+                        'choices': [
+                            'To share the same runner',
+                            'It is just documentation',
+                            'To run both deploys at the same time',
+                            'To enforce order: production only deploys after staging succeeds',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 4,
-                        "explanation": "`needs` sequences the jobs and gates them: if staging fails, production is skipped. This is the progressive-delivery pattern — prove it in staging first.",
-                        "company_tags": ["tcs", "infosys"],
+                        'answer_index': 3,
+                        'difficulty': 3,
+                        'explanation': '`needs` sequences the jobs and gates them: if staging fails, production is skipped. This is the progressive-delivery pattern — prove it in staging first.',
+                        'company_tags': [
+                            'tcs',
+                            'infosys',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why does the pipeline upload `dist/` as an artifact in `build` instead of rebuilding in each deploy job?",
-                        "choices": [
-                            "Artifacts are free",
-                            "So the exact tested bits are what gets deployed — rebuilding risks shipping untested code",
-                            "Rebuilding is not possible in Actions",
-                            "It saves YAML lines",
+                        'qtype': 'mcq',
+                        'prompt': 'Why does the pipeline upload `dist/` as an artifact in `build` instead of rebuilding in each deploy job?',
+                        'choices': [
+                            'So the exact tested bits are what gets deployed — rebuilding risks shipping untested code',
+                            'Rebuilding is not possible in Actions',
+                            'It saves YAML lines',
+                            'Artifacts are free',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "Build-once/deploy-many guarantees the artifact that passed tests is the artifact that ships. Rebuilding per environment could introduce differences (new dependency versions, nondeterminism).",
-                        "company_tags": ["wipro", "accenture"],
+                        'answer_index': 0,
+                        'difficulty': 6,
+                        'explanation': 'Build-once/deploy-many guarantees the artifact that passed tests is the artifact that ships. Rebuilding per environment could introduce differences (new dependency versions, nondeterminism).',
+                        'company_tags': [
+                            'wipro',
+                            'accenture',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "What does `environment: production` add to the deploy-production job?",
-                        "choices": [
-                            "A faster runner",
-                            "Access to production-scoped secrets plus protection rules like required reviewers",
-                            "Automatic rollback",
-                            "Free unlimited minutes",
+                        'qtype': 'mcq',
+                        'prompt': 'What does `environment: production` add to the deploy-production job?',
+                        'choices': [
+                            'A faster runner',
+                            'Access to production-scoped secrets plus protection rules like required reviewers',
+                            'Automatic rollback',
+                            'Free unlimited minutes',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "The environment binding injects that environment's secrets and enforces its protection rules — e.g. pausing for a human approval before production deploys.",
-                        "company_tags": ["amazon", "flipkart"],
+                        'answer_index': 1,
+                        'difficulty': 6,
+                        'explanation': "The environment binding injects that environment's secrets and enforces its protection rules — e.g. pausing for a human approval before production deploys.",
+                        'company_tags': [
+                            'amazon',
+                            'flipkart',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "If the `test` job fails, what happens to `deploy-staging` and `deploy-production`?",
-                        "choices": [
-                            "They run anyway",
-                            "They are skipped, because needs: chains propagate failure",
-                            "Only deploy-production is skipped",
-                            "They retry automatically",
+                        'qtype': 'mcq',
+                        'prompt': "Why does the cache key include `hashFiles('package-lock.json')`?",
+                        'choices': [
+                            'To make the key shorter',
+                            'To encrypt the cache',
+                            'So the cache automatically invalidates when dependencies change',
+                            'It is required syntax with no effect',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 6,
-                        "explanation": "A failed job causes all jobs that `need` it (directly or transitively) to be skipped. The pipeline halts before anything broken can deploy.",
-                        "company_tags": ["microsoft", "zoho"],
+                        'answer_index': 2,
+                        'difficulty': 5,
+                        'explanation': 'The key identifies the cache. Hashing the lockfile means any dependency change produces a new key (fresh install), while unchanged deps hit the existing cache.',
+                        'company_tags': [
+                            'microsoft',
+                            'zoho',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "Why does the workflow set top-level `permissions: contents: read`?",
-                        "choices": [
-                            "To speed up checkout",
-                            "Least privilege — the GITHUB_TOKEN gets only read access since no job needs to write",
-                            "It is mandatory for all workflows",
-                            "To allow fork PRs to push",
+                        'qtype': 'mcq',
+                        'prompt': 'Job `build` produces `dist/` and job `deploy` (a different runner) needs it. What is the correct mechanism?',
+                        'choices': [
+                            'Commit dist/ to the repo',
+                            'Runners share a filesystem, so just use the path',
+                            'Caching dist/ with actions/cache',
+                            'Upload dist/ as an artifact in build and download it in deploy',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 7,
-                        "explanation": "This pipeline only reads code and deploys via its own secrets, so read-only token scope is sufficient. Narrow permissions limit what a compromised step could do.",
-                        "company_tags": ["google", "amazon"],
+                        'answer_index': 3,
+                        'difficulty': 6,
+                        'explanation': 'Jobs run on isolated runners, so files must be explicitly transferred. Artifacts are designed for this; caches are for speed, not reliable job-to-job transfer.',
+                        'company_tags': [
+                            'google',
+                            'amazon',
+                        ],
                     },
                     {
-                        "qtype": "mcq",
-                        "prompt": "A teammate suggests deploying straight from the `build` job to production to \"save time\". What is the strongest argument against it?",
-                        "choices": [
-                            "It uses more YAML",
-                            "It removes the test gate and the staging verification, so untested code can reach production with no human checkpoint",
-                            "Build jobs can't access secrets",
-                            "Production deploys must use Windows runners",
+                        'qtype': 'mcq',
+                        'prompt': 'Caches in GitHub Actions are immutable. What does that imply when dependencies change?',
+                        'choices': [
+                            'You must use a new key — writes to an existing key are ignored',
+                            'Caches are deleted automatically',
+                            'The workflow fails',
+                            'The old cache is updated in place',
                         ],
-                        "answer_index": 1,
-                        "difficulty": 8,
-                        "explanation": "Skipping test and staging destroys the pipeline's safety properties: no verification gate and no progressive rollout. Speed gained is far outweighed by the risk of shipping broken code to users.",
-                        "company_tags": ["google", "microsoft"],
+                        'answer_index': 0,
+                        'difficulty': 7,
+                        'explanation': 'You cannot overwrite a cache entry; saving with an existing key is a silent no-op. Key rotation (via lockfile hash) is the only way to refresh cached content.',
+                        'company_tags': [
+                            'google',
+                            'microsoft',
+                        ],
                     },
                 ],
             },
