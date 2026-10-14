@@ -35,7 +35,7 @@ def _svc(request: Request):
 
 def _profile_out(p) -> dict:
     return {
-        "id": p.id, "user_id": p.user_id, "education": p.education,
+        "id": p.user_id, "user_id": p.user_id, "education": p.education,
         "experience_years": p.experience_years,
         "current_skills": list(p.current_skills),
         "target_role": p.target_role, "target_domain": p.target_domain,

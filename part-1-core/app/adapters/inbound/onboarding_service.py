@@ -30,7 +30,6 @@ class OnboardingServiceImpl:
         )
         existing = self._profiles.get_by_user(user_id)
         profile = Profile(
-            id=existing.id if existing else uuid.uuid4().hex,
             user_id=user_id,
             education=fields["education"].strip(),
             experience_years=float(fields["experience_years"]),

@@ -44,13 +44,13 @@ def _profile_fields(**over):
 def test_save_and_get_profile(svc):
     p = svc.save_profile("u1", **_profile_fields())
     assert p.target_level == "intermediate"
-    assert svc.get_profile("u1").id == p.id
+    assert svc.get_profile("u1").user_id == p.user_id
 
 
 def test_save_profile_twice_replaces(svc):
     p1 = svc.save_profile("u1", **_profile_fields())
     p2 = svc.save_profile("u1", **_profile_fields(target_level="advanced"))
-    assert p1.id == p2.id
+    assert p1.user_id == p2.user_id
     assert svc.get_profile("u1").target_level == "advanced"
 
 

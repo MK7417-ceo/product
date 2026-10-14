@@ -13,7 +13,7 @@ from app.domain.profile import Placement, Profile
 
 def _p_to_domain(m: ProfileModel) -> Profile:
     return Profile(
-        id=m.id, user_id=m.user_id, education=m.education,
+        user_id=m.user_id, education=m.education,
         experience_years=m.experience_years,
         current_skills=tuple(json.loads(m.current_skills)),
         target_role=m.target_role, target_domain=m.target_domain,
@@ -38,9 +38,9 @@ class SqlAlchemyProfileRepository:
 
     def save(self, profile: Profile) -> None:
         with self._sessions() as s:
-            m = s.get(ProfileModel, profile.id)
+            m = s.get(ProfileModel, profile.user_id)
             payload = dict(
-                user_id=profile.user_id, education=profile.education,
+                education=profile.education,
                 experience_years=profile.experience_years,
                 current_skills=json.dumps(list(profile.current_skills)),
                 target_role=profile.target_role, target_domain=profile.target_domain,
@@ -52,7 +52,7 @@ class SqlAlchemyProfileRepository:
                 for k, v in payload.items():
                     setattr(m, k, v)
             else:
-                s.add(ProfileModel(id=profile.id, **payload))
+                s.add(ProfileModel(user_id=profile.user_id, **payload))
             s.commit()
 
     def get_by_user(self, user_id: str) -> Profile | None:

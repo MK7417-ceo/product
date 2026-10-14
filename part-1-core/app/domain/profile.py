@@ -22,8 +22,7 @@ PASS_RATIO = 0.7
 
 @dataclass(frozen=True)
 class Profile:
-    id: str
-    user_id: str
+    user_id: str  # PK — 1 profile per user, no separate id needed
     education: str
     experience_years: float
     current_skills: tuple[str, ...]

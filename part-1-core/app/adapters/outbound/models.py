@@ -29,8 +29,8 @@ class RefreshTokenModel(Base):
 class ProfileModel(Base):
     __tablename__ = "profiles"
 
-    id: Mapped[str] = mapped_column(String(36), primary_key=True)
-    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    # user_id IS the PK — 1 profile per user, no redundant UUID needed
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id", ondelete="CASCADE"), primary_key=True, index=True)
     education: Mapped[str] = mapped_column(Text, nullable=False)
     experience_years: Mapped[float] = mapped_column(nullable=False, default=0)
     current_skills: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON list
