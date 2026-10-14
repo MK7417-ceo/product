@@ -51,8 +51,11 @@ from app.api.v1 import curriculum as curriculum_api
 from app.api.v1 import study_plans as study_plans_api
 from app.api.v1 import streak as streak_api
 from app.api.v1 import taxonomy as taxonomy_api
+from app.api.v1 import coins as coins_api
 from app.adapters.inbound.streak_service import StreakServiceImpl
 from app.adapters.outbound.streak_repository import SqlAlchemyStreakRepository
+from app.adapters.inbound.coin_service import CoinServiceImpl
+from app.adapters.outbound.coin_repository import SqlAlchemyCoinRepository
 from app.core.config import settings
 from app.core.database import SessionLocal
 from app.core.logging import configure_logging
@@ -96,6 +99,8 @@ def create_app() -> FastAPI:
         SqlAlchemyCurriculumRepository(SessionLocal))
     app.state.streak_service = StreakServiceImpl(
         SqlAlchemyStreakRepository(SessionLocal))
+    app.state.coin_service = CoinServiceImpl(
+        SqlAlchemyCoinRepository(SessionLocal))
     app.state.code_runner = HttpCodeRunnerClient(settings.CODE_ENGINE_URL)
     app.state.launchpad_service = LaunchpadServiceImpl(
         SqlAlchemyResumeRepository(SessionLocal),
@@ -140,6 +145,7 @@ def create_app() -> FastAPI:
     app.include_router(curriculum_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(streak_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(taxonomy_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(coins_api.router, prefix=settings.API_V1_PREFIX)
     return app
 
 

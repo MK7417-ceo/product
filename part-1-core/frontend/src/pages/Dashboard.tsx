@@ -15,7 +15,7 @@ import ContinueCard from '../components/dashboard/ContinueCard';
 import WeekStrip from '../components/dashboard/WeekStrip';
 import TodayRail from '../components/dashboard/TodayRail';
 import '../components/dashboard/dashboard.css';
-import StreakWidget from '../components/StreakWidget';
+import RightSidebar from '../components/RightSidebar';
 
 interface Source<T> {
   data: T;
@@ -161,37 +161,40 @@ export default function Dashboard() {
         </p>
       </div>
 
-      <HeroCard
-        profile={profile.data}
-        assessments={assessments.data}
-        roadmap={roadmap.data}
-        loading={roadmap.loading || profile.loading || assessments.loading}
-        error={roadmap.error ?? profile.error ?? assessments.error}
-        onRetry={load}
-      />
-
-      <StreakWidget compact />
-
-      <StatCards
-        roadmap={roadmap.data}
-        assessments={assessments.data}
-        today={today.data}
-        loading={roadmap.loading || assessments.loading || today.loading}
-      />
-
-      <div className="sf-body">
-        <div className="sf-main-col">
-          <ContinueCard
+      <div className="sf-dashboard-with-sidebar">
+        <div className="sf-dashboard-main">
+          <HeroCard
+            profile={profile.data}
+            assessments={assessments.data}
             roadmap={roadmap.data}
-            loading={roadmap.loading}
-            error={roadmap.error}
+            loading={roadmap.loading || profile.loading || assessments.loading}
+            error={roadmap.error ?? profile.error ?? assessments.error}
             onRetry={load}
           />
-          <div style={{ marginTop: 14 }}>
-            <WeekStrip today={today.data} loading={today.loading} error={today.error} onRetry={load} />
+
+          <StatCards
+            roadmap={roadmap.data}
+            assessments={assessments.data}
+            today={today.data}
+            loading={roadmap.loading || assessments.loading || today.loading}
+          />
+
+          <div className="sf-body">
+            <div className="sf-main-col">
+              <ContinueCard
+                roadmap={roadmap.data}
+                loading={roadmap.loading}
+                error={roadmap.error}
+                onRetry={load}
+              />
+              <div style={{ marginTop: 14 }}>
+                <WeekStrip today={today.data} loading={today.loading} error={today.error} onRetry={load} />
+              </div>
+            </div>
+            <TodayRail today={today.data} loading={today.loading} error={today.error} onRetry={load} />
           </div>
         </div>
-        <TodayRail today={today.data} loading={today.loading} error={today.error} onRetry={load} />
+        <RightSidebar />
       </div>
     </div>
   );

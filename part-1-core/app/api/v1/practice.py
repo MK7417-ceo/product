@@ -34,6 +34,12 @@ def submit_daily(body: DailySubmitRequest, request: Request,
     try:
         result = _svc(request).submit_daily(user_id, body.date, body.answers)
         request.app.state.streak_service.record_activity(user_id)
+        # +2 coins per correct answer
+        correct = sum(1 for a in (result.get("results") or [])
+                      if isinstance(a, dict) and a.get("correct"))
+        if correct:
+            request.app.state.coin_service.earn(user_id, "question_solved", correct)
+            result["coins_earned"] = correct  # +1 per correct answer
         return result
     except DomainError as exc:
         raise _domain_error(exc)

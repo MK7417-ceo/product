@@ -1,10 +1,16 @@
 """SQLAlchemy models — adapter-side (the domain never imports these)."""
 from __future__ import annotations
 
+from datetime import datetime, timezone
+
 from sqlalchemy import Date, DateTime, ForeignKey, PrimaryKeyConstraint, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
+
+
+def _utcnow() -> datetime:
+    return datetime.now(timezone.utc)
 
 class UserModel(Base):
     __tablename__ = "users"
@@ -333,3 +339,30 @@ class StreakActivityModel(Base):
         UniqueConstraint("user_id", "activity_date"),
         PrimaryKeyConstraint("user_id", "activity_date"),
     )
+
+
+class UserCoinModel(Base):
+    """Per-user coin wallet. One row per user."""
+    __tablename__ = "user_coins"
+
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"),
+        primary_key=True)
+    balance: Mapped[int] = mapped_column(nullable=False, default=0)
+    lifetime_earned: Mapped[int] = mapped_column(nullable=False, default=0)
+    updated_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_utcnow)
+
+
+class CoinTransactionModel(Base):
+    """Ledger of every coin earn/spend. Append-only."""
+    __tablename__ = "coin_transactions"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False, index=True)
+    amount: Mapped[int] = mapped_column(nullable=False)  # +earn / -spend
+    reason: Mapped[str] = mapped_column(String(120), nullable=False)
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_utcnow)

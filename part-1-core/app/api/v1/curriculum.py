@@ -173,7 +173,14 @@ def update_task(task_id: str, body: TaskStatusRequest, request: Request,
     try:
         result = _svc(request).update_task(user_id, task_id, body.status)
         if body.status == "done":
-            request.app.state.streak_service.record_activity(user_id)
+            streak = request.app.state.streak_service.record_activity(user_id)
+            coins = request.app.state.coin_service
+            coins.earn(user_id, "daily_task")
+            coins.earn_streak_day(user_id, streak["current_streak"])
+            milestone = coins.earn_milestone(user_id, streak["current_streak"])
+            result["coins_earned"] = True
+            if milestone:
+                result["milestone_bonus"] = milestone["earned"]
         return result
     except DomainError as exc:
         raise _domain_error(exc)

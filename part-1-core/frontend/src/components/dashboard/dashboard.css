@@ -486,3 +486,21 @@
     flex-wrap: wrap;
   }
 }
+
+/* Dashboard with right sidebar (LeetCode-style) */
+.sf-dashboard-with-sidebar {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.sf-dashboard-main {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 1024px) {
+  .sf-dashboard-with-sidebar {
+    flex-direction: column;
+  }
+}
