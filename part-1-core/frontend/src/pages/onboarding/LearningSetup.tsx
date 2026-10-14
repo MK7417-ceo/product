@@ -32,7 +32,7 @@ const DOMAINS: Domain[] = [
 
 /* Maps our domain slugs to the curriculum DB slugs (sibling seed).
    Most match 1:1; only networking differs. */
-const CURRICULUM_SLUG_MAP: Record<string, string> = {
+export const CURRICULUM_SLUG_MAP: Record<string, string> = {
   networking: 'cn',
 };
 
@@ -116,7 +116,7 @@ export default function LearningSetup() {
       await api('/api/v1/curriculum/plans', {
         method: 'POST',
         body: JSON.stringify({
-          domain_slug: domain.slug,
+          domain_slug: CURRICULUM_SLUG_MAP[domain.slug] ?? domain.slug,
           start_level: level,
           total_days: totalDays,
         }),

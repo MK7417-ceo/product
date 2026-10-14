@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLang } from '../lib/i18n';
 import { api } from '../lib/api';
-import { PLAN_STORAGE_KEY } from './onboarding/LearningSetup';
+import { PLAN_STORAGE_KEY, CURRICULUM_SLUG_MAP } from './onboarding/LearningSetup';
 import './daily-plan.css';
 
 interface Task {
@@ -104,9 +104,10 @@ export default function DailyPlan() {
       setServerLoading(true);
       api<{ plans: ServerPlan[] }>('/api/v1/curriculum/plans/mine')
         .then((out) => {
+          const want = CURRICULUM_SLUG_MAP[p.domain_slug] ?? p.domain_slug;
           const match =
             out.plans.find(
-              (sp) => sp.domain_slug === p.domain_slug && sp.status === 'active',
+              (sp) => sp.domain_slug === want && sp.status === 'active',
             ) ?? out.plans[0] ??
             null;
           setServerPlan(match);
@@ -117,13 +118,13 @@ export default function DailyPlan() {
   }, []);
 
   const todayIdx = useMemo(() => {
-    if (!plan) return 1;
+    if (!plan || plan.server_managed || !plan.days) return 1;
     const start = new Date(plan.started_at).getTime();
     const days = Math.floor((Date.now() - start) / 86400000) + 1;
     return Math.min(Math.max(1, days), plan.days.length);
   }, [plan]);
 
-  const today = plan?.days[todayIdx - 1] ?? null;
+  const today = !plan?.server_managed ? plan?.days[todayIdx - 1] ?? null : null;
   const key = dateKey(new Date());
   const done: number[] = progress[key]?.done ?? [];
 
@@ -138,7 +139,8 @@ export default function DailyPlan() {
       const k = dateKey(d);
       const entry = progress[k];
       const dayNum = entry?.day;
-      const dayTasks = dayNum ? plan.days[dayNum - 1]?.tasks.length ?? 0 : 0;
+      const dayTasks =
+        dayNum && plan.days ? plan.days[dayNum - 1]?.tasks.length ?? 0 : 0;
       if (entry && dayTasks > 0 && entry.done.length >= dayTasks) {
         s += 1;
         d.setDate(d.getDate() - 1);
@@ -154,12 +156,13 @@ export default function DailyPlan() {
       if (!st) return;
       const nextStatus = st.status === 'done' ? 'pending' : 'done';
       const prev = serverPlan;
-      setServerPlan({
-        ...serverPlan,
-        today_tasks: serverPlan.today_tasks.map((x, xi) =>
-          xi === i ? { ...x, status: nextStatus } : x,
-        ),
-      });
+      const updated = serverPlan.today_tasks.map((x, xi) =>
+        xi === i ? { ...x, status: nextStatus } : x,
+      );
+      setServerPlan({ ...serverPlan, today_tasks: updated });
+      if (updated.length > 0 && updated.every((x) => x.status === 'done')) {
+        setCelebrated(true);
+      }
       api(`/api/v1/curriculum/tasks/${st.id}`, {
         method: 'PATCH',
         body: JSON.stringify({ status: nextStatus }),
@@ -269,7 +272,10 @@ export default function DailyPlan() {
                   />
                   <span className="task-icon">{TASK_ICONS[st.task_type] ?? '📌'}</span>
                   <span className="task-text">
-                    {t(`daily.task.${st.task_type}` as 'daily.task.learn')}: {st.title}
+                    {st.title}
+                    {st.description && (
+                      <span className="task-sub"> · {st.description}</span>
+                    )}
                   </span>
                 </label>
               </li>

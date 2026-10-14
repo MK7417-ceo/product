@@ -107,6 +107,7 @@
 .task.done .task-text { text-decoration: line-through; color: #9aa6bb; }
 .task-icon { font-size: 1.3rem; }
 .task-text { font-size: 1rem; }
+.task-sub { color: #9aa6bb; font-size: 0.9rem; }
 
 .celebrate {
   text-align: center;
