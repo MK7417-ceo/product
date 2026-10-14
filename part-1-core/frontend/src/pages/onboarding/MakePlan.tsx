@@ -41,6 +41,12 @@ function prettyTopic(topic: string): { name: string; domain: string } {
     javascript: { name: 'JavaScript', domain: 'Programming' },
     java: { name: 'Java', domain: 'Programming' },
     webdev: { name: 'Web Dev', domain: 'Web Development' },
+    'r-lang': { name: 'R', domain: 'Data Science' },
+    ruby: { name: 'Ruby', domain: 'Programming' },
+    devops: { name: 'DevOps', domain: 'Operations' },
+    networking: { name: 'Networking', domain: 'Computer Networks' },
+    'data-science': { name: 'Data Science', domain: 'Data' },
+    'data-analyst': { name: 'Data Analyst', domain: 'Data' },
   };
   return map[topic] ?? { name: topic, domain: 'Track' };
 }
