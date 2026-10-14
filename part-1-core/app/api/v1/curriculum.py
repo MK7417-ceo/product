@@ -10,6 +10,7 @@ from fastapi import APIRouter, Depends, Query, Request
 from pydantic import BaseModel
 
 from app.api.v1.auth import _domain_error, current_user_id, require_admin
+from app.domain import question_generator as qgen
 from app.domain.user import DomainError
 
 router = APIRouter(prefix="", tags=["curriculum"])
@@ -74,6 +75,15 @@ class TaskStatusRequest(BaseModel):
     status: str
 
 
+class GenerateQuestionsRequest(BaseModel):
+    domain_slug: str
+    module_slug: str = ""
+    count: int = 50
+    seed: int = 0
+    difficulty_min: int = 1
+    difficulty_max: int = 10
+
+
 def _svc(request: Request):
     return request.app.state.curriculum_service
 
@@ -83,6 +93,28 @@ def _svc(request: Request):
 def list_domains(request: Request, category: str = Query(default="")):
     try:
         return {"domains": _svc(request).list_domains(category)}
+    except DomainError as exc:
+        raise _domain_error(exc)
+
+
+@router.get("/curriculum/companies")
+def list_companies(request: Request):
+    """All companies with tagged-question counts."""
+    try:
+        return {"companies": _svc(request).list_companies()}
+    except DomainError as exc:
+        raise _domain_error(exc)
+
+
+@router.get("/curriculum/companies/{name}/questions")
+def questions_by_company(name: str, request: Request,
+                         domain: str = Query(default=""),
+                         limit: int = Query(default=50, ge=1, le=200)):
+    """Questions a company asks — e.g. 'Amazon ne ye questions puche hain'."""
+    try:
+        return {"company": name.strip().lower(),
+                "questions": _svc(request).get_questions_by_company(
+                    name, domain, limit)}
     except DomainError as exc:
         raise _domain_error(exc)
 
@@ -139,7 +171,10 @@ def my_plans(request: Request, user_id: str = Depends(current_user_id)):
 def update_task(task_id: str, body: TaskStatusRequest, request: Request,
                 user_id: str = Depends(current_user_id)):
     try:
-        return _svc(request).update_task(user_id, task_id, body.status)
+        result = _svc(request).update_task(user_id, task_id, body.status)
+        if body.status == "done":
+            request.app.state.streak_service.record_activity(user_id)
+        return result
     except DomainError as exc:
         raise _domain_error(exc)
 
@@ -247,3 +282,47 @@ def delete_question(qid: str, request: Request,
     except DomainError as exc:
         raise _domain_error(exc)
     return None
+
+
+@router.post("/curriculum/generate-questions", status_code=201)
+def generate_questions_ep(body: GenerateQuestionsRequest, request: Request,
+                          _admin: str = Depends(require_admin)):
+    """Admin: deterministically generate N questions for a domain/module
+    (dsa/os/dbms) and save them to curriculum_questions."""
+    try:
+        if not 1 <= body.count <= 500:
+            raise DomainError("count must be 1-500")
+        qs = qgen.generate_questions(
+            body.domain_slug, seed=body.seed, count=body.count,
+            difficulty_range=(body.difficulty_min, body.difficulty_max),
+        )
+    except DomainError as exc:
+        raise _domain_error(exc)
+    svc = _svc(request)
+    saved = 0
+    for q in qs:
+        try:
+            svc.add_question(
+                body.domain_slug, q["qtype"], q["prompt"], q["difficulty"],
+                body.module_slug, None, q["choices"], q["answer_index"],
+                q["explanation"], q["company_tags"],
+            )
+            saved += 1
+        except DomainError as exc:
+            raise _domain_error(exc)
+    return {"generated": saved, "domain_slug": body.domain_slug,
+            "module_slug": body.module_slug, "seed": body.seed}
+
+
+@router.get("/curriculum/generate-capacity")
+def generate_capacity(domain_slug: str = Query(default=""),
+                      _admin: str = Depends(require_admin)):
+    """Admin: how many unique questions the generator can produce per domain."""
+    try:
+        if domain_slug:
+            return {"domain_slug": domain_slug,
+                    "capacity": qgen.questions_generatable(domain_slug)}
+        return {"capacity": {d: qgen.questions_generatable(d)
+                             for d in qgen.SUPPORTED_DOMAINS}}
+    except DomainError as exc:
+        raise _domain_error(exc)

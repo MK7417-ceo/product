@@ -203,6 +203,19 @@ class CurriculumServiceImpl:
         if not self._repo.delete_question(qid):
             raise DomainError("question not found")
 
+    def get_questions_by_company(self, company: str, domain_slug: str = "",
+                                 limit: int = 50) -> list[dict]:
+        """Questions a company asks — 'Amazon ne ye questions puche hain'."""
+        company = (company or "").strip()
+        if not company:
+            raise DomainError("company name required")
+        limit = max(1, min(limit, 200))
+        return [self._question_out(q) for q in
+                self._repo.get_questions_by_company(company, domain_slug, limit)]
+
+    def list_companies(self) -> list[dict]:
+        return self._repo.list_companies()
+
     # ---- study plans ----
     def create_study_plan(self, user_id: str, domain_slug: str,
                           start_level: str, total_days: int) -> dict:

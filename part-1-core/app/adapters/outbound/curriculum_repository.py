@@ -228,6 +228,51 @@ class SqlAlchemyCurriculumRepository:
             m = s.get(CurriculumQuestionModel, qid)
             return _q_to_domain(m) if m else None
 
+    def get_questions_by_company(self, company: str,
+                                 domain_slug: str = "",
+                                 limit: int = 50) -> list[CurriculumQuestion]:
+        """Questions tagged with a company (case-insensitive).
+
+        company_tags is stored as JSON text, so we filter in Python
+        after a domain-scoped query — simple, portable across DBs.
+        """
+        want = company.strip().lower()
+        with self._sessions() as s:
+            q = (s.query(CurriculumQuestionModel)
+                 .order_by(CurriculumQuestionModel.difficulty,
+                           CurriculumQuestionModel.created_at))
+            if domain_slug:
+                q = q.filter(
+                    CurriculumQuestionModel.domain_slug == domain_slug)
+            out: list[CurriculumQuestion] = []
+            for m in q.all():
+                try:
+                    tags = [str(t).lower() for t in json.loads(m.company_tags or "[]")]
+                except Exception:
+                    tags = []
+                if want in tags:
+                    out.append(_q_to_domain(m))
+                    if len(out) >= limit:
+                        break
+            return out
+
+    def list_companies(self) -> list[dict]:
+        """All company tags in use with question counts."""
+        counts: dict[str, int] = {}
+        with self._sessions() as s:
+            rows = s.query(CurriculumQuestionModel.company_tags).all()
+            for (raw,) in rows:
+                try:
+                    tags = json.loads(raw or "[]")
+                except Exception:
+                    continue
+                for t in tags:
+                    key = str(t).strip().lower()
+                    if key:
+                        counts[key] = counts.get(key, 0) + 1
+        return [{"name": k, "questions": v}
+                for k, v in sorted(counts.items(), key=lambda kv: -kv[1])]
+
     def save_question(self, question: CurriculumQuestion) -> None:
         with self._sessions() as s:
             m = s.get(CurriculumQuestionModel, question.id)

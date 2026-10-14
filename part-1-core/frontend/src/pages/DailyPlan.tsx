@@ -4,6 +4,7 @@ import { useLang } from '../lib/i18n';
 import { api } from '../lib/api';
 import { PLAN_STORAGE_KEY, CURRICULUM_SLUG_MAP } from './onboarding/LearningSetup';
 import './daily-plan.css';
+import StreakWidget from '../components/StreakWidget';
 
 interface Task {
   type: string;
@@ -326,6 +327,8 @@ export default function DailyPlan() {
           🔥 {streak}
         </div>
       </header>
+
+      <StreakWidget />
 
       <div className="progress-wrap">
         <div className="progress-bar">

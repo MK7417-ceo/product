@@ -1,7 +1,7 @@
 """SQLAlchemy models — adapter-side (the domain never imports these)."""
 from __future__ import annotations
 
-from sqlalchemy import DateTime, ForeignKey, String, Text
+from sqlalchemy import Date, DateTime, ForeignKey, PrimaryKeyConstraint, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -303,3 +303,31 @@ class DailyTaskModel(Base):
     question_ids: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON
     status: Mapped[str] = mapped_column(String(16), nullable=False, default="pending")
     due_date: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class UserStreakModel(Base):
+    """Per-user learning streak counters. One row per user."""
+    __tablename__ = "user_streaks"
+
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"),
+        primary_key=True)
+    current_streak: Mapped[int] = mapped_column(nullable=False, default=0)
+    longest_streak: Mapped[int] = mapped_column(nullable=False, default=0)
+    last_activity_date: Mapped[Date] = mapped_column(Date, nullable=True)
+    total_days_active: Mapped[int] = mapped_column(nullable=False, default=0)
+
+
+class StreakActivityModel(Base):
+    """One row per user per active day — powers the 30-day calendar."""
+    __tablename__ = "streak_activity"
+
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False, index=True)
+    activity_date: Mapped[Date] = mapped_column(Date, nullable=False, index=True)
+
+    __table_args__ = (
+        UniqueConstraint("user_id", "activity_date"),
+        PrimaryKeyConstraint("user_id", "activity_date"),
+    )

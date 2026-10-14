@@ -32,7 +32,9 @@ def get_daily(request: Request, date: str = Query(default=""),
 def submit_daily(body: DailySubmitRequest, request: Request,
                  user_id: str = Depends(current_user_id)):
     try:
-        return _svc(request).submit_daily(user_id, body.date, body.answers)
+        result = _svc(request).submit_daily(user_id, body.date, body.answers)
+        request.app.state.streak_service.record_activity(user_id)
+        return result
     except DomainError as exc:
         raise _domain_error(exc)
 

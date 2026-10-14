@@ -224,3 +224,59 @@ def test_api_plan_requires_auth(client):
                     json={"domain_slug": "dsa", "start_level": "scratch",
                           "total_days": 30})
     assert r.status_code in (401, 403)
+
+
+# ---- generate-questions API (admin) ----
+
+def test_api_generate_questions_admin(client):
+    admin_tok = _make_user_and_token(client, "cur-gen@example.com", role="admin")
+    h = {"Authorization": f"Bearer {admin_tok}"}
+    # domain must exist for add_question
+    client.post("/api/v1/curriculum/domains",
+                json={"slug": "dsa", "name": "DSA", "category": "cs-core"},
+                headers=h)
+    client.post("/api/v1/curriculum/domains/dsa/modules",
+                json={"slug": "arrays", "name": "Arrays"},
+                headers=h)
+    r = client.post("/api/v1/curriculum/generate-questions",
+                    json={"domain_slug": "dsa", "module_slug": "arrays",
+                          "count": 10, "seed": 42,
+                          "difficulty_min": 1, "difficulty_max": 5},
+                    headers=h)
+    assert r.status_code == 201, r.text
+    body = r.json()
+    assert body["generated"] == 10
+    assert body["domain_slug"] == "dsa"
+    # verify persisted via service-level list
+    from app.adapters.outbound.curriculum_repository import SqlAlchemyCurriculumRepository
+    repo = SqlAlchemyCurriculumRepository(SessionLocal)
+    qs = repo.list_questions("dsa", module_slug="arrays")
+    assert len(qs) >= 10
+    q0 = qs[0]
+    assert 1 <= q0.difficulty <= 5
+    assert q0.explanation
+
+
+def test_api_generate_questions_requires_admin(client):
+    user_tok = _make_user_and_token(client, "cur-gen-u@example.com")
+    r = client.post("/api/v1/curriculum/generate-questions",
+                    json={"domain_slug": "dsa", "count": 5},
+                    headers={"Authorization": f"Bearer {user_tok}"})
+    assert r.status_code == 403
+
+
+def test_api_generate_questions_bad_domain(client):
+    admin_tok = _make_user_and_token(client, "cur-gen-b@example.com", role="admin")
+    r = client.post("/api/v1/curriculum/generate-questions",
+                    json={"domain_slug": "astrology", "count": 5},
+                    headers={"Authorization": f"Bearer {admin_tok}"})
+    assert r.status_code == 400
+
+
+def test_api_generate_capacity(client):
+    admin_tok = _make_user_and_token(client, "cur-gen-c@example.com", role="admin")
+    h = {"Authorization": f"Bearer {admin_tok}"}
+    r = client.get("/api/v1/curriculum/generate-capacity", headers=h)
+    assert r.status_code == 200
+    cap = r.json()["capacity"]
+    assert cap["dsa"] >= 500 and cap["os"] >= 300 and cap["dbms"] >= 300

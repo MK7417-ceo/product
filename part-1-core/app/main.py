@@ -49,6 +49,11 @@ from app.api.v1 import roadmaps as roadmaps_api
 from app.api.v1 import content as content_api
 from app.api.v1 import curriculum as curriculum_api
 from app.api.v1 import study_plans as study_plans_api
+from app.api.v1 import streak as streak_api
+from app.api.v1 import trends as trends_api
+from app.api.v1 import news as news_api
+from app.adapters.inbound.streak_service import StreakServiceImpl
+from app.adapters.outbound.streak_repository import SqlAlchemyStreakRepository
 from app.core.config import settings
 from app.core.database import SessionLocal
 from app.core.logging import configure_logging
@@ -90,6 +95,8 @@ def create_app() -> FastAPI:
         SqlAlchemyContentRepository(SessionLocal))
     app.state.curriculum_service = CurriculumServiceImpl(
         SqlAlchemyCurriculumRepository(SessionLocal))
+    app.state.streak_service = StreakServiceImpl(
+        SqlAlchemyStreakRepository(SessionLocal))
     app.state.code_runner = HttpCodeRunnerClient(settings.CODE_ENGINE_URL)
     app.state.launchpad_service = LaunchpadServiceImpl(
         SqlAlchemyResumeRepository(SessionLocal),
@@ -132,6 +139,9 @@ def create_app() -> FastAPI:
     app.include_router(content_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(study_plans_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(curriculum_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(streak_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(trends_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(news_api.router, prefix=settings.API_V1_PREFIX)
     return app
 
 

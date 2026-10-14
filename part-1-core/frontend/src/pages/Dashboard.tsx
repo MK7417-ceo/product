@@ -15,6 +15,7 @@ import ContinueCard from '../components/dashboard/ContinueCard';
 import WeekStrip from '../components/dashboard/WeekStrip';
 import TodayRail from '../components/dashboard/TodayRail';
 import '../components/dashboard/dashboard.css';
+import StreakWidget from '../components/StreakWidget';
 
 interface Source<T> {
   data: T;
@@ -168,6 +169,8 @@ export default function Dashboard() {
         error={roadmap.error ?? profile.error ?? assessments.error}
         onRetry={load}
       />
+
+      <StreakWidget compact />
 
       <StatCards
         roadmap={roadmap.data}
