@@ -28,6 +28,7 @@ const Profile = lazy(() => import('./pages/Profile'));
 const Billing = lazy(() => import('./pages/Billing'));
 const Landing = lazy(() => import('./pages/Landing'));
 const CertDirectory = lazy(() => import('./pages/CertDirectory'));
+const ContentManager = lazy(() => import('./pages/admin/ContentManager'));
 
 function Fallback() {
   return <div className="route-loading">Loading…</div>;
@@ -112,6 +113,7 @@ export default function App() {
           <Route path="settings" element={<Settings />} />
           <Route path="profile" element={<Profile />} />
           <Route path="billing" element={<Billing />} />
+          <Route path="admin/content" element={<ContentManager />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
