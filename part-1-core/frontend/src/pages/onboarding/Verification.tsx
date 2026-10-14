@@ -31,7 +31,7 @@ const PASS = 0.7;
 const CODE_LANGUAGES = ['python', 'c', 'cpp', 'java'] as const;
 
 function prettyTopic(t: string): string {
-  return t === 'ml-basics' ? 'ML Basics' : t === 'python' ? 'Python' : t;
+  return t === 'ml-basics' ? 'ML Basics' : t === 'python' ? 'Python' : t === 'javascript' ? 'JavaScript' : t === 'java' ? 'Java' : t === 'webdev' ? 'Web Dev' : t;
 }
 
 type Item =

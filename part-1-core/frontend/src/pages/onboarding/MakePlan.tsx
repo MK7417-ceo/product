@@ -38,6 +38,9 @@ function prettyTopic(topic: string): { name: string; domain: string } {
   const map: Record<string, { name: string; domain: string }> = {
     python: { name: 'Python', domain: 'Programming' },
     'ml-basics': { name: 'ML Basics', domain: 'Machine Learning' },
+    javascript: { name: 'JavaScript', domain: 'Programming' },
+    java: { name: 'Java', domain: 'Programming' },
+    webdev: { name: 'Web Dev', domain: 'Web Development' },
   };
   return map[topic] ?? { name: topic, domain: 'Track' };
 }
