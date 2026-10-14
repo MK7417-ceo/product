@@ -14,6 +14,8 @@ from app.adapters.inbound.evidence_service import EvidenceServiceImpl
 from app.adapters.inbound.practice_service import PracticeServiceImpl
 from app.adapters.inbound.content_service import ContentServiceImpl
 from app.adapters.outbound.content_repository import SqlAlchemyContentRepository
+from app.adapters.inbound.curriculum_service import CurriculumServiceImpl
+from app.adapters.outbound.curriculum_repository import SqlAlchemyCurriculumRepository
 from app.adapters.inbound.roadmap_service import RoadmapServiceImpl
 from app.adapters.outbound.google_oauth import GoogleOAuthProvider
 from app.adapters.outbound.profile_repository import (
@@ -45,6 +47,8 @@ from app.api.v1 import evidence as evidence_api
 from app.api.v1 import practice as practice_api
 from app.api.v1 import roadmaps as roadmaps_api
 from app.api.v1 import content as content_api
+from app.api.v1 import curriculum as curriculum_api
+from app.api.v1 import study_plans as study_plans_api
 from app.core.config import settings
 from app.core.database import SessionLocal
 from app.core.logging import configure_logging
@@ -84,6 +88,8 @@ def create_app() -> FastAPI:
         bank, SqlAlchemyRoadmapRepository(SessionLocal))
     app.state.content_service = ContentServiceImpl(
         SqlAlchemyContentRepository(SessionLocal))
+    app.state.curriculum_service = CurriculumServiceImpl(
+        SqlAlchemyCurriculumRepository(SessionLocal))
     app.state.code_runner = HttpCodeRunnerClient(settings.CODE_ENGINE_URL)
     app.state.launchpad_service = LaunchpadServiceImpl(
         SqlAlchemyResumeRepository(SessionLocal),
@@ -124,6 +130,8 @@ def create_app() -> FastAPI:
     app.include_router(practice_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(evidence_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(content_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(study_plans_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(curriculum_api.router, prefix=settings.API_V1_PREFIX)
     return app
 
 

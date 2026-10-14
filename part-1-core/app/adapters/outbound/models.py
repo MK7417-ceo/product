@@ -196,3 +196,110 @@ class BankQuestionModel(Base):
     answer_index: Mapped[int] = mapped_column(nullable=True)  # mcq only
     rubric: Mapped[str] = mapped_column(Text, nullable=True)  # JSON; written only
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+# ---------------------------------------------------------------- curriculum
+
+class CurriculumDomainModel(Base):
+    """Curriculum: a learnable domain (B.Tech CS subject, language, tech domain).
+
+    UI rule: never show "coding/non-coding" labels — user picks a domain and we
+    ask whether they start from scratch or already know something.
+    """
+    __tablename__ = "curriculum_domains"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    slug: Mapped[str] = mapped_column(String(80), unique=True, nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    icon: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    category: Mapped[str] = mapped_column(String(16), nullable=False)  # cs-core|language|tech-domain
+    order_index: Mapped[int] = mapped_column(nullable=False, default=0)
+    is_active: Mapped[bool] = mapped_column(nullable=False, default=True)
+
+
+class CurriculumModuleModel(Base):
+    """Curriculum: a module inside a domain (e.g. DSA → arrays-strings)."""
+    __tablename__ = "curriculum_modules"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    domain_slug: Mapped[str] = mapped_column(
+        String(80), ForeignKey("curriculum_domains.slug", ondelete="CASCADE"),
+        nullable=False, index=True)
+    slug: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    order_index: Mapped[int] = mapped_column(nullable=False, default=0)
+    estimated_days: Mapped[int] = mapped_column(nullable=False, default=7)
+
+
+class CurriculumLessonModel(Base):
+    """Curriculum: a lesson inside a module — markdown theory + optional visual."""
+    __tablename__ = "curriculum_lessons"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    module_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("curriculum_modules.id", ondelete="CASCADE"),
+        nullable=False, index=True)
+    slug: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False, default="")  # markdown
+    order_index: Mapped[int] = mapped_column(nullable=False, default=0)
+    estimated_minutes: Mapped[int] = mapped_column(nullable=False, default=30)
+    has_visual: Mapped[bool] = mapped_column(nullable=False, default=False)
+
+
+class CurriculumQuestionModel(Base):
+    """Curriculum: questions with 1-10 difficulty, explanation, company tags."""
+    __tablename__ = "curriculum_questions"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    domain_slug: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    module_slug: Mapped[str] = mapped_column(String(80), nullable=False, default="", index=True)
+    lesson_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("curriculum_lessons.id", ondelete="SET NULL"),
+        nullable=True, index=True)
+    difficulty: Mapped[int] = mapped_column(nullable=False, default=1)  # 1-10
+    qtype: Mapped[str] = mapped_column(String(16), nullable=False, default="mcq")
+    prompt: Mapped[str] = mapped_column(Text, nullable=False)
+    choices: Mapped[str] = mapped_column(Text, nullable=True)  # JSON; mcq only
+    answer_index: Mapped[int] = mapped_column(nullable=True)  # mcq only
+    explanation: Mapped[str] = mapped_column(Text, nullable=False, default="")  # why
+    company_tags: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class StudyPlanModel(Base):
+    """A user's day-wise study plan for one domain."""
+    __tablename__ = "study_plans"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False, index=True)
+    domain_slug: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    start_level: Mapped[str] = mapped_column(String(16), nullable=False)  # scratch|beginner|intermediate
+    total_days: Mapped[int] = mapped_column(nullable=False)
+    current_day: Mapped[int] = mapped_column(nullable=False, default=1)
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="active")
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class DailyTaskModel(Base):
+    """One task on one day of a study plan."""
+    __tablename__ = "daily_tasks"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    plan_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("study_plans.id", ondelete="CASCADE"),
+        nullable=False, index=True)
+    day_number: Mapped[int] = mapped_column(nullable=False)
+    lesson_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("curriculum_lessons.id", ondelete="SET NULL"),
+        nullable=True)
+    task_type: Mapped[str] = mapped_column(String(16), nullable=False)  # learn|practice|code|revise|mock
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    question_ids: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON
+    status: Mapped[str] = mapped_column(String(16), nullable=False, default="pending")
+    due_date: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
