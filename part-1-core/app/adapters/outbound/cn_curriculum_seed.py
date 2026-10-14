@@ -480,7 +480,7 @@ Q("The FCS trailer is added at which layer and why?",
   "Frame Check Sequence (CRC) trailer at Layer 2 lets the receiver detect corrupted frames.",
   ["Arista", "Juniper"]),
 ]),
-]),
+])
 
 
 # ---------------------------------------------------------------------------
@@ -1204,3 +1204,1438 @@ Q("After active close, why does the closer wait in TIME_WAIT?",
   ["Netflix", "Amazon"]),
 ]),
 ])
+
+
+# ---------------------------------------------------------------------------
+# MODULE 4 — APPLICATION LAYER (6 lessons)
+# ---------------------------------------------------------------------------
+
+_app_layer = M("app-layer", "Application Layer",
+    "DNS (recursive vs iterative), HTTP/1.1 vs 2 vs 3, DHCP, email and FTP, cookies and sessions.",
+[
+
+L("dns", "DNS — How Names Become IPs",
+"""## DNS: the internet's phone book
+
+`example.com` → `93.184.216.34`. Without DNS, you'd memorize IPs.
+
+## Recursive vs iterative queries
+
+**Recursive** (your laptop → resolver): "Get me the answer, do the work."
+The resolver does all the legwork and returns the final IP.
+
+**Iterative** (resolver → root → TLD → authoritative): each server says
+"I don't know, but ask *them*." The resolver follows referrals itself.
+
+## Record types
+
+| Type | Meaning |
+|---|---|
+| A | IPv4 address |
+| AAAA | IPv6 address |
+| CNAME | Alias (www → example.com) |
+| MX | Mail server |
+| TXT | Arbitrary text (SPF, verification) |
+| NS | Name servers for a zone |
+
+## Caching & TTL
+
+Every answer carries a **TTL** (time-to-live). Resolvers cache answers
+until TTL expires — that's why DNS changes take time to propagate.
+""",
+[
+Q("What does DNS do?",
+  ["Assigns IP addresses", "Translates domain names to IP addresses",
+   "Routes packets", "Encrypts traffic"], 1, 1,
+  "DNS = Domain Name System: names → IPs.",
+  ["TCS", "Infosys"]),
+Q("In a recursive query, who does the legwork?",
+  ["The client", "The resolver — it returns the final answer",
+   "The root server", "Nobody"], 1, 3,
+  "Recursive = 'do it all for me'. Iterative = 'give me referrals, I'll chase them'.",
+  ["Google", "Cloudflare"]),
+Q("Which record type maps a name to an IPv6 address?",
+  ["A", "AAAA", "CNAME", "MX"], 1, 2,
+  "A = IPv4, AAAA = IPv6 (four times the 'A').",
+  ["Wipro", "HCL"]),
+Q("What does a CNAME record do?",
+  ["Maps to IPv4", "Creates an alias from one name to another",
+   "Handles email", "Lists name servers"], 1, 4,
+  "CNAME: www.example.com → example.com.",
+  ["Accenture", "Amazon"]),
+Q("Why does a DNS change take hours to fully propagate?",
+  ["Slow servers", "Resolvers cache old answers until TTL expires",
+   "DNS is down", "Root servers are slow"], 1, 5,
+  "TTL-based caching means stale answers persist until they expire everywhere.",
+  ["Cloudflare", "Microsoft"]),
+Q("Which servers does an iterative resolver contact, in order?",
+  ["Authoritative, TLD, root", "Root → TLD → authoritative",
+   "TLD → root → authoritative", "Any order"], 1, 7,
+  "The hierarchy is walked top-down: root, then TLD (.com), then authoritative.",
+  ["Google", "Cisco"]),
+Q("What is DNS hijacking/poisoning?",
+  ["Deleting domains", "Corrupting DNS responses so victims go to attacker IPs",
+   "Slow DNS", "Blocking ports"], 1, 9,
+  "Cache poisoning injects fake records — victims trust the forged answer. DNSSEC counters it.",
+  ["Palo Alto", "Cloudflare"]),
+]),
+
+L("http-basics", "HTTP Basics — Methods & Status Codes",
+"""## HTTP: the web's language
+
+**Stateless** request/response protocol. Every request stands alone —
+the server remembers nothing between requests (that's what cookies are for).
+
+## Methods
+
+| Method | Meaning | Safe? | Idempotent? |
+|---|---|---|---|
+| GET | Read | ✅ | ✅ |
+| POST | Create/submit | ❌ | ❌ |
+| PUT | Replace | ❌ | ✅ |
+| PATCH | Partial update | ❌ | ✅ |
+| DELETE | Remove | ❌ | ✅ |
+| HEAD | Headers only | ✅ | ✅ |
+
+**Idempotent** = repeating it has the same effect as doing it once.
+(DELETE twice: still deleted. POST twice: two resources!)
+
+## Status code families
+
+- **2xx** success (200 OK, 201 Created)
+- **3xx** redirection (301 Moved Permanently, 304 Not Modified)
+- **4xx** client error (400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found)
+- **5xx** server error (500 Internal Error, 503 Unavailable)
+""",
+[
+Q("Is HTTP stateful or stateless?",
+  ["Stateful", "Stateless", "Both", "Neither"], 1, 1,
+  "HTTP is stateless — each request is independent; state lives in cookies/sessions.",
+  ["TCS", "Infosys"]),
+Q("Which method is idempotent but NOT safe?",
+  ["GET", "POST", "PUT", "HEAD"], 2, 3,
+  "PUT changes state (not safe) but repeating it gives the same result (idempotent).",
+  ["Amazon", "Flipkart"]),
+Q("What does 404 mean?",
+  ["Server error", "Not Found — resource doesn't exist", "Redirect", "OK"], 1, 2,
+  "4xx = client error; 404 = the requested resource wasn't found.",
+  ["Wipro", "HCL"]),
+Q("Difference between 401 and 403?",
+  ["Same thing", "401 = unauthenticated (who are you?); 403 = unauthorized (you can't)",
+   "401 is server error", "403 means OK"], 1, 5,
+  "401: missing/invalid credentials. 403: authenticated but forbidden.",
+  ["Microsoft", "Google"]),
+Q("Why is POST not idempotent?",
+  ["It is", "Repeating POST typically creates duplicate resources",
+   "POST is encrypted", "POST has no body"], 1, 6,
+  "Two identical POSTs → two orders created. That's why browsers warn on resubmit.",
+  ["Atlassian", "Razorpay"]),
+Q("What does a 301 response tell the client?",
+  ["Error", "Resource moved permanently — update your bookmarks/use the new URL",
+   "Try again later", "Access denied"], 1, 4,
+  "301 = permanent redirect; clients/crawlers should use the new location henceforth.",
+  ["Cloudflare", "Amazon"]),
+]),
+
+L("http2-http3", "HTTP/1.1 vs HTTP/2 vs HTTP/3",
+"""## HTTP/1.1 (1997) — the classic
+
+- Text-based, one request per connection (keep-alive helps)
+- **Head-of-line blocking**: one slow response stalls everything behind it
+- 6 parallel connections per browser — a hack around the limitation
+
+## HTTP/2 (2015) — multiplexing
+
+- **Binary** framing (not text)
+- **Multiplexing**: many streams over ONE TCP connection
+- Header compression (HPACK), server push
+- Still TCP underneath → TCP-level head-of-line blocking remains!
+
+## HTTP/3 (2022) — QUIC
+
+- Runs over **QUIC (UDP-based)** — each stream independent
+- **No TCP head-of-line blocking** at all
+- Faster handshakes (0-RTT), built-in TLS 1.3
+- Perfect for lossy mobile networks
+
+## Interview summary
+
+"1.1: text, sequential. 2: binary multiplexed over TCP. 3: QUIC over UDP, per-stream independence."
+""",
+[
+Q("What is head-of-line blocking in HTTP/1.1?",
+  ["Slow DNS", "One slow response blocks subsequent responses on the same connection",
+   "Too many headers", "Encryption overhead"], 1, 3,
+  "1.1 serves responses in order — a slow first response stalls the rest.",
+  ["Google", "Cloudflare"]),
+Q("What is HTTP/2's biggest improvement?",
+  ["Encryption", "Multiplexing many streams over one TCP connection",
+   "Bigger headers", "UDP transport"], 1, 4,
+  "Multiplexing kills application-level head-of-line blocking.",
+  ["Amazon", "Netflix"]),
+Q("Does HTTP/2 eliminate ALL head-of-line blocking?",
+  ["Yes completely", "No — TCP-level blocking remains (one lost packet stalls all streams)",
+   "It adds more", "It removes TCP"], 1, 7,
+  "H/2 multiplexes over a single TCP connection, so TCP's ordered delivery still blocks on loss.",
+  ["Google", "Fastly"]),
+Q("What transport does HTTP/3 use?",
+  ["TCP", "QUIC over UDP", "SCTP", "Raw IP"], 1, 5,
+  "HTTP/3 = QUIC (UDP-based) with per-stream independence + built-in TLS 1.3.",
+  ["Cloudflare", "Microsoft"]),
+Q("Why is HTTP/3 better on mobile networks?",
+  ["Bigger packets", "Independent streams survive packet loss without stalling others",
+   "No encryption", "Fewer servers"], 1, 8,
+  "Lossy networks hurt TCP-based H/2; QUIC isolates loss per stream.",
+  ["Google", "Meta"]),
+Q("What is HPACK?",
+  ["A video codec", "HTTP/2's header compression",
+   "A handshake", "A port number"], 1, 9,
+  "HPACK compresses repetitive headers across requests on a connection.",
+  ["Fastly", "Cloudflare"]),
+]),
+
+L("dhcp", "DHCP — Getting an IP Automatically",
+"""## DORA — the 4-step dance (all broadcast at first!)
+
+```
+Client                          Server
+  | ------ DISCOVER (broadcast) ----> |  "Anyone out there?"
+  | <------ OFFER ------------------ |  "Take 192.168.1.50"
+  | ------ REQUEST (broadcast) ----> |  "I'll take it!"
+  | <------ ACK -------------------- |  "It's yours for 24h"
+```
+
+**D**iscover, **O**ffer, **R**equest, **A**ck.
+
+## The lease
+
+IPs are **leased**, not owned. Client renews at 50% of lease time (T1).
+Lease expires → client must DORA again. That's why your IP sometimes changes.
+
+## Key facts
+
+- DHCP uses **UDP ports 67 (server) / 68 (client)**
+- Initial messages are **broadcast** (client has no IP yet — same reason as before!)
+- Also delivers: subnet mask, gateway, DNS servers
+""",
+[
+Q("What does DORA stand for?",
+  ["Data Over Radio Access", "Discover, Offer, Request, Acknowledge",
+   "Domain Object Request API", "Dynamic Online Resource Allocation"], 1, 2,
+  "DORA = the 4 DHCP steps.",
+  ["TCS", "Infosys"]),
+Q("Why does DHCP use broadcast for DISCOVER?",
+  ["It's faster", "The client has no IP yet and doesn't know any server address",
+   "Broadcast is secure", "Routers require it"], 1, 4,
+  "No unicast possible without an address — broadcast reaches any DHCP server on the LAN.",
+  ["Cisco", "Juniper"]),
+Q("DHCP server and client ports?",
+  ["80/443", "67/68", "53/54", "21/22"], 1, 3,
+  "UDP 67 = server, 68 = client.",
+  ["Wipro", "HCL"]),
+Q("Besides an IP, what else does DHCP provide?",
+  ["Nothing", "Subnet mask, default gateway, DNS servers",
+   "Passwords", "Wi-Fi keys"], 1, 5,
+  "A full network config: IP + mask + gateway + DNS.",
+  ["Accenture", "TCS"]),
+Q("A client renews its lease at what point?",
+  ["At expiry", "At 50% of lease time (T1)", "Every hour", "Never"], 1, 6,
+  "T1 (50%) tries renewal with the original server; T2 (87.5%) broadcasts to any server.",
+  ["Microsoft", "Cisco"]),
+Q("Two DHCP servers on one LAN both answer a DISCOVER. What happens?",
+  ["Crash", "Client typically takes the first OFFER",
+   "Both assign", "Network dies"], 1, 8,
+  "First OFFER usually wins — rogue DHCP servers exploit exactly this.",
+  ["Palo Alto", "Juniper"]),
+]),
+
+L("email-ftp", "Email (SMTP) & File Transfer (FTP)",
+"""## Email: three protocols, three jobs
+
+- **SMTP** (port 25/587): *sending* mail — client → server, server → server
+- **POP3** (110): *downloading* mail — usually deletes from server
+- **IMAP** (143/993): *accessing* mail — stays on server, syncs everywhere
+
+Your phone uses IMAP (that's why mail syncs across devices).
+
+## FTP: two connections!
+
+- **Control** (port 21): commands ("give me file X")
+- **Data** (port 20): the actual file bytes
+
+**Active vs passive**: in active mode the *server* connects back to the
+client (firewalls hate this); passive mode has the client open both —
+passive is the modern default.
+
+## SFTP ≠ FTP
+
+SFTP runs over **SSH** (port 22) — encrypted. Plain FTP sends
+passwords in cleartext. Never use plain FTP for anything sensitive.
+""",
+[
+Q("Which protocol SENDS email?",
+  ["POP3", "IMAP", "SMTP", "HTTP"], 2, 1,
+  "SMTP sends; POP3/IMAP retrieve.",
+  ["TCS", "Infosys"]),
+Q("Why does your phone use IMAP instead of POP3?",
+  ["It's faster", "Mail stays on server and syncs across all devices",
+   "It's free", "POP3 is dead"], 1, 3,
+  "IMAP = server-side mailbox, multi-device sync. POP3 downloads (and often deletes).",
+  ["Google", "Microsoft"]),
+Q("FTP uses how many connections?",
+  ["1", "2 — control (21) and data (20)", "3", "0"], 1, 4,
+  "Separate control and data connections is FTP's famous quirk.",
+  ["Wipro", "Accenture"]),
+Q("In FTP active mode, who initiates the data connection?",
+  ["The client", "The server connects back to the client",
+   "The router", "Nobody"], 1, 5,
+  "Active: server → client data connection (firewall-unfriendly). Passive reverses this.",
+  ["Cisco", "HCL"]),
+Q("What's the difference between FTP and SFTP?",
+  ["Same thing", "SFTP runs over SSH — encrypted; FTP is cleartext",
+   "SFTP is faster", "FTP is newer"], 1, 6,
+  "SFTP = SSH File Transfer Protocol (port 22), fully encrypted.",
+  ["Amazon", "Palo Alto"]),
+Q("SMTP default port for submission (with auth)?",
+  ["25", "587", "465", "110"], 1, 7,
+  "587 = message submission (STARTTLS); 25 = server-to-server relay; 465 = implicit TLS.",
+  ["Microsoft", "Google"]),
+]),
+
+L("cookies-sessions", "Cookies, Sessions & Statelessness",
+"""## HTTP forgot everything — cookies remember
+
+HTTP is stateless, but apps need login state. Solution: the server
+gives the browser a **cookie** (small key-value), and the browser
+sends it back with every request.
+
+## Cookies vs sessions
+
+| | Cookie | Session |
+|---|---|---|
+| Stored | Browser | Server |
+| Size | ~4KB | Unlimited |
+| Security | Visible to user (don't store secrets!) | Only an ID travels |
+| Survives | Browser-controlled expiry | Server timeout |
+
+Typical flow: login → server creates session, sends `session_id` cookie →
+browser sends cookie each request → server looks up session.
+
+## Cookie flags (security!)
+
+- **HttpOnly**: JS can't read it (XSS protection)
+- **Secure**: only sent over HTTPS
+- **SameSite**: controls cross-site sending (CSRF protection)
+""",
+[
+Q("Why do we need cookies if HTTP works fine?",
+  ["We don't", "HTTP is stateless — cookies preserve state like logins across requests",
+   "Cookies speed up DNS", "Cookies replace TCP"], 1, 2,
+  "Without cookies, the server couldn't tell request #2 is from the same logged-in user.",
+  ["TCS", "Infosys"]),
+Q("Where is session data actually stored?",
+  ["In the browser", "On the server; only the session ID travels in a cookie",
+   "In DNS", "In the URL"], 1, 3,
+  "Sessions = server-side storage keyed by the cookie's session ID.",
+  ["Amazon", "Flipkart"]),
+Q("What does the HttpOnly flag do?",
+  ["Encrypts the cookie", "Blocks JavaScript from reading the cookie (XSS defense)",
+   "Makes it permanent", "Hides it from the server"], 1, 5,
+  "HttpOnly cookies are invisible to document.cookie — stolen-XSS scripts can't grab them.",
+  ["Microsoft", "Google"]),
+Q("What attack does SameSite=Strict mitigate?",
+  ["DDoS", "CSRF — the browser won't send the cookie on cross-site requests",
+   "SQL injection", "Phishing"], 1, 6,
+  "SameSite stops the browser attaching cookies to cross-origin requests — CSRF's lifeblood.",
+  ["Palo Alto", "Atlassian"]),
+Q("A user clears cookies. What happens to their session?",
+  ["Nothing", "They're logged out — the session ID is gone",
+   "Server crashes", "Password changes"], 1, 4,
+  "No session cookie → server can't match requests to the session → logged out.",
+  ["Wipro", "Razorpay"]),
+Q("Why shouldn't secrets live in cookies directly?",
+  ["They can", "Cookies are stored client-side and visible/editable by the user",
+   "Cookies are too small always", "Servers can't read cookies"], 1, 7,
+  "Never trust client storage — keep secrets server-side in the session.",
+  ["CRED", "PhonePe"]),
+]),
+])
+
+
+# ---------------------------------------------------------------------------
+# MODULE 5 — ROUTING & SWITCHING (6 lessons)
+# ---------------------------------------------------------------------------
+
+_routing_switching = M("routing-switching", "Routing & Switching",
+    "Hubs vs switches vs routers, VLANs, routing tables, distance-vector vs link-state, OSPF/BGP concepts, STP.",
+[
+
+L("switches-hubs", "Hubs vs Switches vs Routers",
+"""## The trio, precisely
+
+| | Hub | Switch | Router |
+|---|---|---|---|
+| Layer | 1 | 2 | 3 |
+| Forwards by | Nothing (repeats) | MAC table | Routing table (IP) |
+| Collision domains | 1 (all ports) | 1 per port | 1 per port |
+| Broadcast domains | 1 | 1 | 1 per interface |
+
+## How a switch learns
+
+1. Frame arrives on port 3 from MAC AA
+2. Switch records: AA → port 3 (MAC table)
+3. Destination MAC known? Forward to that port only. Unknown? **Flood** (like a hub, once)
+4. Table entries **age out** (default ~300s)
+
+## Routers separate broadcast domains
+
+A broadcast (255.255.255.255) never crosses a router — each router
+interface is its own broadcast domain. That's why big LANs are
+subnetted across router interfaces.
+""",
+[
+Q("A switch forwards frames based on what?",
+  ["IP addresses", "MAC addresses", "Port numbers", "Nothing"], 1, 1,
+  "Switches are Layer 2 — they learn and forward by MAC.",
+  ["TCS", "Infosys"]),
+Q("How many collision domains does an 8-port switch create?",
+  ["1", "8", "0", "4"], 1, 2,
+  "Each switch port is its own collision domain → 8.",
+  ["Wipro", "HCL"]),
+Q("What does a switch do with a frame for an unknown destination MAC?",
+  ["Drops it", "Floods it out all ports (except incoming)",
+   "Sends to router", "Buffers forever"], 1, 3,
+  "Unknown unicast is flooded — the reply teaches the switch the location.",
+  ["Cisco", "Juniper"]),
+Q("Why don't broadcasts cross routers?",
+  ["They do", "Routers terminate broadcast domains by design — broadcasts stay local",
+   "Broadcasts are too big", "Firewalls block them"], 1, 5,
+  "Each router interface = separate broadcast domain; this contains broadcast storms.",
+  ["Accenture", "TCS"]),
+Q("How long do MAC table entries typically live?",
+  ["Forever", "~300 seconds (aging time), refreshed by traffic",
+   "1 second", "Until reboot"], 1, 6,
+  "Aging prevents stale entries when hosts move; traffic refreshes the timer.",
+  ["Arista", "Cisco"]),
+Q("A hub receives a frame on port 1. What does it do?",
+  ["Forwards to the right port", "Repeats it out ALL other ports",
+   "Drops it", "Asks the router"], 1, 4,
+  "Hubs are dumb Layer-1 repeaters — every port sees every frame (and collisions).",
+  ["Juniper", "HCL"]),
+]),
+
+L("vlans", "VLANs — Virtual LANs",
+"""## One switch, many LANs
+
+A **VLAN** partitions a switch into multiple logical LANs. Ports in
+VLAN 10 can't talk to VLAN 20 without a router — even on the same hardware.
+
+**Why**: security (HR vs guests), broadcast control, organization.
+
+## Trunking (802.1Q)
+
+A **trunk** link carries *multiple* VLANs between switches. Each frame
+gets a 4-byte **802.1Q tag** with the VLAN ID (12 bits → 4096 VLANs,
+0 and 4095 reserved).
+
+## Inter-VLAN routing
+
+VLANs need a Layer-3 device to talk: **router-on-a-stick** (one router
+interface, subinterfaces per VLAN) or a Layer-3 switch.
+""",
+[
+Q("What is a VLAN?",
+  ["A faster cable", "A logical partition of a switch into separate broadcast domains",
+   "A router brand", "A VPN"], 1, 2,
+  "VLANs split one physical switch into multiple isolated Layer-2 networks.",
+  ["TCS", "Infosys"]),
+Q("How many VLANs does the 12-bit ID support?",
+  ["256", "4096", "65536", "1024"], 1, 3,
+  "2^12 = 4096 (VLAN 1 default, 0/4095 reserved).",
+  ["Cisco", "Wipro"]),
+Q("What is a trunk port?",
+  ["A slow port", "A port carrying multiple VLANs using 802.1Q tags",
+   "A router port", "A broken port"], 1, 4,
+  "Trunks tag frames so switches know which VLAN each belongs to.",
+  ["Juniper", "Accenture"]),
+Q("Can two hosts in different VLANs communicate directly?",
+  ["Yes always", "No — needs inter-VLAN routing via a Layer-3 device",
+   "Yes with a hub", "Only on Wi-Fi"], 1, 5,
+  "VLANs are separate broadcast domains; a router/L3 switch must route between them.",
+  ["HCL", "TCS"]),
+Q("What is router-on-a-stick?",
+  ["A broken router", "One router interface with subinterfaces routing between VLANs",
+   "A wireless router", "A firewall"], 1, 7,
+  "Subinterfaces (e.g. g0/0.10, g0/0.20) each handle one VLAN's traffic.",
+  ["Cisco", "Amazon"]),
+Q("Which VLAN is the default on Cisco switches?",
+  ["VLAN 0", "VLAN 1", "VLAN 100", "VLAN 4095"], 1, 6,
+  "VLAN 1 is default/native — best practice is to move user traffic off it.",
+  ["Arista", "Juniper"]),
+]),
+
+L("routing-tables", "Routing Tables & Longest Prefix Match",
+"""## What's in a routing table?
+
+| Destination | Next hop | Interface | Metric |
+|---|---|---|---|
+| 10.1.0.0/16 | 192.168.1.1 | eth0 | 10 |
+| 0.0.0.0/0 | 192.168.1.254 | eth0 | 1 |
+
+Plus: **directly connected** networks and **local** addresses.
+
+## Longest prefix match (THE rule)
+
+When multiple routes match, the **most specific (longest prefix) wins**:
+
+```
+Packet to 10.1.5.9:
+  10.0.0.0/8    matches
+  10.1.0.0/16   matches  ← longer
+  10.1.5.0/24   matches  ← LONGEST → winner
+```
+
+## Static vs dynamic
+
+- **Static**: hand-configured (small networks, default routes)
+- **Dynamic**: protocols (RIP, OSPF, BGP) learn and adapt automatically
+""",
+[
+Q("What does a routing table contain?",
+  ["Passwords", "Destination networks, next hops, interfaces, metrics",
+   "User accounts", "DNS records"], 1, 1,
+  "Each entry says: to reach network X, send via next-hop Y on interface Z.",
+  ["TCS", "Infosys"]),
+Q("Routes 10.0.0.0/8 and 10.1.0.0/16 both match. Which wins for 10.1.5.9?",
+  ["10.0.0.0/8", "10.1.0.0/16", "Neither", "Random"], 1, 3,
+  "Longest prefix match: /16 is more specific than /8.",
+  ["Cisco", "Juniper"]),
+Q("What is 0.0.0.0/0 in a routing table?",
+  ["An error", "Default route — the gateway of last resort",
+   "Loopback", "Broadcast"], 1, 2,
+  "When nothing else matches, packets go to the default gateway.",
+  ["Wipro", "HCL"]),
+Q("Static vs dynamic routing — when is static better?",
+  ["Never", "Tiny networks / stub default routes — simple, no overhead",
+   "Always", "Only on Wi-Fi"], 1, 5,
+  "Static is fine for simple topologies; dynamic wins when links change.",
+  ["Accenture", "TCS"]),
+Q("What is 'metric' in a routing entry?",
+  ["Speed of light", "Cost of the route — lower is preferred",
+   "Packet size", "Encryption level"], 1, 4,
+  "Metric (hops, bandwidth, delay...) lets routers compare alternate paths.",
+  ["Amazon", "Juniper"]),
+Q("A packet matches 192.168.0.0/16, 192.168.1.0/24, and 0.0.0.0/0. Winner?",
+  ["192.168.0.0/16", "192.168.1.0/24", "0.0.0.0/0", "Dropped"], 1, 6,
+  "/24 is the longest match — specificity always wins.",
+  ["Google", "Arista"]),
+]),
+
+L("distance-vector", "Distance Vector Routing (RIP)",
+"""## The idea: rumors
+
+Each router tells neighbors its *entire* table: "I can reach X in N hops."
+Neighbors believe, add 1, and repeat. **Bellman-Ford** underneath.
+
+## RIP specifics
+
+- Metric = **hop count**, max **15** (16 = unreachable!)
+- Updates every **30 seconds** (periodic, chatty)
+- **Split horizon**: don't advertise a route back where you learned it
+- **Poison reverse**: advertise it back with metric 16 (explicitly dead)
+
+## Count to infinity (the classic flaw)
+
+A–B–C line, A dies. B still thinks "C reaches A in 2" → B says "3" →
+C says "4"… they count up to 16 before agreeing A is gone.
+Slow convergence — why link-state won.
+""",
+[
+Q("What algorithm does distance-vector routing use?",
+  ["Dijkstra", "Bellman-Ford", "A*", "BFS"], 1, 3,
+  "Distance vector = distributed Bellman-Ford: relax via neighbors' claims.",
+  ["TCS", "Infosys"]),
+Q("In RIP, what does hop count 16 mean?",
+  ["16 routers away", "Unreachable (infinity)",
+   "Fastest path", "Default route"], 1, 4,
+  "RIP caps at 15 hops; 16 = infinity = dead.",
+  ["Cisco", "Juniper"]),
+Q("What is 'count to infinity'?",
+  ["A fast algorithm", "Slow convergence where routers increment metrics after a failure",
+   "A security feature", "Packet fragmentation"], 1, 5,
+  "Bad news propagates slowly as routers keep believing stale rumors, counting up to 16.",
+  ["Amazon", "Wipro"]),
+Q("What does split horizon prevent?",
+  ["Slow links", "Advertising a route back to the neighbor you learned it from (loops)",
+   "Encryption", "Broadcasts"], 1, 6,
+  "Don't tell B about a route you learned FROM B — kills simple 2-node loops.",
+  ["Accenture", "HCL"]),
+Q("How often does RIP broadcast its full table?",
+  ["Never", "Every 30 seconds", "Every hour", "Only on change"], 1, 7,
+  "Periodic full updates — simple but chatty (a reason OSPF replaced it).",
+  ["Juniper", "TCS"]),
+Q("RIP's max useful network diameter is 15 hops. Why is this a limitation?",
+  ["It's not", "Large enterprise/ISP networks exceed 15 hops — RIP can't serve them",
+   "It wastes ports", "It needs IPv6"], 1, 8,
+  "The 15-hop cap makes RIP suitable only for small networks.",
+  ["Cisco", "Arista"]),
+]),
+
+L("link-state", "Link State Routing (OSPF)",
+"""## The idea: everyone gets the full map
+
+Each router **floods** its local link states; every router builds an
+identical **link-state database** (the whole topology), then runs
+**Dijkstra** locally to compute shortest paths.
+
+## OSPF specifics
+
+- Metric = **cost** (based on bandwidth; faster link = lower cost)
+- **Areas**: hierarchy to scale (backbone Area 0 connects all)
+- Only sends **changes** (plus periodic refresh) — efficient
+- Fast convergence vs RIP
+
+## Dijkstra in one line
+
+"Repeatedly pick the unvisited node with the smallest known distance,
+relax its neighbors." — O(E log V) with a heap.
+
+## Link-state vs distance-vector
+
+| | DV (RIP) | LS (OSPF) |
+|---|---|---|
+| Knowledge | Neighbors' rumors | Full topology |
+| Algorithm | Bellman-Ford | Dijkstra |
+| Convergence | Slow | Fast |
+| Chatter | Periodic full tables | Event-driven updates |
+""",
+[
+Q("What does each OSPF router compute with?",
+  ["Bellman-Ford", "Dijkstra's shortest path on the full topology",
+   "BFS", "Random"], 1, 3,
+  "Link-state = everyone knows the map; Dijkstra finds best paths locally.",
+  ["Cisco", "Juniper"]),
+Q("In OSPF, lower cost means…?",
+  ["Slower link", "Preferred path — cost is inverse to bandwidth",
+   "More hops", "Encrypted"], 1, 4,
+  "Cost ~ 10^8/bandwidth: fast links get low cost and win.",
+  ["TCS", "Infosys"]),
+Q("What is OSPF Area 0?",
+  ["A VLAN", "The backbone area — all other areas connect through it",
+   "A firewall zone", "The DMZ"], 1, 5,
+  "Hierarchical design: Area 0 (backbone) interconnects all areas, limiting flooding scope.",
+  ["Amazon", "Wipro"]),
+Q("Why does OSPF converge faster than RIP?",
+  ["It has fewer routers", "Changes flood immediately; routers recompute from the full map",
+   "It uses UDP", "It doesn't"], 1, 6,
+  "Event-driven updates + complete topology = fast, correct reconvergence.",
+  ["Google", "Accenture"]),
+Q("A link fails in OSPF. What happens first?",
+  ["Count to infinity", "The routers adjacent flood updated LSAs; all recompute",
+   "Nothing for 30s", "Manual fix"], 1, 7,
+  "Link-state advertisements propagate the change; Dijkstra reruns everywhere.",
+  ["Juniper", "Arista"]),
+Q("Dijkstra with a binary heap runs in…?",
+  ["O(V^2)", "O(E log V)", "O(V+E)", "O(1)"], 1, 9,
+  "Classic result: O((V+E) log V), usually written O(E log V).",
+  ["Goldman Sachs", "Google"]),
+]),
+
+L("bgp-stp", "BGP & Spanning Tree (STP)",
+"""## BGP: routing between organizations
+
+- **EGP** (Exterior Gateway Protocol) — the Internet's routing protocol
+- Works on **Autonomous Systems** (ASes, e.g. ISPs) with **AS numbers**
+- **Path vector**: advertises the full AS path (loop prevention!)
+- Policy-driven: business relationships (customer/provider/peer) matter more than hops
+- Runs over **TCP 179** — needs reliability for the global table (~1M routes)
+
+## STP: no loops in switched LANs
+
+Redundant switch links create **broadcast storms** (loops!). STP:
+1. Elects a **root bridge** (lowest bridge ID)
+2. Each switch picks a **root port** (shortest path to root)
+3. Blocks redundant ports → a **loop-free tree**
+4. On failure, unblocks backup (convergence ~30-50s; RSTP is faster)
+
+## Interview contrast
+
+"BGP routes between ASes using policy + AS-path; STP prevents Layer-2 loops by blocking redundant ports."
+""",
+[
+Q("What does BGP route between?",
+  ["Hosts", "Autonomous Systems (ISPs/organizations)",
+   "VLANs", "Processes"], 1, 2,
+  "BGP is the inter-domain protocol gluing ASes into the Internet.",
+  ["Cisco", "Juniper"]),
+Q("How does BGP prevent loops?",
+  ["Hop count", "AS-path: if your own AS number is in the path, reject it",
+   "TTL", "Encryption"], 1, 5,
+  "Path-vector: the full AS sequence travels with the route — seeing yourself = loop.",
+  ["Amazon", "Cloudflare"]),
+Q("Why does BGP run over TCP?",
+  ["It's faster", "The global routing table needs reliable delivery (TCP 179)",
+   "UDP is banned", "For encryption"], 1, 6,
+  "~1M prefixes must arrive intact — TCP's reliability fits.",
+  ["Arista", "Juniper"]),
+Q("What problem does STP solve?",
+  ["Slow internet", "Layer-2 loops causing broadcast storms on redundant links",
+   "IP conflicts", "DNS failures"], 1, 4,
+  "Parallel switch links loop broadcasts forever; STP blocks redundancies into a tree.",
+  ["TCS", "Wipro"]),
+Q("How is the STP root bridge chosen?",
+  ["Random", "Lowest bridge ID (priority + MAC)",
+   "Fastest switch", "Oldest switch"], 1, 7,
+  "Lowest bridge ID wins; ties break on MAC.",
+  ["Cisco", "HCL"]),
+Q("RSTP vs STP — the main improvement?",
+  ["More VLANs", "Much faster convergence (seconds vs ~30-50s)",
+   "Wireless support", "IPv6"], 1, 8,
+  "RSTP (802.1w) adds rapid port roles/handshakes for fast failover.",
+  ["Juniper", "Accenture"]),
+]),
+])
+
+
+# ---------------------------------------------------------------------------
+# MODULE 6 — NETWORK SECURITY (5 lessons)
+# ---------------------------------------------------------------------------
+
+_net_security = M("net-security", "Network Security",
+    "Firewalls, VPNs and tunneling, the TLS handshake step-by-step, DDoS, IDS/IPS.",
+[
+
+L("firewalls", "Firewalls",
+"""## Three generations
+
+1. **Packet filter** (stateless): allow/deny by IP, port, protocol.
+   Fast, dumb — can't tell legit from spoofed easily.
+2. **Stateful**: tracks connection state. "Allow return traffic for
+   connections *we* started." The workhorse of the 2000s.
+3. **NGFW** (Next-Gen): adds application awareness, IPS, URL filtering,
+   user identity. (Palo Alto, Fortinet.)
+
+## Default policies
+
+- **Default-deny** (whitelist): block everything, allow exceptions — secure
+- **Default-allow** (blacklist): allow everything, block known-bad — convenient, leaky
+
+## DMZ
+
+A **demilitarized zone**: public servers (web, mail) sit between the
+outer and inner firewalls — reachable from the internet, isolated
+from the internal LAN.
+""",
+[
+Q("What does a stateful firewall track?",
+  ["Passwords", "Connection state — to allow return traffic of initiated connections",
+   "DNS names", "User behavior"], 1, 3,
+  "Stateful inspection remembers outbound connections and permits their replies.",
+  ["Palo Alto", "Cisco"]),
+Q("Which default policy is more secure?",
+  ["Default-allow", "Default-deny (whitelist)",
+   "No policy", "Allow all"], 1, 2,
+  "Default-deny blocks everything except explicit allows — smaller attack surface.",
+  ["TCS", "Infosys"]),
+Q("What is a DMZ?",
+  ["A VPN", "A buffer network for public servers between two firewalls",
+   "A type of malware", "A DNS zone"], 1, 4,
+  "DMZ hosts internet-facing servers isolated from the internal LAN.",
+  ["Wipro", "Accenture"]),
+Q("What can a packet filter NOT do well?",
+  ["Block ports", "Distinguish legitimate vs spoofed packets in a stateless way",
+   "Read IPs", "Run fast"], 1, 5,
+  "Stateless filters see packets in isolation — no connection context.",
+  ["HCL", "Fortinet"]),
+Q("What does NGFW add over stateful firewalls?",
+  ["More ports", "App awareness, IPS, URL filtering, user identity",
+   "Faster cables", "Bigger racks"], 1, 6,
+  "Next-gen = Layer-7 intelligence on top of stateful filtering.",
+  ["Palo Alto", "Amazon"]),
+Q("Where should the firewall rule 'allow established' typically sit?",
+  ["Last", "Near the top — fast-path return traffic before expensive checks",
+   "Nowhere", "In the DMZ"], 1, 8,
+  "Early established-match avoids re-evaluating every return packet against the full ruleset.",
+  ["Juniper", "Palo Alto"]),
+]),
+
+L("vpn", "VPNs & Tunneling",
+"""## What a VPN does
+
+Creates an **encrypted tunnel** through an untrusted network. Your traffic
+is encapsulated + encrypted — the coffee-shop Wi-Fi sees only gibberish.
+
+## Main protocols
+
+- **IPsec**: network-layer suite (AH = integrity, ESP = encryption).
+  Site-to-site VPNs. Two modes: **transport** (host-to-host) vs **tunnel** (gateway-to-gateway).
+- **SSL/TLS VPN**: browser or client-based, easier through firewalls (port 443).
+- **WireGuard**: modern, tiny codebase, fast (UDP-based).
+
+## Tunneling concept
+
+Take a packet, wrap it *inside* another packet. The inner packet's
+addresses can even be private — the outer header does the delivery.
+(GRE, IPsec tunnel mode, and VPNs all use this trick.)
+
+## Split tunnel vs full tunnel
+
+- **Full**: all traffic via VPN (secure, slower, company sees everything)
+- **Split**: only corporate traffic via VPN (faster, less private)
+""",
+[
+Q("What does a VPN primarily provide?",
+  ["Faster internet", "Encrypted tunnel protecting traffic on untrusted networks",
+   "Free Wi-Fi", "More bandwidth"], 1, 1,
+  "Encryption + tunneling = confidentiality and integrity over hostile networks.",
+  ["TCS", "Infosys"]),
+Q("In IPsec, what does ESP provide that AH doesn't?",
+  ["Integrity", "Encryption (confidentiality)",
+   "Authentication", "Nothing"], 1, 4,
+  "AH = integrity/auth only. ESP adds encryption.",
+  ["Cisco", "Palo Alto"]),
+Q("What is split tunneling?",
+  ["Splitting cables", "Only corporate traffic goes through VPN; rest goes direct",
+   "Two VPNs at once", "Broken VPN"], 1, 5,
+  "Split = faster + less company visibility; full = maximum control.",
+  ["Accenture", "Wipro"]),
+Q("Why is WireGuard notable?",
+  ["It's old", "Tiny auditable codebase, very fast, UDP-based",
+   "It needs no keys", "It's unencrypted"], 1, 6,
+  "~4k lines vs IPsec's hundreds of thousands — simpler = fewer bugs, plus speed.",
+  ["Cloudflare", "Mullvad"]),
+Q("In IPsec tunnel mode, what gets encrypted?",
+  ["Nothing", "The entire original IP packet (header + payload)",
+   "Only the payload", "Only the header"], 1, 7,
+  "Tunnel mode wraps the whole inner packet; transport mode protects only the payload.",
+  ["Juniper", "Palo Alto"]),
+Q("Your VPN is on but DNS leaks. What does that mean?",
+  ["VPN is fast", "DNS queries bypass the tunnel — exposing browsing to the local network/ISP",
+   "VPN is broken fully", "Nothing"], 1, 8,
+  "DNS leaks defeat VPN privacy; clients must route DNS through the tunnel.",
+  ["Proton", "Mullvad"]),
+]),
+
+L("tls-handshake", "The TLS Handshake — Step by Step",
+"""## TLS 1.2 handshake (the classic)
+
+```
+Client                                              Server
+  | ---- ClientHello (ciphers, random Rc) ---------> |
+  | <---- ServerHello (chosen cipher, random Rs) --- |
+  | <---- Certificate (public key) ---------------- |
+  | ---- ClientKeyExchange (premaster, encrypted) -> |
+  | ---- ChangeCipherSpec, Finished --------------> |
+  | <---- ChangeCipherSpec, Finished -------------- |
+```
+
+1. **Hello**: agree on cipher suite + exchange randoms
+2. **Certificate**: server proves identity (CA-signed)
+3. **Key exchange**: client sends premaster secret encrypted with server's public key
+4. **Finished**: both derive session keys, switch to encrypted chat
+
+## TLS 1.3 (faster)
+
+- **1-RTT** (vs 2-RTT in 1.2), **0-RTT** resumption
+- Removed weak ciphers (RSA key exchange, CBC modes)
+- Encrypted handshake after ServerHello (less metadata leakage)
+
+## Key insight
+
+**Asymmetric crypto** (slow) only bootstraps trust; then both sides
+use fast **symmetric** session keys. Certificates + CA chain = identity.
+""",
+[
+Q("What is the purpose of the server Certificate in TLS?",
+  ["Encryption", "Proving the server's identity via CA signature",
+   "Speed", "Compression"], 1, 2,
+  "The client validates the CA-signed cert to know it's talking to the real server.",
+  ["TCS", "Infosys"]),
+Q("Why does TLS switch to symmetric keys after the handshake?",
+  ["Symmetric is weaker", "Asymmetric crypto is slow — symmetric is ~1000x faster for bulk data",
+   "Regulations", "Tradition"], 1, 5,
+  "Public-key crypto bootstraps trust; symmetric keys do the heavy lifting.",
+  ["Google", "Cloudflare"]),
+Q("How many round trips does TLS 1.3 need?",
+  ["2", "1 (and 0-RTT for resumption)",
+   "3", "0"], 1, 6,
+  "TLS 1.3 cut the handshake to 1-RTT; resumption can hit 0-RTT.",
+  ["Microsoft", "Amazon"]),
+Q("What does 'premaster secret' become?",
+  ["A password", "Input to derive the symmetric session keys (with client+server randoms)",
+   "The certificate", "A cookie"], 1, 7,
+  "master_secret = PRF(premaster, Rc + Rs); session keys derive from it.",
+  ["Palo Alto", "Cisco"]),
+Q("In TLS 1.2, how does the client securely send the premaster secret?",
+  ["Plaintext", "Encrypted with the server's public key from its certificate",
+   "Via DNS", "It doesn't"], 1, 4,
+  "Only the server's private key can decrypt it — that's the point of the certificate.",
+  ["Wipro", "Accenture"]),
+Q("What did TLS 1.3 remove and why?",
+  ["Nothing", "Weak primitives (RSA key exchange, CBC, SHA-1) — smaller, safer protocol",
+   "Certificates", "Encryption"], 1, 9,
+  "1.3 deleted legacy options, killing whole classes of downgrade attacks.",
+  ["Google", "Mozilla"]),
+]),
+
+L("ddos", "DDoS Attacks & Mitigation",
+"""## The idea
+
+Overwhelm the target with traffic from **many** sources (a botnet).
+Not about breaking in — about making the service **unavailable**.
+
+## Main flavors
+
+- **Volumetric** (L3/L4): UDP floods, ICMP floods, amplification (DNS/NTP reflection — small request, huge reply)
+- **Protocol**: SYN floods, Ping of Death — exhaust state/resources
+- **Application** (L7): slowloris (slow headers), HTTP floods — hard to distinguish from legit users
+
+## Defenses (defense in depth)
+
+1. **Overprovision + anycast**: absorb and spread (Cloudflare/Akamai model)
+2. **Scrubbing centers**: dirty traffic cleaned upstream
+3. **Rate limiting / WAF**: per-IP throttles, challenge pages
+4. **SYN cookies**: stateless SYN handling defeats SYN floods
+""",
+[
+Q("What is the goal of a DDoS attack?",
+  ["Steal data", "Make a service unavailable by overwhelming it",
+   "Install malware", "Phish users"], 1, 1,
+  "DDoS = Distributed Denial of Service: availability attack, not intrusion.",
+  ["TCS", "Infosys"]),
+Q("What is DNS amplification?",
+  ["Fast DNS", "Spoofed small queries trigger huge responses to the victim",
+   "DNS caching", "Encrypted DNS"], 1, 5,
+  "Attackers abuse open resolvers: 60-byte query → 4000-byte reply at the victim. Amplification factor ~60x.",
+  ["Cloudflare", "Akamai"]),
+Q("What is slowloris?",
+  ["A firewall", "L7 attack holding connections open with slow partial headers",
+   "A VPN", "A worm"], 1, 6,
+  "Slowloris drips header bytes to exhaust server connection slots — little bandwidth needed.",
+  ["Palo Alto", "Imperva"]),
+Q("How do SYN cookies defeat SYN floods?",
+  ["They encrypt SYNs", "Server stays stateless — encodes state in the SYN-ACK sequence number",
+   "They block all SYNs", "They add RAM"], 1, 7,
+  "No half-open queue to exhaust: state is reconstructed from the client's final ACK.",
+  ["Linux", "Cloudflare"]),
+Q("Why is anycast effective against volumetric DDoS?",
+  ["It's encrypted", "Attack traffic spreads across many global PoPs instead of one target",
+   "It's faster", "It hides IPs"], 1, 8,
+  "Anycast routes each bot to the nearest scrubbing PoP — the flood is diluted globally.",
+  ["Cloudflare", "Google"]),
+Q("L7 DDoS vs volumetric — which is harder to filter and why?",
+  ["Volumetric", "L7 — attack requests look like legitimate user traffic",
+   "Same", "Neither"], 1, 9,
+  "You can't just drop packets; you need behavioral analysis/WAF to spot L7 abuse.",
+  ["Akamai", "Imperva"]),
+]),
+
+L("ids-ips", "IDS vs IPS & Security Monitoring",
+"""## IDS vs IPS
+
+| | IDS (Detection) | IPS (Prevention) |
+|---|---|---|
+| Placement | Out-of-band (span port) | Inline (traffic flows through) |
+| Action | **Alerts** | **Blocks/drops** |
+| Risk | Missed attacks | False positives break legit traffic |
+
+## Detection methods
+
+- **Signature-based**: known attack patterns (Snort rules) — fast, blind to zero-days
+- **Anomaly-based**: baseline normal, flag deviations — catches novel attacks, noisier
+- **Hybrid**: both (modern NGFW/EDR)
+
+## Supporting cast
+
+- **SIEM**: collects/correlates logs (Splunk, ELK) — the security dashboard
+- **Honeypot**: fake vulnerable system to study attackers safely
+- **Zero Trust**: "never trust, always verify" — no implicit LAN trust
+""",
+[
+Q("What is the key difference between IDS and IPS?",
+  ["Price", "IDS only alerts; IPS sits inline and blocks",
+   "Speed", "Vendor"], 1, 2,
+  "Detection = passive monitoring; Prevention = active inline blocking.",
+  ["Palo Alto", "Cisco"]),
+Q("Why is an IPS riskier to deploy than IDS?",
+  ["Cost", "False positives can block legitimate traffic (inline)",
+   "It's slower", "Needs more power"], 1, 5,
+  "Inline blocking means a bad signature = outage. Tune carefully.",
+  ["Fortinet", "TCS"]),
+Q("Signature vs anomaly detection?",
+  ["Same", "Signatures match known attacks (fast, blind to zero-days); anomaly flags deviations (catches novel, noisier)",
+   "Anomaly is older", "Signatures need AI"], 1, 6,
+  "Complementary: signatures for known, anomaly for unknown.",
+  ["CrowdStrike", "Wipro"]),
+Q("What is a honeypot?",
+  ["A firewall", "A decoy system designed to attract and study attackers",
+   "A VPN", "Antivirus"], 1, 3,
+  "Honeypots waste attacker time and reveal their tools/techniques safely.",
+  ["Accenture", "HCL"]),
+Q("What does a SIEM do?",
+  ["Encrypts", "Centralizes and correlates security logs for detection/response",
+   "Routes packets", "Filters spam"], 1, 4,
+  "SIEM (Splunk/ELK) = the security team's single pane of glass.",
+  ["Splunk", "IBM"]),
+Q("What is Zero Trust in one line?",
+  ["No passwords", "'Never trust, always verify' — no implicit trust for LAN/insiders",
+   "Zero firewalls", "Trust everyone"], 1, 7,
+  "Every request is authenticated/authorized regardless of network location.",
+  ["Google", "Microsoft"]),
+]),
+])
+
+
+# ---------------------------------------------------------------------------
+# MODULE 7 — ADVANCED (4 lessons)
+# ---------------------------------------------------------------------------
+
+_advanced = M("advanced", "Advanced Topics",
+    "SDN, WebSockets, QUIC deep dive, and 5G network concepts.",
+[
+
+L("sdn", "SDN — Software Defined Networking",
+"""## The big idea: separate brains from brawn
+
+Traditional: every router/switch runs its own control plane (distributed smarts).
+**SDN**: centralize the control plane in a **controller**; switches become
+dumb fast **forwarding** boxes.
+
+## The three planes
+
+- **Data plane**: forwards packets (the switches)
+- **Control plane**: decides routes (the controller — centralized!)
+- **Management plane**: config/monitoring (NETCONF, dashboards)
+
+## OpenFlow
+
+The classic southbound protocol: controller installs **flow table**
+entries ("if dst=10.0.0.5 → output port 3") into switches via OpenFlow.
+Switches just match + act.
+
+## Why it matters
+
+Programmable networks: spin up policies in software, global view for
+traffic engineering, the foundation of modern data-center fabrics
+(and a hot interview topic).
+""",
+[
+Q("What does SDN separate?",
+  ["Hardware from software", "Control plane (decisions) from data plane (forwarding)",
+   "TCP from UDP", "IPv4 from IPv6"], 1, 3,
+  "Centralized controller decides; switches just forward per installed rules.",
+  ["Cisco", "Google"]),
+Q("What is OpenFlow?",
+  ["A firewall", "Southbound protocol: controller programs switch flow tables",
+   "A VPN", "A routing algorithm"], 1, 5,
+  "OpenFlow = the API between controller and dumb switches.",
+  ["ONF", "Arista"]),
+Q("What sits in a switch flow table?",
+  ["Passwords", "Match fields + actions (e.g. 'dst=X → output port 3')",
+   "User data", "DNS records"], 1, 6,
+  "Flow entries are match-action rules installed by the controller.",
+  ["Juniper", "VMware"]),
+Q("SDN's biggest operational win?",
+  ["Cheaper cables", "Network-wide programmability + global view for traffic engineering",
+   "Faster CPUs", "More ports"], 1, 7,
+  "One program changes the whole fabric consistently — no box-by-box CLI.",
+  ["Google", "Microsoft"]),
+Q("Which plane does the SDN controller belong to?",
+  ["Data", "Control", "Management", "Physical"], 1, 4,
+  "Controller = centralized control plane.",
+  ["TCS", "Infosys"]),
+Q("Traditional vs SDN control: what's the core difference?",
+  ["Speed", "Distributed per-device smarts vs centralized controller",
+   "Cables", "Protocols"], 1, 8,
+  "Traditional routers each run OSPF/BGP locally; SDN moves decisions to the controller.",
+  ["Cisco", "Arista"]),
+Q("What is the 'southbound' vs 'northbound' API in SDN?",
+  ["Cable directions", "Southbound: controller→switch (OpenFlow); Northbound: controller→apps",
+   "Compass routing", "Two VPNs"], 1, 9,
+  "Southbound programs the data plane; northbound exposes network services to applications.",
+  ["ONF", "VMware"]),
+]),
+
+L("websockets", "WebSockets — Beyond Request/Response",
+"""## The problem with HTTP
+
+HTTP is **client-initiated**: the server can't push. Workarounds:
+- **Polling**: client asks every N seconds (wasteful)
+- **Long polling**: server holds the request until data arrives (hacky)
+- **SSE**: server→client stream (one-way)
+
+## WebSocket: full-duplex over one TCP connection
+
+1. Client sends HTTP **Upgrade** request (`Upgrade: websocket`)
+2. Server replies **101 Switching Protocols**
+3. Now: **both sides send frames anytime** — chat, games, live dashboards
+
+Runs over **ws://** (80) or **wss://** (443, encrypted).
+
+## WebSocket vs SSE vs polling
+
+| | Direction | Overhead |
+|---|---|---|
+| Polling | Client→server asks | High |
+| SSE | Server→client only | Medium |
+| WebSocket | **Both ways** | Low (after handshake) |
+
+Use WebSocket for chat, multiplayer, trading tickers, collaborative editing.
+""",
+[
+Q("Why can't plain HTTP push data to clients?",
+  ["It can", "HTTP is client-initiated — servers only respond",
+   "It's too slow", "Firewalls"], 1, 2,
+  "No server-initiated messages in HTTP/1.1 semantics — hence polling/SSE/WebSocket.",
+  ["TCS", "Infosys"]),
+Q("What status code completes a WebSocket upgrade?",
+  ["200", "101 Switching Protocols", "404", "301"], 1, 4,
+  "101 = protocol switch accepted; then raw frames flow both ways.",
+  ["Google", "Microsoft"]),
+Q("WebSocket vs SSE — key difference?",
+  ["Same", "WebSocket is full-duplex; SSE is server→client only",
+   "SSE is faster", "WebSocket is older"], 1, 5,
+  "Need client→server pushes (chat, games)? WebSocket. One-way feed? SSE suffices.",
+  ["Slack", "Discord"]),
+Q("What does wss:// mean?",
+  ["Broken socket", "WebSocket over TLS (encrypted, port 443)",
+   "Faster socket", "UDP socket"], 1, 6,
+  "wss = secure WebSocket, like https is to http.",
+  ["Cloudflare", "Wipro"]),
+Q("Why is polling wasteful for live data?",
+  ["It's not", "Most polls return 'nothing new' — empty requests burn bandwidth/battery",
+   "It's insecure", "Servers crash"], 1, 7,
+  "Polling trades latency vs waste; WebSocket eliminates the tradeoff.",
+  ["Meta", "Robinhood"]),
+Q("After the handshake, what does WebSocket run over?",
+  ["A new HTTP connection per message", "The same single TCP connection, full-duplex frames",
+   "UDP", "Two connections"], 1, 8,
+  "One upgraded TCP connection carries bidirectional frames — minimal overhead.",
+  ["Socket.io", "Pusher"]),
+]),
+
+L("quic", "QUIC — The Future Transport",
+"""## QUIC in one paragraph
+
+Google's **UDP-based** transport (now RFC 9000, basis of **HTTP/3**):
+rebuilds TCP-like reliability + TLS 1.3 on top of UDP, but with
+**independent streams** — one lost packet stalls only its own stream.
+
+## Killer features
+
+- **0-RTT / 1-RTT handshakes** (TCP+TLS needed 2-3)
+- **No head-of-line blocking** across streams
+- **Connection migration**: switch Wi-Fi→cellular, connection survives
+  (identified by connection ID, not IP+port!)
+- Built-in encryption (everything except a few header bits)
+
+## Why UDP?
+
+Middleboxes ossified TCP — new TCP options get blocked. UDP is a
+dumb envelope middleboxes pass through, so innovation lives in
+user space (no kernel upgrades needed!).
+
+## Interview line
+
+"QUIC = reliable, encrypted, multiplexed transport over UDP —
+faster handshakes, per-stream independence, connection migration."
+""",
+[
+Q("What problem does QUIC solve that TCP couldn't?",
+  ["Speed of light", "Head-of-line blocking + slow handshakes + no connection migration",
+   "DNS", "IPv6"], 1, 5,
+  "QUIC's streams are independent and handshakes are 0/1-RTT.",
+  ["Google", "Cloudflare"]),
+Q("Why is QUIC built on UDP?",
+  ["UDP is reliable", "Middleboxes pass UDP through; TCP is ossified — innovation happens in user space",
+   "UDP is encrypted", "Faster DNS"], 1, 7,
+  "New TCP features die in middleboxes; UDP is a neutral envelope.",
+  ["Fastly", "Mozilla"]),
+Q("How does QUIC survive a Wi-Fi → cellular switch?",
+  ["It doesn't", "Connection IDs (not IP+port) identify connections",
+   "It restarts", "Magic"], 1, 6,
+  "QUIC connections are bound to IDs, so IP changes don't kill them.",
+  ["Google", "Meta"]),
+Q("Which HTTP version runs on QUIC?",
+  ["HTTP/1.1", "HTTP/2", "HTTP/3", "HTTP/0.9"], 2, 4,
+  "HTTP/3 = HTTP over QUIC.",
+  ["Cloudflare", "Apple"]),
+Q("QUIC handshake vs TCP+TLS 1.2 handshake?",
+  ["Same", "QUIC: 0-1 RTT; TCP+TLS 1.2: 3-4 RTTs",
+   "QUIC is slower", "No handshake in QUIC"], 1, 8,
+  "Fewer round trips = huge win on high-latency mobile networks.",
+  ["Google", "Akamai"]),
+Q("Is QUIC traffic visible to middleboxes?",
+  ["Fully", "Mostly encrypted — only a few header bits are visible (a privacy win)",
+   "Not at all", "Yes, all of it"], 1, 9,
+  "QUIC encrypts almost everything, limiting middlebox interference/snooping.",
+  ["Mozilla", "Cloudflare"]),
+]),
+
+L("5g-networks", "5G Network Concepts",
+"""## 5G's three promises (ITU)
+
+- **eMBB**: Enhanced Mobile Broadband — 10-20 Gbps peak (4K/8K, AR)
+- **URLLC**: Ultra-Reliable Low Latency — ~1ms (remote surgery, V2X)
+- **mMTC**: Massive Machine-Type — 1M devices/km² (IoT sensors)
+
+## Network slicing (the big idea)
+
+**One physical network → many virtual networks**, each tuned:
+a slice for emergency services (URLLC), one for streaming (eMBB),
+one for sensors (mMTC). SDN/NFV make this possible.
+
+## 5G architecture notes
+
+- **Small cells**: dense low-power base stations (mmWave needs them)
+- **Edge computing (MEC)**: process at the tower, not the cloud — kills latency
+- **Standalone (SA)** vs **Non-standalone (NSA)**: SA = pure 5G core; NSA = 5G radio on 4G core (early deployments)
+
+## Frequency reality
+
+mmWave (24-40 GHz) = huge speed, tiny range, blocked by walls.
+Sub-6 GHz = the practical workhorse coverage layer.
+""",
+[
+Q("What are 5G's three ITU service classes?",
+  ["Fast, faster, fastest", "eMBB, URLLC, mMTC",
+   "2G, 3G, 4G", "TCP, UDP, QUIC"], 1, 3,
+  "Enhanced broadband, ultra-reliable low-latency, massive IoT.",
+  ["Ericsson", "Nokia"]),
+Q("What is network slicing?",
+  ["Cutting cables", "Multiple virtual networks with different SLAs on one physical infrastructure",
+   "Phone screens", "SIM cards"], 1, 5,
+  "Slicing = e.g. a URLLC slice for ambulances + eMBB slice for video, same towers.",
+  ["Huawei", "Samsung"]),
+Q("Why does mmWave need small cells?",
+  ["It's cheap", "High frequencies have short range and poor obstacle penetration",
+   "Regulations", "Battery life"], 1, 6,
+  "mmWave = gigabits but meters of range; dense small cells compensate.",
+  ["Qualcomm", "Verizon"]),
+Q("What is MEC and why does 5G need it?",
+  ["A phone brand", "Multi-access Edge Computing — process at the tower to hit ~1ms latency",
+   "A cable", "A satellite"], 1, 7,
+  "URLLC's 1ms budget can't survive a round trip to a distant cloud.",
+  ["AWS", "Ericsson"]),
+Q("NSA vs SA 5G?",
+  ["Same", "NSA = 5G radio over 4G core (transitional); SA = full 5G core",
+   "NSA is faster", "SA is older"], 1, 8,
+  "Early 5G was NSA; true slicing/URLLC needs Standalone.",
+  ["Nokia", "T-Mobile"]),
+Q("Roughly how many devices per km² does mMTC target?",
+  ["100", "10,000", "1,000,000", "1 billion"], 2, 4,
+  "mMTC = massive IoT: ~1M devices/km².",
+  ["Ericsson", "IoT Analytics"]),
+]),
+])
+
+
+# ---------------------------------------------------------------------------
+# ASSEMBLY
+# ---------------------------------------------------------------------------
+
+CURRICULUM = {
+    "domain": DOMAIN,
+    "modules": [
+        _osi_tcpip,
+        _ip_subnetting,
+        _tcp_udp,
+        _app_layer,
+        _routing_switching,
+        _net_security,
+        _advanced,
+    ],
+}
+
+
+# ---------------------------------------------------------------------------
+# Integration helpers (mirror dsa_curriculum_seed.py)
+# ---------------------------------------------------------------------------
+
+def _lesson_id(slug):
+    return str(_uuid.uuid5(_uuid.NAMESPACE_URL, "skillforge:cn:lesson:" + slug))
+
+
+def _question_id(lesson_slug, idx):
+    return str(_uuid.uuid5(
+        _uuid.NAMESPACE_URL, f"skillforge:cn:question:{lesson_slug}:{idx}"))
+
+
+def _now_iso():
+    return datetime.now(_tz.utc).isoformat()
+
+
+def _as_sql_value(v):
+    if v is None:
+        return "NULL"
+    if isinstance(v, bool):
+        return "1" if v else "0"
+    if isinstance(v, (int, float)):
+        return str(v)
+    if isinstance(v, (list, dict)):
+        v = json.dumps(v, ensure_ascii=False)
+    return "'" + str(v).replace("'", "''") + "'"
+
+
+def _iter_rows():
+    """Yield (kind, dict) for every lesson and question, mapped to the
+    sibling's already-seeded CN modules."""
+    order_per_module = {}
+    for m in CURRICULUM["modules"]:
+        sib = MODULE_MAP[m["slug"]]
+        order_per_module.setdefault(sib, 100)
+        for les in m["lessons"]:
+            lid = _lesson_id(les["slug"])
+            order_per_module[sib] += 1
+            yield ("lesson", {
+                "id": lid,
+                "module_slug": sib,
+                "slug": les["slug"],
+                "title": les["title"],
+                "content": les["theory_md"],
+                "order_index": order_per_module[sib],
+            })
+            for qi, q in enumerate(les["questions"]):
+                yield ("question", {
+                    "id": _question_id(les["slug"], qi),
+                    "lesson_id": lid,
+                    "module_slug": sib,
+                    "qtype": "mcq",
+                    "difficulty": q["difficulty"],
+                    "prompt": q["prompt"],
+                    "choices": q["choices"],
+                    "answer_index": q["answer_index"],
+                    "explanation": q["explanation"],
+                    "company_tags": q["company_tags"],
+                })
+
+
+def emit_sql(out=None):
+    """Emit INSERTs against the real curriculum_* tables.
+
+    Lessons attach to the sibling's already-seeded CN modules via a
+    module_id subselect; questions carry domain/module slugs + lesson_id.
+    Safe to run after migration m1n2curr001_curriculum.
+    """
+    out = out or sys.stdout
+    ts = _now_iso()
+    for kind, r in _iter_rows():
+        if kind == "lesson":
+            out.write(
+                "INSERT INTO curriculum_lessons "
+                "(id, module_id, slug, title, content, order_index, "
+                "estimated_minutes, has_visual) "
+                "SELECT %s, m.id, %s, 30, 0 FROM curriculum_modules m "
+                "WHERE m.slug = %s AND m.domain_slug = %s;\n"
+                % (_as_sql_value(r["id"]),
+                   ", ".join(_as_sql_value(r[k]) for k in
+                             ("slug", "title", "content", "order_index")),
+                   _as_sql_value(r["module_slug"]),
+                   _as_sql_value(SIBLING_DOMAIN_SLUG)))
+        else:
+            out.write(
+                "INSERT INTO curriculum_questions "
+                "(id, domain_slug, module_slug, lesson_id, difficulty, qtype, "
+                "prompt, choices, answer_index, explanation, company_tags, "
+                "created_at) VALUES (%s);\n"
+                % ", ".join([
+                    _as_sql_value(r["id"]),
+                    _as_sql_value(SIBLING_DOMAIN_SLUG),
+                    _as_sql_value(r["module_slug"]),
+                    _as_sql_value(r["lesson_id"]),
+                    str(r["difficulty"]),
+                    _as_sql_value(r["qtype"]),
+                    _as_sql_value(r["prompt"]),
+                    _as_sql_value(r["choices"]),
+                    _as_sql_value(r["answer_index"]),
+                    _as_sql_value(r["explanation"]),
+                    _as_sql_value(r["company_tags"]),
+                    _as_sql_value(ts),
+                ]))
+    out.flush()
+
+
+def seed(session=None):
+    """Idempotent ORM insert using the real models.
+
+    Idempotent on lesson/question ids (deterministic uuid5) — skips existing.
+    Returns counts dict.
+    """
+    from app.adapters.outbound.models import (
+        CurriculumLessonModel, CurriculumQuestionModel, CurriculumModuleModel,
+    )
+    counts = {"lessons": 0, "questions": 0, "skipped": 0}
+    mod_ids = {}
+    for m in CURRICULUM["modules"]:
+        sib = MODULE_MAP[m["slug"]]
+        if sib not in mod_ids:
+            mod = session.query(CurriculumModuleModel).filter_by(
+                slug=sib, domain_slug=SIBLING_DOMAIN_SLUG).one()
+            mod_ids[sib] = mod.id
+    for kind, r in _iter_rows():
+        if kind == "lesson":
+            exists = session.query(CurriculumLessonModel).filter_by(
+                id=r["id"]).first()
+            if exists:
+                counts["skipped"] += 1
+                continue
+            session.add(CurriculumLessonModel(
+                id=r["id"], module_id=mod_ids[r["module_slug"]],
+                slug=r["slug"], title=r["title"], content=r["content"],
+                order_index=r["order_index"], estimated_minutes=30,
+                has_visual=False))
+            counts["lessons"] += 1
+        else:
+            exists = session.query(CurriculumQuestionModel).filter_by(
+                id=r["id"]).first()
+            if exists:
+                counts["skipped"] += 1
+                continue
+            session.add(CurriculumQuestionModel(
+                id=r["id"], domain_slug=SIBLING_DOMAIN_SLUG,
+                module_slug=r["module_slug"], lesson_id=r["lesson_id"],
+                difficulty=r["difficulty"], qtype=r["qtype"],
+                prompt=r["prompt"],
+                choices=json.dumps(r["choices"]) if r["choices"] else None,
+                answer_index=r["answer_index"], explanation=r["explanation"],
+                company_tags=json.dumps(r["company_tags"]),
+                created_at=datetime.now(_tz.utc)))
+            counts["questions"] += 1
+    session.commit()
+    return counts
+
+
+def verify_counts():
+    modules = CURRICULUM["modules"]
+    lessons = sum(len(m["lessons"]) for m in modules)
+    mcqs = sum(len(les["questions"]) for m in modules for les in m["lessons"])
+    per_module = {m["slug"]: (len(m["lessons"]),
+                              sum(len(les["questions"]) for les in m["lessons"]))
+                  for m in modules}
+    narrow = [les["slug"] for m in modules for les in m["lessons"]
+              if les["difficulty_max"] - les["difficulty_min"] < 4]
+    unmapped = [m["slug"] for m in modules if m["slug"] not in MODULE_MAP]
+    bad_sib = [m["slug"] for m in modules
+               if MODULE_MAP.get(m["slug"]) not in
+               {"network-models", "ip-addressing", "tcp-udp",
+                "routing-switching", "application-layer"}]
+    return {"modules": len(modules), "lessons": lessons, "mcqs": mcqs,
+            "per_module": per_module, "narrow_lessons": narrow,
+            "unmapped_modules": unmapped, "bad_sibling": bad_sib}
+
+
+if __name__ == "__main__":
+    c = verify_counts()
+    print("modules:", c["modules"])
+    print("lessons:", c["lessons"])
+    print("mcq questions:", c["mcqs"])
+    print("\nper module (lessons, mcqs) -> sibling module:")
+    for m in CURRICULUM["modules"]:
+        nl, nq = c["per_module"][m["slug"]]
+        print(f"  {m['slug']:20s} lessons={nl:2d} mcqs={nq:3d} -> {MODULE_MAP[m['slug']]}")
+    assert not c["narrow_lessons"], c["narrow_lessons"]
+    assert not c["unmapped_modules"], c["unmapped_modules"]
+    assert not c["bad_sibling"], c["bad_sibling"]
+    assert c["modules"] == 7 and c["lessons"] == 41
+    assert c["mcqs"] >= 250
+    print("\nAll assertions passed.")

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './visual.css';
 
-export type DiagramType = 'osi-layers' | 'tcp-handshake' | 'data-pipeline' | 'network-topology' | 'git-branching' | 'pr-lifecycle';
+export type DiagramType = 'osi-layers' | 'tcp-handshake' | 'data-pipeline' | 'network-topology' | 'git-branching' | 'pr-lifecycle' | 'subnetting' | 'tls-handshake';
 
 interface Props {
   type: DiagramType;
@@ -403,6 +403,146 @@ function PrLifecycle() {
   );
 }
 
+/* ---------------- subnetting: /24 split into four /26s ---------------- */
+const SUBNETS = [
+  { cidr: '192.168.1.0/26', range: '.0 – .63', hosts: '62 hosts', color: '#8B5CF6' },
+  { cidr: '192.168.1.64/26', range: '.64 – .127', hosts: '62 hosts', color: '#3ED6F2' },
+  { cidr: '192.168.1.128/26', range: '.128 – .191', hosts: '62 hosts', color: '#39D98A' },
+  { cidr: '192.168.1.192/26', range: '.192 – .255', hosts: '62 hosts', color: '#F5B84B' },
+];
+
+function Subnetting() {
+  const [active, setActive] = useState<number | null>(null);
+  const W = 460;
+  const barY = 46;
+  const barH = 54;
+  const barX = 14;
+  const barW = W - barX * 2;
+  const segW = barW / 4;
+  return (
+    <figure className="visual-diagram">
+      <svg viewBox={`0 0 ${W} 150`} role="img" aria-label="192.168.1.0/24 divided into four /26 subnets">
+        <text x={barX} y={24} className="visual-svg-label" fill="#E7ECF5" fontWeight={700}>
+          192.168.1.0/24 — borrow 2 bits → four /26 subnets
+        </text>
+        {SUBNETS.map((s, i) => {
+          const isActive = active === i;
+          return (
+            <g
+              key={s.cidr}
+              onMouseEnter={() => setActive(i)}
+              onMouseLeave={() => setActive(null)}
+              onClick={() => setActive(isActive ? null : i)}
+              style={{ cursor: 'pointer' }}
+            >
+              <rect
+                x={barX + i * segW} y={barY} width={segW - 4} height={barH} rx={10}
+                fill={s.color} opacity={isActive ? 1 : 0.82}
+              />
+              <text x={barX + i * segW + (segW - 4) / 2} y={barY + 24}
+                className="visual-svg-note" fill="#060913" fontWeight={800} textAnchor="middle">
+                /26
+              </text>
+              <text x={barX + i * segW + (segW - 4) / 2} y={barY + 42}
+                className="visual-svg-note" fill="#060913" textAnchor="middle">
+                {s.range}
+              </text>
+            </g>
+          );
+        })}
+        <text x={barX} y={128} className="visual-svg-note" fill="#9AA6BB">
+          block size = 256 − 192 = 64 → subnets at .0, .64, .128, .192
+        </text>
+      </svg>
+      <figcaption className="visual-diagram-cap" aria-live="polite">
+        {active !== null ? (
+          <>
+            <strong>{SUBNETS[active].cidr}:</strong> {SUBNETS[active].range},{' '}
+            {SUBNETS[active].hosts} usable (64 addresses − network − broadcast).
+          </>
+        ) : (
+          'Hover or tap a subnet to see its range.'
+        )}
+      </figcaption>
+    </figure>
+  );
+}
+
+/* ---------------- TLS 1.2 handshake flow ---------------- */
+const TLS_STEPS = [
+  { from: 'Client', to: 'Server', label: 'ClientHello', desc: 'Offers cipher suites + random Rc.', color: '#8B5CF6' },
+  { from: 'Server', to: 'Client', label: 'ServerHello + Certificate', desc: 'Picks cipher, sends random Rs + CA-signed certificate.', color: '#3ED6F2' },
+  { from: 'Client', to: 'Server', label: 'ClientKeyExchange', desc: 'Premaster secret encrypted with server public key.', color: '#39D98A' },
+  { from: 'Client', to: 'Server', label: 'Finished', desc: 'Both derive session keys — encrypted chat begins.', color: '#F5B84B' },
+];
+
+function TlsHandshake() {
+  const [active, setActive] = useState<number | null>(null);
+  const W = 460;
+  const cxC = 90;
+  const cxS = W - 90;
+  const topY = 30;
+  const stepH = 34;
+  return (
+    <figure className="visual-diagram">
+      <svg viewBox={`0 0 ${W} ${topY + TLS_STEPS.length * stepH + 44}`} role="img" aria-label="TLS 1.2 handshake message flow">
+        {['Client', 'Server'].map((who, i) => {
+          const cx = i === 0 ? cxC : cxS;
+          return (
+            <g key={who}>
+              <circle cx={cx} cy={topY - 8} r={20} fill="#1B2340" stroke="#8B5CF6" strokeWidth={2} />
+              <text x={cx} y={topY - 3} textAnchor="middle" className="visual-svg-note" fill="#E7ECF5" fontWeight={700}>
+                {who === 'Client' ? '💻' : '🖥️'}
+              </text>
+              <text x={cx} y={topY + 22} textAnchor="middle" className="visual-svg-label" fill="#9AA6BB">
+                {who}
+              </text>
+              <line x1={cx} y1={topY + 30} x2={cx} y2={topY + TLS_STEPS.length * stepH + 8}
+                stroke="#3A4666" strokeDasharray="4 4" />
+            </g>
+          );
+        })}
+        {TLS_STEPS.map((s, i) => {
+          const y = topY + 34 + i * stepH;
+          const ltr = s.from === 'Client';
+          const x1 = ltr ? cxC + 6 : cxS - 6;
+          const x2 = ltr ? cxS - 6 : cxC + 6;
+          const isActive = active === i;
+          return (
+            <g
+              key={s.label}
+              onMouseEnter={() => setActive(i)}
+              onMouseLeave={() => setActive(null)}
+              onClick={() => setActive(isActive ? null : i)}
+              style={{ cursor: 'pointer' }}
+            >
+              <line x1={x1} y1={y} x2={x2} y2={y} stroke={s.color}
+                strokeWidth={isActive ? 4 : 2.5} opacity={isActive ? 1 : 0.85} />
+              <polygon
+                points={ltr ? `${x2},${y} ${x2 - 9},${y - 5} ${x2 - 9},${y + 5}` : `${x2},${y} ${x2 + 9},${y - 5} ${x2 + 9},${y + 5}`}
+                fill={s.color}
+              />
+              <text x={(x1 + x2) / 2} y={y - 7} textAnchor="middle"
+                className="visual-svg-note" fill="#E7ECF5" fontWeight={700}>
+                {i + 1}. {s.label}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+      <figcaption className="visual-diagram-cap" aria-live="polite">
+        {active !== null ? (
+          <>
+            <strong>Step {active + 1} — {TLS_STEPS[active].label}:</strong> {TLS_STEPS[active].desc}
+          </>
+        ) : (
+          'Hover or tap a step to see what happens.'
+        )}
+      </figcaption>
+    </figure>
+  );
+}
+
 /* ---------------- main component ---------------- */
 const TITLES: Record<DiagramType, string> = {
   'osi-layers': 'OSI Model — 7 Layers',
@@ -411,6 +551,8 @@ const TITLES: Record<DiagramType, string> = {
   'network-topology': 'Star Network Topology',
   'git-branching': 'Git Branching & Merge',
   'pr-lifecycle': 'Pull Request Lifecycle',
+  'subnetting': 'Subnetting — /24 into four /26s',
+  'tls-handshake': 'TLS 1.2 Handshake',
 };
 
 export default function ConceptDiagram({ type, title, className = '' }: Props) {
@@ -423,6 +565,8 @@ export default function ConceptDiagram({ type, title, className = '' }: Props) {
       {type === 'network-topology' && <NetworkTopology />}
       {type === 'git-branching' && <GitBranching />}
       {type === 'pr-lifecycle' && <PrLifecycle />}
+      {type === 'subnetting' && <Subnetting />}
+      {type === 'tls-handshake' && <TlsHandshake />}
     </div>
   );
 }
