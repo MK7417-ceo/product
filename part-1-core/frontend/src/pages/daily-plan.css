@@ -1,0 +1,147 @@
+/* Daily plan — Aurora Dark */
+.daily {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 28px 20px 64px;
+  color: #f5f7fb;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+.daily-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.daily-head h1 { font-size: 1.6rem; margin: 0 0 6px; }
+.daily .muted { color: #9aa6bb; }
+
+.streak {
+  font-size: 1.4rem;
+  font-weight: 700;
+  background: rgba(245, 184, 75, 0.12);
+  border: 1px solid rgba(245, 184, 75, 0.4);
+  border-radius: 12px;
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+
+.kind-badge {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.5);
+}
+
+.kind-badge.mock {
+  background: rgba(240, 108, 117, 0.12);
+  border-color: rgba(240, 108, 117, 0.5);
+}
+
+.progress-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #8b5cf6, #36c5f0);
+  transition: width 0.3s ease;
+}
+
+.progress-pct { font-weight: 700; min-width: 44px; text-align: right; }
+
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  transition: border-color 0.15s, opacity 0.15s;
+}
+
+.task.done {
+  border-color: rgba(57, 217, 138, 0.5);
+  opacity: 0.75;
+}
+
+.task label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+}
+
+.task input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  accent-color: #39d98a;
+  cursor: pointer;
+}
+
+.task.done .task-text { text-decoration: line-through; color: #9aa6bb; }
+.task-icon { font-size: 1.3rem; }
+.task-text { font-size: 1rem; }
+
+.celebrate {
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(57, 217, 138, 0.08);
+  border: 1px solid rgba(57, 217, 138, 0.4);
+  border-radius: 16px;
+}
+
+.celebrate-emoji { font-size: 3.5rem; margin-bottom: 8px; }
+.celebrate h2 { margin: 0 0 8px; }
+
+.keep-going { text-align: center; margin-top: 16px; }
+
+.daily-foot { margin-top: 28px; }
+
+.daily .btn-primary {
+  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  padding: 14px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.daily .btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f5f7fb;
+  padding: 12px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.daily.empty { text-align: center; padding-top: 80px; }
+.daily.empty .btn-primary { margin-top: 16px; }

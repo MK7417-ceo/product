@@ -28,6 +28,8 @@ const Profile = lazy(() => import('./pages/Profile'));
 const Billing = lazy(() => import('./pages/Billing'));
 const Landing = lazy(() => import('./pages/Landing'));
 const CertDirectory = lazy(() => import('./pages/CertDirectory'));
+const LearningSetup = lazy(() => import('./pages/onboarding/LearningSetup'));
+const DailyPlan = lazy(() => import('./pages/DailyPlan'));
 const ContentManager = lazy(() => import('./pages/admin/ContentManager'));
 
 function Fallback() {
@@ -114,6 +116,8 @@ export default function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="billing" element={<Billing />} />
           <Route path="admin/content" element={<ContentManager />} />
+          <Route path="learning-setup" element={<LearningSetup />} />
+          <Route path="daily-plan" element={<DailyPlan />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

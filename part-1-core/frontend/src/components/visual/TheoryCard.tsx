@@ -125,11 +125,6 @@ export default function TheoryCard({
       <header className="visual-theory-head">
         <div className="visual-theory-titles">
           <h3 className="visual-theory-title">{title}</h3>
-          {!coding && (
-            <span className="visual-badge visual-badge-noncoding" title="This topic is learned visually — no coding required">
-              📊 Non-coding
-            </span>
-          )}
           {diagram && (
             <span className="visual-badge visual-badge-visual" title="Includes an animated visual explanation">
               🎨 Visual

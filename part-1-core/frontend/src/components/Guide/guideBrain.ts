@@ -240,6 +240,171 @@ const TOPICS: Topic[] = [
         "Tum email + password se register kar sakte ho ya Google se continue kar sakte ho. Password bhool gaye? Login page par 'Forgot password' se email dwara reset karo. Apna account safe rakho — password kabhi share mat karo.",
     },
   },
+  /* ============ TECH KNOWLEDGE (basic → expert) ============ */
+  {
+    id: 'dsa-knowledge',
+    keywords: [
+      'dsa', 'data structure', 'algorithm', 'array', 'linked list', 'tree',
+      'graph', 'dynamic programming', 'dp', 'sorting', 'binary search',
+      'डेटा स्ट्रक्चर', 'एल्गोरिदम',
+    ],
+    response: {
+      en: 'DSA = Data Structures + Algorithms. Start: arrays → strings → linked lists → stacks/queues. Then: trees → graphs → recursion → dynamic programming. Key insight: every problem is pattern matching — two pointers, sliding window, fast-slow, BFS/DFS. Practice daily on Code Lab. Companies test problem-solving, not memorization.',
+      hi: 'DSA = Data Structures + Algorithms। शुरुआत: arrays → strings → linked lists → stacks/queues। फिर: trees → graphs → recursion → dynamic programming। मुख्य बात: हर problem pattern matching है — two pointers, sliding window, fast-slow, BFS/DFS। Code Lab पर रोज़ practice करें। कंपनियां problem-solving देखती हैं, रटना नहीं।',
+      hinglish:
+        'DSA = Data Structures + Algorithms. Start: arrays → strings → linked lists → stacks/queues. Phir: trees → graphs → recursion → dynamic programming. Main baat: har problem pattern matching hai — two pointers, sliding window, fast-slow, BFS/DFS. Code Lab par roz practice karo. Companies problem-solving dekhti hain, ratna nahi.',
+    },
+  },
+  {
+    id: 'os-knowledge',
+    keywords: [
+      'operating system', 'os', 'process', 'thread', 'scheduling', 'deadlock',
+      'memory management', 'paging', 'semaphore', 'mutex',
+      'ऑपरेटिंग सिस्टम',
+    ],
+    response: {
+      en: 'OS manages hardware for programs. Core: processes (running programs) vs threads (lightweight workers). CPU scheduling (FCFS, SJF, Round Robin) decides who runs when. Deadlock = 4 conditions (mutual exclusion, hold-wait, no preemption, circular wait). Memory: paging divides memory into fixed pages; LRU replaces least-recently-used. Asked in EVERY technical interview.',
+      hi: 'OS programs के लिए hardware manage करता है। Core: processes (चलते programs) vs threads (हल्के workers)। CPU scheduling (FCFS, SJF, Round Robin) तय करता है कौन कब चलेगा। Deadlock = 4 conditions। Memory: paging memory को fixed pages में बांटता है; LRU सबसे पुराना हटाता है। हर technical interview में पूछा जाता है।',
+      hinglish:
+        'OS programs ke liye hardware manage karta hai. Core: processes (chalte programs) vs threads (halke workers). CPU scheduling (FCFS, SJF, Round Robin) decide karta hai kaun kab chalega. Deadlock = 4 conditions. Memory: paging memory ko fixed pages me baantta hai; LRU sabse purana hatata hai. Har technical interview me pucha jaata hai.',
+    },
+  },
+  {
+    id: 'dbms-knowledge',
+    keywords: [
+      'dbms', 'database', 'sql', 'normalization', 'acid', 'transaction',
+      'index', 'join', 'primary key', 'foreign key', 'nosql',
+      'डेटाबेस',
+    ],
+    response: {
+      en: 'DBMS stores and manages data. SQL: SELECT → WHERE → JOIN → GROUP BY → HAVING → ORDER BY. Keys: primary (unique ID), foreign (links tables). Normalization (1NF→2NF→3NF→BCNF) removes redundancy. ACID: Atomicity, Consistency, Isolation, Durability — guarantees for transactions. Indexing (B+ trees) makes queries fast. Practice SQL daily — it\'s asked everywhere.',
+      hi: 'DBMS data store और manage करता है। SQL: SELECT → WHERE → JOIN → GROUP BY → HAVING → ORDER BY। Keys: primary (unique ID), foreign (tables जोड़ता है)। Normalization redundancy हटाता है। ACID transactions की guarantee देता है। Indexing queries को fast बनाता है। रोज़ SQL practice करें — हर जगह पूछा जाता है।',
+      hinglish:
+        'DBMS data store aur manage karta hai. SQL: SELECT → WHERE → JOIN → GROUP BY → HAVING → ORDER BY. Keys: primary (unique ID), foreign (tables jodta hai). Normalization redundancy hatata hai. ACID transactions ki guarantee deta hai. Indexing queries ko fast banata hai. Roz SQL practice karo — har jagah pucha jaata hai.',
+    },
+  },
+  {
+    id: 'cn-knowledge',
+    keywords: [
+      'computer network', 'networking', 'osi', 'tcp', 'udp', 'ip address',
+      'dns', 'http', 'subnet', 'router', 'नेटवर्क',
+    ],
+    response: {
+      en: 'Networking = how computers talk. OSI has 7 layers (remember: All People Seem To Need Data Processing). TCP = reliable (3-way handshake: SYN → SYN-ACK → ACK), UDP = fast but unreliable. DNS converts names to IPs. HTTP (port 80), HTTPS (port 443). Subnetting divides networks. Check the visual diagrams in the learning section — OSI layers animated!',
+      hi: 'Networking = computers कैसे बात करते हैं। OSI में 7 layers हैं। TCP = reliable (3-way handshake), UDP = fast पर unreliable। DNS नामों को IP में बदलता है। HTTP (port 80), HTTPS (port 443)। Learning section में animated diagrams देखें!',
+      hinglish:
+        'Networking = computers kaise baat karte hain. OSI me 7 layers hain. TCP = reliable (3-way handshake), UDP = fast par unreliable. DNS naamon ko IP me badalta hai. HTTP (port 80), HTTPS (port 443). Learning section me animated diagrams dekho!',
+    },
+  },
+  {
+    id: 'python-knowledge',
+    keywords: [
+      'python', 'pandas', 'numpy', 'django', 'flask', 'list comprehension',
+      'पायथन',
+    ],
+    response: {
+      en: 'Python = simplest powerful language. Basics: variables → lists/dicts → functions → OOP → file handling → exceptions. Then: list comprehensions, decorators, generators. Libraries: NumPy (numbers), pandas (data), Django/Flask (web). Pro tip: Python is slow but developer time is fast — that\'s why companies love it for backend, data science, and AI.',
+      hi: 'Python = सबसे simple powerful language। Basics: variables → lists/dicts → functions → OOP → file handling → exceptions। फिर: list comprehensions, decorators, generators। Libraries: NumPy, pandas, Django/Flask। Pro tip: Python slow है पर developer fast काम करता है — इसीलिए कंपनियां backend, data science, AI में इसे पसंद करती हैं।',
+      hinglish:
+        'Python = sabse simple powerful language. Basics: variables → lists/dicts → functions → OOP → file handling → exceptions. Phir: list comprehensions, decorators, generators. Libraries: NumPy, pandas, Django/Flask. Pro tip: Python slow hai par developer fast kaam karta hai — isiliye companies backend, data science, AI me ise pasand karti hain.',
+    },
+  },
+  {
+    id: 'webdev-knowledge',
+    keywords: [
+      'web development', 'html', 'css', 'javascript', 'react', 'frontend',
+      'backend', 'full stack', 'node', 'api', 'वेब',
+    ],
+    response: {
+      en: 'Web dev = HTML (structure) + CSS (style) + JavaScript (behavior). Frontend: React is king — learn components, hooks, state. Backend: Node.js/Python/Java + databases. Full stack = both. API connects them (REST: GET/POST/PUT/DELETE). Path: HTML/CSS → JS → React → backend → deploy. Build projects — that\'s what gets you hired.',
+      hi: 'Web dev = HTML (structure) + CSS (style) + JavaScript (behavior)। Frontend: React सीखें — components, hooks, state। Backend: Node/Python/Java + databases। Full stack = दोनों। API इन्हें जोड़ता है। Path: HTML/CSS → JS → React → backend → deploy। Projects बनाएं — वही नौकरी दिलाता है।',
+      hinglish:
+        'Web dev = HTML (structure) + CSS (style) + JavaScript (behavior). Frontend: React seekho — components, hooks, state. Backend: Node/Python/Java + databases. Full stack = dono. API inhe jodta hai. Path: HTML/CSS → JS → React → backend → deploy. Projects banao — wahi naukri dilata hai.',
+    },
+  },
+  {
+    id: 'ml-ai-knowledge',
+    keywords: [
+      'machine learning', 'ml', 'artificial intelligence', 'ai', 'deep learning',
+      'neural network', 'supervised', 'unsupervised', 'regression',
+      'classification', 'मशीन लर्निंग',
+    ],
+    response: {
+      en: 'ML = machines learning from data. Supervised (labeled data: regression, classification) vs Unsupervised (patterns: clustering). Pipeline: collect → clean → features → train → evaluate → deploy. Key: overfitting (memorizes) vs underfitting (too simple) — balance with validation. Deep learning = neural networks for images/text. Start with Python + scikit-learn, then TensorFlow/PyTorch.',
+      hi: 'ML = data से machines का सीखना। Supervised (labeled data) vs Unsupervised (patterns)। Pipeline: collect → clean → features → train → evaluate → deploy। मुख्य: overfitting vs underfitting का balance। Deep learning = images/text के लिए neural networks। Python + scikit-learn से शुरू करें।',
+      hinglish:
+        'ML = data se machines ka seekhna. Supervised (labeled data) vs Unsupervised (patterns). Pipeline: collect → clean → features → train → evaluate → deploy. Main: overfitting vs underfitting ka balance. Deep learning = images/text ke liye neural networks. Python + scikit-learn se start karo.',
+    },
+  },
+  {
+    id: 'cybersecurity-knowledge',
+    keywords: [
+      'cyber security', 'cybersecurity', 'hacking', 'ethical hacking',
+      'penetration', 'vulnerability', 'malware', 'phishing', 'encryption',
+      'firewall', 'साइबर',
+    ],
+    response: {
+      en: 'Cybersecurity = protecting systems from attacks. Basics: CIA triad (Confidentiality, Integrity, Availability). Learn: networking → Linux → OWASP Top 10 (SQL injection, XSS) → encryption (AES, RSA) → penetration testing. Career: SOC analyst → pentester → security architect. Ethical hacking needs permission — never attack without it. Huge demand, great pay.',
+      hi: 'Cybersecurity = attacks से systems की रक्षा। Basics: CIA triad। सीखें: networking → Linux → OWASP Top 10 → encryption → penetration testing। Career: SOC analyst → pentester → security architect। Ethical hacking में permission जरूरी है। बहुत demand है।',
+      hinglish:
+        'Cybersecurity = attacks se systems ki raksha. Basics: CIA triad. Seekho: networking → Linux → OWASP Top 10 → encryption → penetration testing. Career: SOC analyst → pentester → security architect. Ethical hacking me permission zaroori hai. Bahut demand hai.',
+    },
+  },
+  /* ============ CAREER & LIFE GUIDANCE ============ */
+  {
+    id: 'career-guidance',
+    keywords: [
+      'career', 'future', 'job search', 'fresher', 'placement',
+      'which domain', 'kaunsa field', 'scope', 'salary', 'package',
+      'करियर', 'भविष्य', 'नौकरी', 'scope',
+    ],
+    response: {
+      en: 'Career truth: pick ONE domain and go deep for 6 months — DSA + one stack beats shallow knowledge of five fields. For freshers: DSA → development (web/backend) → projects → interviews. Packages: service companies (3-8 LPA), product companies (10-40+ LPA). Your SkillForge roadmap is built exactly for this journey. Consistency > talent.',
+      hi: 'Career सच: ONE domain चुनें और 6 महीने deep जाएं — पांच fields का shallow ज्ञान से बेहतर है DSA + एक stack। Freshers के लिए: DSA → development → projects → interviews। आपका SkillForge roadmap इसी journey के लिए बना है। Consistency > talent।',
+      hinglish:
+        'Career sach: ONE domain chuno aur 6 mahine deep jao — paanch fields ka shallow gyaan se better hai DSA + ek stack. Freshers ke liye: DSA → development → projects → interviews. Tumhara SkillForge roadmap isi journey ke liye bana hai. Consistency > talent.',
+    },
+  },
+  {
+    id: 'motivation',
+    keywords: [
+      'motivation', 'demotivated', 'give up', 'tired', 'depressed', 'sad',
+      'fail', 'failure', 'rejected', 'no job', 'hopeless',
+      'मोटिवेशन', 'हार', 'उदास',
+    ],
+    response: {
+      en: 'Listen: every expert was once a beginner who refused to quit. Rejection is redirection — each "no" teaches you something. Break big goals into tiny daily wins. Your streak here proves you show up. Rest when tired, but don\'t quit. The market rewards persistence more than brilliance. You\'ve got this. 💪',
+      hi: 'सुनो: हर expert कभी beginner था जिसने हार नहीं मानी। Rejection redirection है — हर "ना" कुछ सिखाता है। बड़े goals को छोटे daily wins में तोड़ो। यहां आपकी streak साबित करती है कि आप आते हैं। थके हो तो आराम करो, पर quit मत करो। 💪',
+      hinglish:
+        'Suno: har expert kabhi beginner tha jisne haar nahi maani. Rejection redirection hai — har "naa" kuch sikhata hai. Bade goals ko chhote daily wins me todo. Yahan tumhari streak prove karti hai ki tum aate ho. Thake ho to rest karo, par quit mat karo. Market brilliance se zyada persistence ko reward karta hai. 💪',
+    },
+  },
+  {
+    id: 'success-habits',
+    keywords: [
+      'success', 'habit', 'discipline', 'routine', 'time management',
+      'productive', 'focus', 'procrastination', 'सफलता', 'आदत',
+    ],
+    response: {
+      en: 'Success = boring consistency. 1) Same study time daily — your brain learns rhythms. 2) Phone away during deep work (90-min blocks). 3) Teach what you learn — explaining = mastering. 4) Sleep 7+ hours — memory consolidates at night. 5) One thing at a time — multitasking is a myth. Small daily progress compounds into transformation.',
+      hi: 'Success = boring consistency। 1) रोज़ same time पढ़ाई। 2) Deep work में phone दूर। 3) जो सीखा उसे सिखाओ। 4) 7+ घंटे सोओ। 5) एक बार में एक काम। छोटी daily progress बड़ी transformation बनती है।',
+      hinglish:
+        'Success = boring consistency. 1) Roz same time padhai. 2) Deep work me phone door. 3) Jo seekha use sikhao. 4) 7+ ghante soo. 5) Ek baar me ek kaam. Chhoti daily progress badi transformation banti hai.',
+    },
+  },
+  {
+    id: 'interview-tips',
+    keywords: [
+      'interview tips', 'how to crack', 'tips for interview', 'nervous',
+      'prepare for interview', 'इंटरव्यू टिप्स',
+    ],
+    response: {
+      en: 'Interview tips that work: 1) Think aloud — interviewers hire thought process, not just answers. 2) "Tell me about yourself" = 2-min story: past → present → future. 3) For coding: clarify → brute force → optimize → code → test. 4) Ask questions at the end — shows genuine interest. 5) Follow up with thank-you email. Confidence comes from preparation — use the Interview Prep page!',
+      hi: 'काम करने वाले tips: 1) ज़ोर से सोचें — interviewer thought process hire करता है। 2) "Tell me about yourself" = 2-min कहानी। 3) Coding: clarify → brute force → optimize → code → test। 4) आखिर में questions पूछें। 5) Thank-you email भेजें। Confidence preparation से आता है!',
+      hinglish:
+        'Kaam karne wale tips: 1) Zor se socho — interviewer thought process hire karta hai. 2) "Tell me about yourself" = 2-min story. 3) Coding: clarify → brute force → optimize → code → test. 4) Aakhir me questions pucho. 5) Thank-you email bhejo. Confidence preparation se aata hai!',
+    },
+  },
 ];
 
 /* ---------------- public API ---------------- */
