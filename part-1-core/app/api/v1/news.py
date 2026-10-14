@@ -12,6 +12,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.adapters.outbound import news_repository
+from app.api.v1.auth import require_admin
 from app.core.database import get_db
 from app.domain import tech_news
 
@@ -68,7 +69,8 @@ def get_tech_news(
 
 
 @router.post("/news/cleanup")
-def cleanup_news(db: Session = Depends(get_db)):
+def cleanup_news(db: Session = Depends(get_db),
+                 _admin: str = Depends(require_admin)):
     """Maintenance: delete news older than 1 year. Returns count deleted."""
     deleted = news_repository.cleanup_old_news(db)
     return {"deleted": deleted, "retention": "1 year"}

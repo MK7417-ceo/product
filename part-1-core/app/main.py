@@ -54,6 +54,7 @@ from app.api.v1 import taxonomy as taxonomy_api
 from app.api.v1 import coins as coins_api
 from app.api.v1 import news as news_api
 from app.api.v1 import placement as placement_api
+from app.api.v1 import trends as trends_api
 from app.adapters.inbound.streak_service import StreakServiceImpl
 from app.adapters.outbound.streak_repository import SqlAlchemyStreakRepository
 from app.adapters.inbound.coin_service import CoinServiceImpl
@@ -150,6 +151,7 @@ def create_app() -> FastAPI:
     app.include_router(coins_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(news_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(placement_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(trends_api.router, prefix=settings.API_V1_PREFIX)
     return app
 
 

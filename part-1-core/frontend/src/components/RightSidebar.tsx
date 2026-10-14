@@ -12,7 +12,7 @@ interface CoinData {
 
 async function fetchCoins(): Promise<CoinData | null> {
   try {
-    return await api<CoinData>('/coins/mine');
+    return await api<CoinData>('/api/v1/coins/mine');
   } catch {
     return null;
   }

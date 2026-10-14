@@ -15,7 +15,7 @@ export interface StreakData {
 
 export async function fetchStreak(): Promise<StreakData | null> {
   try {
-    return await api<StreakData>('/streak/mine');
+    return await api<StreakData>('/api/v1/streak/mine');
   } catch {
     return null;
   }
