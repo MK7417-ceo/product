@@ -50,8 +50,6 @@ from app.api.v1 import content as content_api
 from app.api.v1 import curriculum as curriculum_api
 from app.api.v1 import study_plans as study_plans_api
 from app.api.v1 import streak as streak_api
-from app.api.v1 import trends as trends_api
-from app.api.v1 import news as news_api
 from app.adapters.inbound.streak_service import StreakServiceImpl
 from app.adapters.outbound.streak_repository import SqlAlchemyStreakRepository
 from app.core.config import settings
@@ -140,8 +138,6 @@ def create_app() -> FastAPI:
     app.include_router(study_plans_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(curriculum_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(streak_api.router, prefix=settings.API_V1_PREFIX)
-    app.include_router(trends_api.router, prefix=settings.API_V1_PREFIX)
-    app.include_router(news_api.router, prefix=settings.API_V1_PREFIX)
     return app
 
 

@@ -231,6 +231,7 @@ class CurriculumModuleModel(Base):
     description: Mapped[str] = mapped_column(Text, nullable=False, default="")
     order_index: Mapped[int] = mapped_column(nullable=False, default=0)
     estimated_days: Mapped[int] = mapped_column(nullable=False, default=7)
+    is_important: Mapped[bool] = mapped_column(nullable=False, default=False)  # ⭐ highlight for users
 
 
 class CurriculumLessonModel(Base):
@@ -247,6 +248,7 @@ class CurriculumLessonModel(Base):
     order_index: Mapped[int] = mapped_column(nullable=False, default=0)
     estimated_minutes: Mapped[int] = mapped_column(nullable=False, default=30)
     has_visual: Mapped[bool] = mapped_column(nullable=False, default=False)
+    is_important: Mapped[bool] = mapped_column(nullable=False, default=False)  # ⭐ highlight for users
 
 
 class CurriculumQuestionModel(Base):
