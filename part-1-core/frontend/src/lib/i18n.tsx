@@ -6,7 +6,7 @@ import type { LangCode, TKey } from './translations';
 interface LangCtx {
   lang: LangCode;
   setLang: (l: LangCode) => void;
-  t: (key: TKey) => string;
+  t: (key: TKey, fallback?: string) => string;
   languages: typeof languages;
 }
 
@@ -34,8 +34,8 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     document.documentElement.lang = lang === 'hi' ? 'hi' : 'en';
   }, [lang]);
 
-  const t = useCallback((key: TKey): string => {
-    return translations[lang][key] ?? translations.en[key] ?? key;
+  const t = useCallback((key: TKey, fallback?: string): string => {
+    return translations[lang][key] ?? translations.en[key] ?? fallback ?? key;
   }, [lang]);
 
   return <Ctx.Provider value={{ lang, setLang, t, languages }}>{children}</Ctx.Provider>;

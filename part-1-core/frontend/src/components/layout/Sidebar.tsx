@@ -35,6 +35,14 @@ const GROUPS: { title: string; items: NavItem[] }[] = [
       { to: '/resume', label: 'Resume', icon: '📄' },
       { to: '/portfolio', label: 'Portfolio', icon: '🌐' },
       { to: '/interview', label: 'Interview Prep', icon: '🎤' },
+      { to: '/placement-prep', label: 'Placement Prep', icon: '🎯' },
+    ],
+  },
+  {
+    title: 'EXPLORE',
+    items: [
+      { to: '/news', label: 'Tech News', icon: '📰' },
+      { to: '/coins', label: 'Coin Shop', icon: '🪙' },
     ],
   },
 ];
