@@ -366,3 +366,17 @@ class CoinTransactionModel(Base):
     reason: Mapped[str] = mapped_column(String(120), nullable=False)
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=_utcnow)
+
+
+class TechNewsModel(Base):
+    """Cached tech news. Retention: 1 year — older rows auto-deleted by cleanup."""
+    __tablename__ = "tech_news"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    title: Mapped[str] = mapped_column(String(500), nullable=False)
+    url: Mapped[str] = mapped_column(String(1000), nullable=False, unique=True)
+    source: Mapped[str] = mapped_column(String(60), nullable=False, default="")
+    score: Mapped[int] = mapped_column(nullable=False, default=0)
+    published_at: Mapped[str] = mapped_column(String(40), nullable=False, default="")
+    fetched_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_utcnow, index=True)

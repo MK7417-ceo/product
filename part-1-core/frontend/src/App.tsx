@@ -31,6 +31,8 @@ const CertDirectory = lazy(() => import('./pages/CertDirectory'));
 const LearningSetup = lazy(() => import('./pages/onboarding/LearningSetup'));
 const DailyPlan = lazy(() => import('./pages/DailyPlan'));
 const CoinShop = lazy(() => import('./pages/CoinShop'));
+const TechNews = lazy(() => import('./pages/TechNews'));
+const PlacementPrep = lazy(() => import('./pages/PlacementPrep'));
 const ContentManager = lazy(() => import('./pages/admin/ContentManager'));
 
 function Fallback() {
@@ -120,6 +122,8 @@ export default function App() {
           <Route path="learning-setup" element={<LearningSetup />} />
           <Route path="daily-plan" element={<DailyPlan />} />
           <Route path="coins" element={<CoinShop />} />
+          <Route path="news" element={<TechNews />} />
+          <Route path="placement-prep" element={<PlacementPrep />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
