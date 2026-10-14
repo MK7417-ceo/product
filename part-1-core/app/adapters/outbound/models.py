@@ -147,3 +147,52 @@ class AccountLinkModel(Base):
     linkedin: Mapped[str] = mapped_column(String(80), nullable=False, default="")
     leetcode: Mapped[str] = mapped_column(String(80), nullable=False, default="")
     updated_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class TopicModel(Base):
+    """CMS: a learnable tech topic/domain (python, ml-basics, javascript, ...).
+
+    Founder adds new topics here; content (theory + questions) hangs off the slug.
+    """
+    __tablename__ = "topics"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    slug: Mapped[str] = mapped_column(String(80), unique=True, nullable=False, index=True)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    icon: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    color: Mapped[str] = mapped_column(String(16), nullable=False, default="#8b5cf6")
+    is_active: Mapped[bool] = mapped_column(nullable=False, default=True)
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class TheoryModel(Base):
+    """CMS: a markdown theory block for a topic + level, ordered for display."""
+    __tablename__ = "theory_blocks"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    topic_slug: Mapped[str] = mapped_column(
+        String(80), ForeignKey("topics.slug", ondelete="CASCADE"), nullable=False, index=True)
+    level: Mapped[str] = mapped_column(String(16), nullable=False)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    content: Mapped[str] = mapped_column(Text, nullable=False)  # markdown
+    order_index: Mapped[int] = mapped_column(nullable=False, default=0)
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+
+
+class BankQuestionModel(Base):
+    """CMS: DB-driven question bank. Lives ALONGSIDE the static question_bank.py
+    (static bank stays as fallback when a topic has no DB questions)."""
+    __tablename__ = "bank_questions"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    topic_slug: Mapped[str] = mapped_column(
+        String(80), ForeignKey("topics.slug", ondelete="CASCADE"), nullable=False, index=True)
+    qtype: Mapped[str] = mapped_column(String(16), nullable=False)  # mcq | coding | written
+    level: Mapped[str] = mapped_column(String(16), nullable=False)
+    skill_tag: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    prompt: Mapped[str] = mapped_column(Text, nullable=False)
+    choices: Mapped[str] = mapped_column(Text, nullable=True)  # JSON list; mcq only
+    answer_index: Mapped[int] = mapped_column(nullable=True)  # mcq only
+    rubric: Mapped[str] = mapped_column(Text, nullable=True)  # JSON; written only
+    created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
