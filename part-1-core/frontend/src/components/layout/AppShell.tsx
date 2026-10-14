@@ -3,6 +3,7 @@ import { useAuth } from '../../lib/auth';
 import TopNav from './TopNav';
 import Sidebar from './Sidebar';
 import BottomNav from './BottomNav';
+import Guide from '../Guide/Guide';
 
 /* Protected route: boots unauthenticated users to /login. */
 export function RequireAuth({ children }: { children: React.ReactElement }) {
@@ -24,6 +25,7 @@ export default function AppShell() {
         </main>
       </div>
       <BottomNav />
+      <Guide />
     </>
   );
 }

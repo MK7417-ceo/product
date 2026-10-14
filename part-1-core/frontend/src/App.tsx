@@ -26,6 +26,8 @@ const English = lazy(() => import('./pages/English'));
 const Settings = lazy(() => import('./pages/Settings'));
 const Profile = lazy(() => import('./pages/Profile'));
 const Billing = lazy(() => import('./pages/Billing'));
+const Landing = lazy(() => import('./pages/Landing'));
+const CertDirectory = lazy(() => import('./pages/CertDirectory'));
 
 function Fallback() {
   return <div className="route-loading">Loading…</div>;
@@ -37,6 +39,18 @@ function PublicOnly({ children }: { children: React.ReactElement }) {
   if (loading) return <Fallback />;
   if (user) return <Navigate to="/" replace />;
   return children;
+}
+
+/* Root: Landing for visitors, app shell for signed-in users. */
+function RootRoute() {
+  const { user, loading } = useAuth();
+  if (loading) return <Fallback />;
+  if (!user) return <Landing />;
+  return (
+    <RequireAuth>
+      <AppShell />
+    </RequireAuth>
+  );
 }
 
 export default function App() {
@@ -75,14 +89,9 @@ export default function App() {
             </PublicOnly>
           }
         />
-        <Route
-          path="/"
-          element={
-            <RequireAuth>
-              <AppShell />
-            </RequireAuth>
-          }
-        >
+        {/* Public: certificate directory for discovery + SEO */}
+        <Route path="/directory" element={<CertDirectory />} />
+        <Route path="/" element={<RootRoute />}>
           <Route index element={<Dashboard />} />
           <Route path="welcome" element={<Welcome />} />
           <Route path="resume" element={<Resume />} />

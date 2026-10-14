@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Allow: /directory
+Disallow: /api/
+
+Sitemap: https://skillforge.ai/sitemap.xml
