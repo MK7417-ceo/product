@@ -228,6 +228,15 @@ class SqlAlchemyCurriculumRepository:
             m = s.get(CurriculumQuestionModel, qid)
             return _q_to_domain(m) if m else None
 
+    def get_questions_by_ids(self, ids: list[str]) -> list[CurriculumQuestion]:
+        """Fetch questions by id list (for weekly tests)."""
+        if not ids:
+            return []
+        with self._sessions() as s:
+            rows = (s.query(CurriculumQuestionModel)
+                    .filter(CurriculumQuestionModel.id.in_(ids)).all())
+            return [_q_to_domain(m) for m in rows]
+
     def get_questions_by_company(self, company: str,
                                  domain_slug: str = "",
                                  limit: int = 50) -> list[CurriculumQuestion]:

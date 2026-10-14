@@ -155,3 +155,5 @@
     transform: none;
   }
 }
+
+.rs-weekly-sub { font-size: .85rem; color: #c4b5fd; font-weight: 600; margin-top: 2px; }

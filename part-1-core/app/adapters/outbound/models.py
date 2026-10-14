@@ -380,3 +380,29 @@ class TechNewsModel(Base):
     published_at: Mapped[str] = mapped_column(String(40), nullable=False, default="")
     fetched_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=_utcnow, index=True)
+
+
+class WeeklyTestModel(Base):
+    """A scheduled weekly test for a user's study plan — 20 questions, graded."""
+    __tablename__ = "weekly_tests"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False, index=True)
+    domain_slug: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    plan_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("study_plans.id", ondelete="SET NULL"),
+        nullable=True, index=True)
+    week_number: Mapped[int] = mapped_column(nullable=False, default=1)
+    scheduled_date: Mapped[Date] = mapped_column(Date, nullable=False, index=True)
+    status: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="scheduled")  # scheduled|active|completed|missed
+    score: Mapped[int] = mapped_column(nullable=True)
+    total_questions: Mapped[int] = mapped_column(nullable=False, default=20)
+    question_ids: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON list
+    answers: Mapped[str] = mapped_column(Text, nullable=False, default="{}")  # JSON {qid: answer_index}
+    started_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
+    completed_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_utcnow)

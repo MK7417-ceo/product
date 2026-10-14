@@ -55,7 +55,10 @@ from app.api.v1 import coins as coins_api
 from app.api.v1 import news as news_api
 from app.api.v1 import placement as placement_api
 from app.api.v1 import trends as trends_api
+from app.api.v1 import weekly_tests as weekly_tests_api
 from app.adapters.inbound.streak_service import StreakServiceImpl
+from app.adapters.inbound.weekly_test_service import WeeklyTestServiceImpl
+from app.adapters.outbound.weekly_test_repository import SqlAlchemyWeeklyTestRepository
 from app.adapters.outbound.streak_repository import SqlAlchemyStreakRepository
 from app.adapters.inbound.coin_service import CoinServiceImpl
 from app.adapters.outbound.coin_repository import SqlAlchemyCoinRepository
@@ -104,6 +107,10 @@ def create_app() -> FastAPI:
         SqlAlchemyStreakRepository(SessionLocal))
     app.state.coin_service = CoinServiceImpl(
         SqlAlchemyCoinRepository(SessionLocal))
+    app.state.weekly_test_service = WeeklyTestServiceImpl(
+        SqlAlchemyWeeklyTestRepository(SessionLocal),
+        SqlAlchemyCurriculumRepository(SessionLocal),
+        app.state.coin_service)
     app.state.code_runner = HttpCodeRunnerClient(settings.CODE_ENGINE_URL)
     app.state.launchpad_service = LaunchpadServiceImpl(
         SqlAlchemyResumeRepository(SessionLocal),
@@ -152,6 +159,7 @@ def create_app() -> FastAPI:
     app.include_router(news_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(placement_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(trends_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(weekly_tests_api.router, prefix=settings.API_V1_PREFIX)
     return app
 
 

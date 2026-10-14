@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './visual.css';
 
-export type DiagramType = 'osi-layers' | 'tcp-handshake' | 'data-pipeline' | 'network-topology';
+export type DiagramType = 'osi-layers' | 'tcp-handshake' | 'data-pipeline' | 'network-topology' | 'git-branching' | 'pr-lifecycle';
 
 interface Props {
   type: DiagramType;
@@ -272,12 +272,145 @@ function NetworkTopology() {
   );
 }
 
+/* ---------------- Git branching & merge ---------------- */
+function GitBranching() {
+  const W = 620;
+  const H = 300;
+  const mainY = 210;
+  const featY = 80;
+  // commit dots on main: A --- B ----------------- E(merge)
+  //                        \                       /
+  //                         C --- D (feature) ----
+  const mainCommits = [70, 170, 550];
+  const featCommits = [230, 340, 450];
+  return (
+    <figure className="visual-diagram">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Git branching: feature branch diverges from main and merges back">
+        <defs>
+          <marker id="visual-arrow3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth={6} markerHeight={6} orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#39D98A" />
+          </marker>
+        </defs>
+        {/* main branch line */}
+        <line x1={40} y1={mainY} x2={580} y2={mainY} stroke="#8B5CF6" strokeWidth={3} />
+        {/* feature branch: diverges from B, curves up, runs, merges into E */}
+        <path
+          d={`M 170 ${mainY} C 200 ${mainY}, 200 ${featY}, 230 ${featY} L 450 ${featY} C 480 ${featY}, 510 ${mainY}, 550 ${mainY}`}
+          fill="none"
+          stroke="#39D98A"
+          strokeWidth={3}
+          markerEnd="url(#visual-arrow3)"
+        />
+        {/* main commits */}
+        {mainCommits.map((x, i) => (
+          <g key={`m${i}`}>
+            <circle cx={x} cy={mainY} r={11} fill="#8B5CF6" stroke="#F5F7FB" strokeWidth={2} />
+            <text x={x} y={mainY + 32} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+              {['A', 'B', 'E ✓'][i]}
+            </text>
+          </g>
+        ))}
+        {/* feature commits */}
+        {featCommits.map((x, i) => (
+          <g key={`f${i}`}>
+            <circle cx={x} cy={featY} r={11} fill="#39D98A" stroke="#F5F7FB" strokeWidth={2} />
+            <text x={x} y={featY - 20} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+              {['C', 'D', ''][i]}
+            </text>
+          </g>
+        ))}
+        {/* branch labels */}
+        <text x={40} y={mainY - 14} className="visual-svg-label" fill="#8B5CF6" fontWeight={700}>main</text>
+        <text x={470} y={featY - 14} className="visual-svg-label" fill="#39D98A" fontWeight={700}>feature/login</text>
+        {/* travelling merge dot: rides the feature curve into main */}
+        <circle
+          cx={170}
+          cy={mainY}
+          r={6}
+          fill="#E879F9"
+          className="visual-git-dot"
+        />
+        <text x={W / 2} y={H - 12} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+          git checkout -b feature/login → work → git merge feature/login
+        </text>
+      </svg>
+      <figcaption className="visual-diagram-cap">
+        Branches are cheap pointers — diverge, commit freely, merge back when done.
+      </figcaption>
+    </figure>
+  );
+}
+
+/* ---------------- PR lifecycle ---------------- */
+const PR_STAGES = [
+  { emoji: '📝', name: 'PR Created', desc: 'Push branch, open PR' },
+  { emoji: '👀', name: 'Review', desc: 'Teammates comment' },
+  { emoji: '🔄', name: 'Changes', desc: 'Address feedback' },
+  { emoji: '✅', name: 'Approved', desc: 'Checks pass, +1s in' },
+  { emoji: '🎉', name: 'Merged', desc: 'Lands on main' },
+];
+
+function PrLifecycle() {
+  const W = 620;
+  const H = 170;
+  const bw = 96;
+  const bh = 96;
+  const gapX = (W - 5 * bw) / 4;
+  return (
+    <figure className="visual-diagram">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Pull request lifecycle: created, review, changes, approved, merged">
+        <defs>
+          <linearGradient id="visual-pr" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#39D98A" />
+            <stop offset="100%" stopColor="#3ED6F2" />
+          </linearGradient>
+        </defs>
+        {PR_STAGES.map((s, i) => {
+          const x = i * (bw + gapX);
+          const y = (H - bh) / 2 - 8;
+          return (
+            <g key={s.name}>
+              <rect x={x} y={y} width={bw} height={bh} rx={14} fill="url(#visual-pr)" opacity={0.9} />
+              <text x={x + bw / 2} y={y + 38} textAnchor="middle" fontSize={26}>
+                {s.emoji}
+              </text>
+              <text x={x + bw / 2} y={y + 64} textAnchor="middle" className="visual-svg-label" fill="#060913" fontWeight={700}>
+                {s.name}
+              </text>
+              <text x={x + bw / 2} y={y + bh + 20} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+                {s.desc}
+              </text>
+              {i < PR_STAGES.length - 1 && (
+                <line
+                  x1={x + bw + 4}
+                  y1={y + bh / 2}
+                  x2={x + bw + gapX - 4}
+                  y2={y + bh / 2}
+                  className="visual-flow-line"
+                  stroke="#39D98A"
+                  strokeWidth={2.5}
+                  markerEnd="url(#visual-arrow2)"
+                />
+              )}
+            </g>
+          );
+        })}
+      </svg>
+      <figcaption className="visual-diagram-cap">
+        Every pull request flows through review before it earns a place on main.
+      </figcaption>
+    </figure>
+  );
+}
+
 /* ---------------- main component ---------------- */
 const TITLES: Record<DiagramType, string> = {
   'osi-layers': 'OSI Model — 7 Layers',
   'tcp-handshake': 'TCP 3-Way Handshake',
   'data-pipeline': 'Data Pipeline',
   'network-topology': 'Star Network Topology',
+  'git-branching': 'Git Branching & Merge',
+  'pr-lifecycle': 'Pull Request Lifecycle',
 };
 
 export default function ConceptDiagram({ type, title, className = '' }: Props) {
@@ -288,6 +421,8 @@ export default function ConceptDiagram({ type, title, className = '' }: Props) {
       {type === 'tcp-handshake' && <TcpHandshake />}
       {type === 'data-pipeline' && <DataPipeline />}
       {type === 'network-topology' && <NetworkTopology />}
+      {type === 'git-branching' && <GitBranching />}
+      {type === 'pr-lifecycle' && <PrLifecycle />}
     </div>
   );
 }

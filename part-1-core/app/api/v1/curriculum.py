@@ -156,8 +156,16 @@ def get_lesson_detail(lesson_id: str, request: Request):
 def create_plan(body: PlanCreateRequest, request: Request,
                 user_id: str = Depends(current_user_id)):
     try:
-        return _svc(request).create_study_plan(
+        plan = _svc(request).create_study_plan(
             user_id, body.domain_slug, body.start_level, body.total_days)
+        # Auto-schedule weekly tests for the plan duration.
+        try:
+            weekly = request.app.state.weekly_test_service
+            plan["weekly_tests"] = weekly.schedule_for_plan(
+                user_id, body.domain_slug, plan["id"], body.total_days)
+        except Exception:
+            plan["weekly_tests"] = []
+        return plan
     except DomainError as exc:
         raise _domain_error(exc)
 

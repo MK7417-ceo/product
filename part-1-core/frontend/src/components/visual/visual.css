@@ -256,15 +256,30 @@
   .visual-concept { padding: 10px; }
 }
 
+/* Git branching travelling merge dot */
+.visual-git-dot {
+  animation: visual-git-travel 4.5s ease-in-out infinite;
+  opacity: 0;
+}
+@keyframes visual-git-travel {
+  0% { transform: translate(0, 0); opacity: 0; }
+  8% { opacity: 1; }
+  35% { transform: translate(160px, -130px); opacity: 1; }
+  60% { transform: translate(280px, -130px); opacity: 1; }
+  88% { transform: translate(380px, 0); opacity: 1; }
+  96%, 100% { transform: translate(380px, 0); opacity: 0; }
+}
+
 /* ---------------- reduced motion ---------------- */
 @media (prefers-reduced-motion: reduce) {
   .visual-tcp-dot,
+  .visual-git-dot,
   .visual-flow-line,
   .visual-pulse,
   .visual-node,
   .visual-listen-bars i {
     animation: none !important;
   }
-  .visual-tcp-dot { opacity: 1; }
+  .visual-tcp-dot, .visual-git-dot { opacity: 1; }
   .visual-listen, .visual-theory-card { transition: none; }
 }

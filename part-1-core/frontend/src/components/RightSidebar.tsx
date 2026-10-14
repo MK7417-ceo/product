@@ -36,10 +36,14 @@ export default function RightSidebar() {
   const { t } = useLang();
   const [streak, setStreak] = useState<StreakData | null>(null);
   const [coins, setCoins] = useState<CoinData | null>(null);
+  const [nextTest, setNextTest] = useState<{ daysUntil: number | null } | null>(null);
 
   useEffect(() => {
     fetchStreak().then(setStreak);
     fetchCoins().then(setCoins);
+    api<{ days_until_next: number | null }>('/api/v1/weekly-tests/mine')
+      .then(d => setNextTest({ daysUntil: d.days_until_next }))
+      .catch(() => setNextTest(null));
   }, []);
 
   const activeSet = new Set(streak?.recent_days ?? []);
@@ -98,6 +102,26 @@ export default function RightSidebar() {
             ? `✅ ${t('streak.doneToday', 'Done today!')}`
             : `⏳ ${t('streak.notYet', 'Not yet — keep going!')}`}
         </div>
+      </div>
+
+      {/* Weekly test card */}
+      <div className="rs-card rs-weekly">
+        <div className="rs-streak-row">
+          <span className="rs-flame" aria-hidden>📝</span>
+          <div>
+            <div className="rs-label">{t('weeklyTest.title', 'Weekly Test')}</div>
+            <div className="rs-weekly-sub">
+              {nextTest
+                ? nextTest.daysUntil === 0
+                  ? t('weeklyTest.today', 'Today!')
+                  : `${t('weeklyTest.in', 'in')} ${nextTest.daysUntil}d`
+                : t('weeklyTest.none', 'No test scheduled')}
+            </div>
+          </div>
+        </div>
+        <Link to="/weekly-test" className="rs-shop-link">
+          {t('weeklyTest.open', 'Open tests')} →
+        </Link>
       </div>
     </aside>
   );
