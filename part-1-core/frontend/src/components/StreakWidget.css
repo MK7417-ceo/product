@@ -1,0 +1,129 @@
+/* StreakWidget — Aurora Dark flame + calendar */
+.streak-widget {
+  background: linear-gradient(135deg, rgba(255, 122, 26, 0.12), rgba(255, 45, 120, 0.08));
+  border: 1px solid rgba(255, 122, 26, 0.25);
+  border-radius: 16px;
+  padding: 18px 20px;
+  color: #f0eefc;
+  max-width: 420px;
+}
+
+.streak-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.streak-flame {
+  font-size: 2.6rem;
+  filter: grayscale(0.9) opacity(0.45);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.streak-flame.lit {
+  filter: none;
+  animation: flame-flicker 1.6s ease-in-out infinite;
+}
+
+@keyframes flame-flicker {
+  0%, 100% { transform: scale(1) rotate(-2deg); }
+  50% { transform: scale(1.08) rotate(2deg); }
+}
+
+.streak-numbers {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.streak-count {
+  font-size: 2rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #ff9a3c, #ff2d78);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.streak-label {
+  font-size: 0.85rem;
+  color: #a89fd0;
+}
+
+.streak-side {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: #a89fd0;
+}
+
+.streak-side b {
+  color: #f0eefc;
+}
+
+.streak-milestone {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.35);
+  font-weight: 600;
+  animation: milestone-pop 0.5s ease;
+}
+
+@keyframes milestone-pop {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.streak-today {
+  margin-top: 10px;
+  font-size: 0.85rem;
+}
+
+.streak-today.done {
+  color: #4ade80;
+}
+
+.streak-today.pending {
+  color: #fbbf24;
+}
+
+.streak-calendar {
+  margin-top: 14px;
+}
+
+.streak-cal-title {
+  font-size: 0.78rem;
+  color: #a89fd0;
+  margin-bottom: 8px;
+}
+
+.streak-dots {
+  display: grid;
+  grid-template-columns: repeat(15, 1fr);
+  gap: 5px;
+}
+
+.streak-dot {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.streak-dot.active {
+  background: linear-gradient(135deg, #ff9a3c, #ff2d78);
+  box-shadow: 0 0 6px rgba(255, 122, 26, 0.6);
+}
+
+.streak-compact .streak-calendar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .streak-flame.lit {
+    animation: none;
+  }
+}

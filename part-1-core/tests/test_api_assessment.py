@@ -61,4 +61,6 @@ def test_assessment_bad_topic_400():
 def test_bank_grew():
     c = TestClient(create_app())
     r = c.get("/api/v1/placement/topics", headers=_authz(c))
-    assert set(r.json()["topics"]) == {"python", "ml-basics"}
+    assert set(r.json()["topics"]) == {"python", "ml-basics", "javascript", "java", "webdev",
+                                         "networking", "data-science", "data-analyst",
+                                         "r-lang", "ruby", "devops"}
