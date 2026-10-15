@@ -37,6 +37,7 @@ export default function RightSidebar() {
   const [streak, setStreak] = useState<StreakData | null>(null);
   const [coins, setCoins] = useState<CoinData | null>(null);
   const [nextTest, setNextTest] = useState<{ daysUntil: number | null } | null>(null);
+  const [simBest, setSimBest] = useState<string | null>(null);
 
   useEffect(() => {
     fetchStreak().then(setStreak);
@@ -44,6 +45,12 @@ export default function RightSidebar() {
     api<{ days_until_next: number | null }>('/api/v1/weekly-tests/mine')
       .then(d => setNextTest({ daysUntil: d.days_until_next }))
       .catch(() => setNextTest(null));
+    api<{ attempts: { status: string; company: string }[] }>('/api/v1/simulator/mine')
+      .then(d => {
+        const placed = (d.attempts ?? []).find(a => a.status === 'placed');
+        setSimBest(placed ? placed.company : (d.attempts ?? [])[0]?.company ?? null);
+      })
+      .catch(() => setSimBest(null));
   }, []);
 
   const activeSet = new Set(streak?.recent_days ?? []);
@@ -121,6 +128,24 @@ export default function RightSidebar() {
         </div>
         <Link to="/weekly-test" className="rs-shop-link">
           {t('weeklyTest.open', 'Open tests')} →
+        </Link>
+      </div>
+
+      {/* Placement simulator card */}
+      <div className="rs-card rs-weekly">
+        <div className="rs-streak-row">
+          <span className="rs-flame" aria-hidden>🏆</span>
+          <div>
+            <div className="rs-label">{t('simulator.title', 'Placement Simulator')}</div>
+            <div className="rs-weekly-sub">
+              {simBest
+                ? `🎯 ${simBest}`
+                : t('simulator.none', 'No drives yet')}
+            </div>
+          </div>
+        </div>
+        <Link to="/simulator" className="rs-shop-link">
+          {t('simulator.open', 'Start a drive')} →
         </Link>
       </div>
     </aside>
