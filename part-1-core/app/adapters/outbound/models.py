@@ -430,7 +430,7 @@ class SimulatorAttemptModel(Base):
 
 
 class SimulatorRoundModel(Base):
-    """One round inside a simulator attempt."""
+    """One round result inside a simulator attempt."""
     __tablename__ = "simulator_rounds"
 
     id: Mapped[str] = mapped_column(String(36), primary_key=True)
@@ -442,8 +442,24 @@ class SimulatorRoundModel(Base):
     score: Mapped[int] = mapped_column(nullable=True)
     total: Mapped[int] = mapped_column(nullable=False, default=0)
     passed: Mapped[bool] = mapped_column(nullable=True)
-    question_ids: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON list
-    answers: Mapped[str] = mapped_column(Text, nullable=False, default="{}")  # JSON
+    question_ids: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    answers: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
     started_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=_utcnow)
     completed_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
+
+
+class PasswordResetModel(Base):
+    """Single-use password reset token. Only the SHA-256 hash of the token
+    is stored — the raw token lives only in the emailed link."""
+    __tablename__ = "password_resets"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False, index=True)
+    token_hash: Mapped[str] = mapped_column(String(64), nullable=False, index=True)
+    expires_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+    used_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_utcnow)

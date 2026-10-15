@@ -36,6 +36,15 @@ class RoleRequest(BaseModel):
     role: str
 
 
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str = Field(min_length=8)
+
+
 def to_user_response(user) -> UserResponse:
     return UserResponse(
         id=user.id, email=user.email, role=user.role,

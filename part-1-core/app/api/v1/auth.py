@@ -9,9 +9,11 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.api.v1.schemas import (
     AuthResponse,
+    ForgotPasswordRequest,
     LoginRequest,
     RefreshRequest,
     RegisterRequest,
+    ResetPasswordRequest,
     RoleRequest,
     UserResponse,
     to_user_response,
@@ -25,6 +27,10 @@ _bearer = HTTPBearer(auto_error=False)
 
 def _service(request: Request) -> AuthService:
     return request.app.state.auth_service
+
+
+def _pwd_reset_service(request: Request):
+    return request.app.state.password_reset_service
 
 
 def _issuer(request: Request):
@@ -138,3 +144,30 @@ def delete_me(request: Request, user_id: str = Depends(current_user_id)):
     except DomainError as exc:
         raise _domain_error(exc)
     return None
+
+
+@router.post("/forgot-password")
+def forgot_password(body: ForgotPasswordRequest, request: Request):
+    """Request a password reset link.
+
+    ALWAYS returns 200 — never reveals whether the email has an account.
+    Rate limited: max 3 requests per email per hour (429 when exceeded).
+    """
+    try:
+        return _pwd_reset_service(request).forgot_password(body.email)
+    except DomainError as exc:
+        msg = str(exc)
+        if msg.startswith("too many reset requests"):
+            raise HTTPException(status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                                detail=msg)
+        raise _domain_error(exc)
+
+
+@router.post("/reset-password")
+def reset_password(body: ResetPasswordRequest, request: Request):
+    """Set a new password from a reset link token."""
+    try:
+        return _pwd_reset_service(request).reset_password(
+            body.token, body.new_password)
+    except DomainError as exc:
+        raise _domain_error(exc)
