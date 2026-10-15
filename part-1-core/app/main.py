@@ -62,6 +62,9 @@ from app.adapters.inbound.weekly_test_service import WeeklyTestServiceImpl
 from app.adapters.outbound.weekly_test_repository import SqlAlchemyWeeklyTestRepository
 from app.adapters.inbound.simulator_service import SimulatorServiceImpl
 from app.adapters.outbound.simulator_repository import SqlAlchemySimulatorRepository
+from app.adapters.inbound.password_reset_service import PasswordResetServiceImpl
+from app.adapters.outbound.password_reset_repository import SqlAlchemyPasswordResetRepository
+from app.adapters.outbound.email_service import send_password_reset_email
 from app.adapters.outbound.streak_repository import SqlAlchemyStreakRepository
 from app.adapters.inbound.coin_service import CoinServiceImpl
 from app.adapters.outbound.coin_repository import SqlAlchemyCoinRepository
@@ -117,6 +120,11 @@ def create_app() -> FastAPI:
     app.state.simulator_service = SimulatorServiceImpl(
         SqlAlchemySimulatorRepository(SessionLocal),
         app.state.coin_service)
+    app.state.password_reset_service = PasswordResetServiceImpl(
+        users,
+        SqlAlchemyPasswordResetRepository(SessionLocal),
+        hasher,
+        email_sender=send_password_reset_email)
     app.state.code_runner = HttpCodeRunnerClient(settings.CODE_ENGINE_URL)
     app.state.launchpad_service = LaunchpadServiceImpl(
         SqlAlchemyResumeRepository(SessionLocal),

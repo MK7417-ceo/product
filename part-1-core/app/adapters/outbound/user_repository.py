@@ -37,6 +37,16 @@ class SqlAlchemyUserRepository:
             s.commit()
             return _to_domain(m)
 
+    def set_password_hash(self, user_id: str, password_hash: str) -> bool:
+        """Replace the stored password hash. Used by password reset."""
+        with self._sessions() as s:
+            m = s.get(UserModel, user_id)
+            if not m:
+                return False
+            m.password_hash = password_hash
+            s.commit()
+            return True
+
     def get(self, user_id: str) -> User | None:
         with self._sessions() as s:
             m = s.get(UserModel, user_id)

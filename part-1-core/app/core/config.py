@@ -13,6 +13,11 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str = ""
     GOOGLE_REDIRECT_URI: str = ""
     CODE_ENGINE_URL: str = "http://localhost:8028"
+    # Password reset email (Resend). FROM_EMAIL is the PROJECT's address —
+    # never a personal email. Empty RESEND_API_KEY = dev mode (no send).
+    RESEND_API_KEY: str = ""
+    FROM_EMAIL: str = "noreply@skillforge.app"
+    FRONTEND_URL: str = "http://localhost:5173"
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 

@@ -53,7 +53,7 @@ export default function ForgotPassword() {
             <h1>Check your inbox</h1>
             <p className="sub">
               If an account exists for <b>{email}</b>, a password reset link
-              is on its way. It expires in 30 minutes.
+              is on its way. It expires in 1 hour.
             </p>
             <div className="auth-alt">
               <Link to="/login">Back to sign in</Link>
