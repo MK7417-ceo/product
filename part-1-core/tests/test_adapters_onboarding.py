@@ -59,11 +59,32 @@ def test_get_missing_profile(svc):
         svc.get_profile("ghost")
 
 
-def test_start_placement_returns_public_questions(svc):
+def test_start_placement_beginner_skips_questions(svc):
+    # beginners start from scratch: session completes immediately, no questions
     session, questions = svc.start_placement("u1", "python", "beginner")
-    assert len(questions) == 4
+    assert questions == []
+    assert session.status == "completed"
+    assert session.verified_level == "beginner"
+
+
+def test_start_placement_returns_public_questions(svc):
+    session, questions = svc.start_placement("u1", "python", "intermediate")
+    assert len(questions) == 8  # intermediate claim -> 2 levels x 4
     assert all("answer_index" not in q for q in questions)
     assert session.status == "open"
+
+
+def test_start_placement_spread_matches_claim(svc):
+    _, questions = svc.start_placement("u1", "python", "advanced")
+    assert len(questions) == 12  # 3 levels x 4
+    levels = [q["level"] for q in questions]
+    assert levels == ["beginner"] * 4 + ["intermediate"] * 4 + ["advanced"] * 4
+
+
+def test_start_placement_expert_claim_now_works(svc):
+    _, questions = svc.start_placement("u1", "python", "expert")
+    assert len(questions) == 16  # 4 levels x 4
+    assert "expert" in {q["level"] for q in questions}
 
 
 def test_start_placement_unknown_topic(svc):
@@ -76,28 +97,43 @@ def test_submit_all_correct_verifies_claim(svc):
     session, _ = svc.start_placement("u1", "python", "intermediate")
     answers = {q.id: q.answer_index for q in
                [bank.get(qid) for qid in session.question_ids]}
-    done = svc.submit_placement("u1", session.id, answers)
+    done, analysis = svc.submit_placement("u1", session.id, answers)
     assert done.status == "completed"
     assert done.verified_level == "intermediate"
-    assert done.correct == 4
+    assert done.correct == 8
+    assert analysis["verified_level"] == "intermediate"
+    assert set(analysis["levels"]) == {"beginner", "intermediate"}
 
 
 def test_submit_all_wrong_steps_down(svc):
-    bank = StaticQuestionBank()
     session, _ = svc.start_placement("u1", "python", "advanced")
     answers = {qid: 99 for qid in session.question_ids}  # nothing matches
-    done = svc.submit_placement("u1", session.id, answers)
+    done, analysis = svc.submit_placement("u1", session.id, answers)
     assert done.verified_level == "beginner"
+    assert "verified level: beginner" in analysis["summary"]
+
+
+def test_submit_partial_finds_true_level(svc):
+    bank = StaticQuestionBank()
+    session, _ = svc.start_placement("u1", "python", "advanced")
+    answers = {}
+    for qid in session.question_ids:
+        q = bank.get(qid)
+        # ace beginner+intermediate, bomb advanced
+        answers[qid] = q.answer_index if q.level != "advanced" else 99
+    done, analysis = svc.submit_placement("u1", session.id, answers)
+    assert done.verified_level == "intermediate"
+    assert analysis["levels"]["advanced"]["correct"] == 0
 
 
 def test_double_submit_rejected(svc):
-    session, _ = svc.start_placement("u1", "python", "beginner")
+    session, _ = svc.start_placement("u1", "python", "intermediate")
     svc.submit_placement("u1", session.id, {})
     with pytest.raises(DomainError, match="already completed"):
         svc.submit_placement("u1", session.id, {})
 
 
 def test_other_users_session_rejected(svc):
-    session, _ = svc.start_placement("u1", "python", "beginner")
+    session, _ = svc.start_placement("u1", "python", "intermediate")
     with pytest.raises(DomainError, match="not found"):
         svc.submit_placement("u2", session.id, {})

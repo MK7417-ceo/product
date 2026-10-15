@@ -51,14 +51,30 @@ def test_placement_topics():
     assert "python" in r.json()["topics"]
 
 
+def test_placement_beginner_skips_verification():
+    c = make_client()
+    r = c.post("/api/v1/placement/start",
+               json={"topic": "python", "claimed_level": "beginner"},
+               headers=_authz(c))
+    assert r.status_code == 201, r.text
+    body = r.json()
+    assert body["verification_skipped"] is True
+    assert body["verified_level"] == "beginner"
+    assert body["questions"] == []
+    assert body["question_count"] == 0
+
+
 def test_placement_full_verify_flow():
     c = make_client()
     h = _authz(c)
     r = c.post("/api/v1/placement/start",
-               json={"topic": "python", "claimed_level": "beginner"}, headers=h)
+               json={"topic": "python", "claimed_level": "intermediate"}, headers=h)
     assert r.status_code == 201, r.text
     body = r.json()
-    assert len(body["questions"]) == 4
+    assert body["verification_skipped"] is False
+    assert len(body["questions"]) == 8
+    assert body["levels"] == ["beginner", "intermediate"]
+    assert body["question_count"] == 8
     assert all("answer_index" not in q for q in body["questions"])
 
     # answer everything wrong -> verified level must step down to beginner (floor)
@@ -69,6 +85,20 @@ def test_placement_full_verify_flow():
     assert out["status"] == "completed"
     assert out["verified_level"] == "beginner"
     assert out["correct"] == 0
+    assert out["analysis"]["verified_level"] == "beginner"
+    assert set(out["analysis"]["levels"]) == {"beginner", "intermediate"}
+    assert "summary" in out["analysis"]
+
+
+def test_placement_start_spread_for_advanced_claim():
+    c = make_client()
+    r = c.post("/api/v1/placement/start",
+               json={"topic": "python", "claimed_level": "advanced"},
+               headers=_authz(c))
+    assert r.status_code == 201, r.text
+    body = r.json()
+    assert body["question_count"] == 12
+    assert body["levels"] == ["advanced", "beginner", "intermediate"]
 
 
 def test_placement_unknown_topic_400():

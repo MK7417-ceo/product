@@ -6,11 +6,12 @@ import uuid
 from app.domain.profile import (
     Placement,
     Profile,
+    analysis_to_dict,
+    analyze_placement,
     public_question,
-    score_placement,
+    sample_placement_questions,
     validate_level,
     validate_profile,
-    verify_level,
 )
 
 
@@ -54,18 +55,32 @@ class OnboardingServiceImpl:
         validate_level(claimed_level)
         if topic not in self._bank.topics():
             raise DomainError(f"unknown topic: {topic}")
-        questions = self._bank.questions(topic, claimed_level, 4)
-        if len(questions) < 4:
-            raise DomainError(f"not enough questions for {topic}/{claimed_level}")
+        placement_id = uuid.uuid4().hex
+        if claimed_level == "beginner":
+            # Beginners start from scratch: no verification questions needed.
+            # The session is completed immediately as verified beginner.
+            session = Placement(
+                id=placement_id, user_id=user_id, topic=topic,
+                claimed_level=claimed_level, question_ids=(),
+                status="completed", correct=0, total=0,
+                verified_level="beginner",
+            )
+            self._placements.save(session)
+            return session, []
+        questions = sample_placement_questions(
+            self._bank, topic, claimed_level, placement_id
+        )
         session = Placement(
-            id=uuid.uuid4().hex, user_id=user_id, topic=topic,
+            id=placement_id, user_id=user_id, topic=topic,
             claimed_level=claimed_level,
             question_ids=tuple(q.id for q in questions),
         )
         self._placements.save(session)
         return session, [public_question(q) for q in questions]
 
-    def submit_placement(self, user_id: str, placement_id: str, answers: dict[str, int]) -> Placement:
+    def submit_placement(
+        self, user_id: str, placement_id: str, answers: dict[str, int]
+    ) -> tuple[Placement, dict]:
         from app.domain.user import DomainError
         session = self._placements.get(placement_id)
         if not session or session.user_id != user_id:
@@ -74,11 +89,11 @@ class OnboardingServiceImpl:
             raise DomainError("placement session already completed")
         questions = [q for qid in session.question_ids
                      if (q := self._bank.get(qid)) is not None]
-        correct, total = score_placement(questions, answers)
+        analysis = analyze_placement(session.claimed_level, questions, answers)
         session.answers = dict(answers)
         session.status = "completed"
-        session.correct = correct
-        session.total = total
-        session.verified_level = verify_level(session.claimed_level, correct / total if total else 0)
+        session.correct = analysis.correct
+        session.total = analysis.total
+        session.verified_level = analysis.verified_level
         self._placements.save(session)
-        return session
+        return session, analysis_to_dict(analysis)
