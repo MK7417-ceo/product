@@ -36,6 +36,7 @@ const GROUPS: { title: string; items: NavItem[] }[] = [
       { to: '/portfolio', label: 'Portfolio', icon: '🌐' },
       { to: '/interview', label: 'Interview Prep', icon: '🎤' },
       { to: '/placement-prep', label: 'Placement Prep', icon: '🎯' },
+      { to: '/simulator', label: 'Placement Simulator', icon: '🏆' },
     ],
   },
   {

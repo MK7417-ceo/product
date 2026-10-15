@@ -406,3 +406,44 @@ class WeeklyTestModel(Base):
     completed_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=_utcnow)
+
+
+class SimulatorAttemptModel(Base):
+    """A Placement Simulator run — 6 rounds with 60% cutoffs."""
+    __tablename__ = "simulator_attempts"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False, index=True)
+    company: Mapped[str] = mapped_column(String(80), nullable=False, default="general")
+    status: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="in_progress")  # in_progress|eliminated|placed
+    current_round: Mapped[int] = mapped_column(nullable=False, default=1)
+    final_score: Mapped[int] = mapped_column(nullable=True)  # avg pct * 100
+    coins_earned: Mapped[int] = mapped_column(nullable=False, default=0)
+    started_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_utcnow)
+    completed_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_utcnow)
+
+
+class SimulatorRoundModel(Base):
+    """One round inside a simulator attempt."""
+    __tablename__ = "simulator_rounds"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    attempt_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("simulator_attempts.id", ondelete="CASCADE"),
+        nullable=False, index=True)
+    round_number: Mapped[int] = mapped_column(nullable=False)
+    round_name: Mapped[str] = mapped_column(String(80), nullable=False)
+    score: Mapped[int] = mapped_column(nullable=True)
+    total: Mapped[int] = mapped_column(nullable=False, default=0)
+    passed: Mapped[bool] = mapped_column(nullable=True)
+    question_ids: Mapped[str] = mapped_column(Text, nullable=False, default="[]")  # JSON list
+    answers: Mapped[str] = mapped_column(Text, nullable=False, default="{}")  # JSON
+    started_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_utcnow)
+    completed_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)

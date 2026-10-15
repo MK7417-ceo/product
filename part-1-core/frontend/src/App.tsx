@@ -34,6 +34,7 @@ const CoinShop = lazy(() => import('./pages/CoinShop'));
 const TechNews = lazy(() => import('./pages/TechNews'));
 const PlacementPrep = lazy(() => import('./pages/PlacementPrep'));
 const WeeklyTest = lazy(() => import('./pages/WeeklyTest'));
+const PlacementSimulator = lazy(() => import('./pages/PlacementSimulator'));
 const ContentManager = lazy(() => import('./pages/admin/ContentManager'));
 
 function Fallback() {
@@ -126,6 +127,7 @@ export default function App() {
           <Route path="news" element={<TechNews />} />
           <Route path="placement-prep" element={<PlacementPrep />} />
           <Route path="weekly-test" element={<WeeklyTest />} />
+          <Route path="simulator" element={<PlacementSimulator />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
