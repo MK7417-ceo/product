@@ -615,5 +615,9 @@ class StaticQuestionBank:
         pool = [q for q in self._questions if q.topic == topic and q.level == level]
         return pool[:count]
 
+    def pool(self, topic: str, level: str) -> list[Question]:
+        """Full pool for a topic/level (used for random placement sampling)."""
+        return [q for q in self._questions if q.topic == topic and q.level == level]
+
     def get(self, question_id: str) -> Question | None:
         return self._by_id.get(question_id)

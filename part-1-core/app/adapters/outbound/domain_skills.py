@@ -82,6 +82,7 @@ DOMAIN_SKILLS: dict[str, dict] = {
             "ml-workflow",
             "ml-libraries",
             "ml-metrics",
+            "ml-systems",
         ],
     },
     "data-science": {
