@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './visual.css';
 
-export type DiagramType = 'osi-layers' | 'tcp-handshake' | 'data-pipeline' | 'network-topology' | 'git-branching' | 'pr-lifecycle' | 'subnetting' | 'tls-handshake';
+export type DiagramType = 'osi-layers' | 'tcp-handshake' | 'data-pipeline' | 'network-topology' | 'git-branching' | 'pr-lifecycle' | 'subnetting' | 'tls-handshake' | 'oop-pillars' | 'solid-principles' | 'cpu-pipeline' | 'cache-hierarchy';
 
 interface Props {
   type: DiagramType;
@@ -543,6 +543,242 @@ function TlsHandshake() {
   );
 }
 
+/* ---------------- OOP pillars ---------------- */
+const OOP_PILLARS = [
+  { emoji: '🔒', name: 'Encapsulation', desc: 'Bundle data + methods; hide internals', color: '#8B5CF6' },
+  { emoji: '🧬', name: 'Inheritance', desc: 'Child reuses the parent\'s traits', color: '#3ED6F2' },
+  { emoji: '🎭', name: 'Polymorphism', desc: 'One interface, many behaviours', color: '#39D98A' },
+  { emoji: '👻', name: 'Abstraction', desc: 'Show the what, hide the how', color: '#F5B84B' },
+];
+
+function OopPillars() {
+  const [active, setActive] = useState<number | null>(null);
+  const W = 620;
+  const H = 190;
+  const bw = 132;
+  const bh = 118;
+  const gapX = (W - 4 * bw) / 3;
+  return (
+    <figure className="visual-diagram">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="The four pillars of OOP: encapsulation, inheritance, polymorphism, abstraction">
+        {OOP_PILLARS.map((p, i) => {
+          const x = i * (bw + gapX);
+          const y = 22;
+          const isActive = active === i;
+          return (
+            <g
+              key={p.name}
+              onMouseEnter={() => setActive(i)}
+              onMouseLeave={() => setActive(null)}
+              onClick={() => setActive(isActive ? null : i)}
+              style={{ cursor: 'pointer' }}
+            >
+              <rect
+                x={x} y={y} width={bw} height={bh} rx={14}
+                fill={p.color} opacity={isActive || active === null ? 0.92 : 0.45}
+                stroke={isActive ? '#F5F7FB' : 'none'} strokeWidth={isActive ? 2.5 : 0}
+              />
+              <text x={x + bw / 2} y={y + 40} textAnchor="middle" fontSize={28}>
+                {p.emoji}
+              </text>
+              <text x={x + bw / 2} y={y + 68} textAnchor="middle" className="visual-svg-label" fill="#060913" fontWeight={700}>
+                {p.name}
+              </text>
+              <text x={x + bw / 2} y={y + bh + 22} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+                {p.desc}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+      <figcaption className="visual-diagram-cap">
+        Hover a pillar — every OOP design decision rests on one of these four.
+      </figcaption>
+    </figure>
+  );
+}
+
+/* ---------------- SOLID principles ---------------- */
+const SOLID = [
+  { letter: 'S', name: 'Single Responsibility', desc: 'One reason to change', color: '#8B5CF6' },
+  { letter: 'O', name: 'Open / Closed', desc: 'Extend, don\u2019t modify', color: '#3ED6F2' },
+  { letter: 'L', name: 'Liskov Substitution', desc: 'Subtypes must substitute', color: '#39D98A' },
+  { letter: 'I', name: 'Interface Segregation', desc: 'No fat interfaces', color: '#F5B84B' },
+  { letter: 'D', name: 'Dependency Inversion', desc: 'Depend on abstractions', color: '#E879F9' },
+];
+
+function SolidPrinciples() {
+  const [active, setActive] = useState<number | null>(null);
+  const W = 620;
+  const H = 190;
+  const bw = 106;
+  const bh = 118;
+  const gapX = (W - 5 * bw) / 4;
+  return (
+    <figure className="visual-diagram">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="SOLID principles: single responsibility, open-closed, liskov substitution, interface segregation, dependency inversion">
+        {SOLID.map((s, i) => {
+          const x = i * (bw + gapX);
+          const y = 22;
+          const isActive = active === i;
+          return (
+            <g
+              key={s.letter}
+              onMouseEnter={() => setActive(i)}
+              onMouseLeave={() => setActive(null)}
+              onClick={() => setActive(isActive ? null : i)}
+              style={{ cursor: 'pointer' }}
+            >
+              <rect
+                x={x} y={y} width={bw} height={bh} rx={14}
+                fill={s.color} opacity={isActive || active === null ? 0.92 : 0.45}
+                stroke={isActive ? '#F5F7FB' : 'none'} strokeWidth={isActive ? 2.5 : 0}
+              />
+              <text x={x + bw / 2} y={y + 44} textAnchor="middle" fontSize={30} fontWeight={800} fill="#060913">
+                {s.letter}
+              </text>
+              <text x={x + bw / 2} y={y + 68} textAnchor="middle" className="visual-svg-label" fill="#060913" fontWeight={700} fontSize={11}>
+                {s.name}
+              </text>
+              <text x={x + bw / 2} y={y + bh + 22} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+                {s.desc}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+      <figcaption className="visual-diagram-cap">
+        SOLID — five rules that keep object-oriented designs flexible and testable.
+      </figcaption>
+    </figure>
+  );
+}
+
+/* ---------------- CPU 5-stage pipeline ---------------- */
+const PIPE_STAGES = [
+  { abbr: 'IF', name: 'Fetch', desc: 'PC → instruction memory. Grab the next instruction.', color: '#8B5CF6' },
+  { abbr: 'ID', name: 'Decode', desc: 'Decode opcode, read registers.', color: '#A78BFA' },
+  { abbr: 'EX', name: 'Execute', desc: 'ALU computes; branch target resolved.', color: '#3ED6F2' },
+  { abbr: 'MEM', name: 'Memory', desc: 'Load/store touches data memory.', color: '#39D98A' },
+  { abbr: 'WB', name: 'Write-back', desc: 'Result written back to the register file.', color: '#F5B84B' },
+];
+
+function CpuPipeline() {
+  const [active, setActive] = useState<number | null>(null);
+  const W = 620;
+  const H = 210;
+  const bw = 96;
+  const bh = 64;
+  const gapX = (W - 5 * bw) / 4;
+  const y = 60;
+  const dots = [
+    { color: '#E879F9', delay: '0s' },
+    { color: '#F5B84B', delay: '1.1s' },
+    { color: '#39D98A', delay: '2.2s' },
+  ];
+  const travel = W - 40;
+  return (
+    <figure className="visual-diagram">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Five-stage CPU pipeline: fetch, decode, execute, memory, write-back">
+        <defs>
+          <marker id="visual-arrow-pipe" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#3ED6F2" />
+          </marker>
+        </defs>
+        {PIPE_STAGES.map((s, i) => {
+          const x = i * (bw + gapX);
+          const isActive = active === i;
+          return (
+            <g key={s.abbr}>
+              <rect x={x} y={y} width={bw} height={bh} rx={12} fill={s.color}
+                opacity={active === null || isActive ? 0.9 : 0.35}
+                onMouseEnter={() => setActive(i)} onMouseLeave={() => setActive(null)}
+                onClick={() => setActive(isActive ? null : i)} style={{ cursor: 'pointer' }} />
+              <text x={x + bw / 2} y={y + 26} textAnchor="middle" className="visual-svg-label" fill="#060913" fontWeight={800}>
+                {s.abbr}
+              </text>
+              <text x={x + bw / 2} y={y + 46} textAnchor="middle" className="visual-svg-note" fill="#060913" fontWeight={600}>
+                {s.name}
+              </text>
+              {i < 4 && (
+                <line x1={x + bw} y1={y + bh / 2} x2={x + bw + gapX} y2={y + bh / 2}
+                  stroke="#3ED6F2" strokeWidth={2} opacity={0.6} markerEnd="url(#visual-arrow-pipe)" />
+              )}
+            </g>
+          );
+        })}
+        {dots.map((d, i) => (
+          <circle key={i} cx={20} cy={y + bh + 42} r={6} fill={d.color}
+            className="visual-tcp-dot"
+            style={{ ['--travel' as string]: `${travel}px`, animationDelay: d.delay }} />
+        ))}
+        <text x={W / 2} y={y + bh + 66} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+          instructions stream through the stages — one finishes every cycle
+        </text>
+      </svg>
+      <figcaption className="visual-diagram-cap" aria-live="polite">
+        {active !== null ? (
+          <><strong>{PIPE_STAGES[active].abbr} — {PIPE_STAGES[active].name}:</strong> {PIPE_STAGES[active].desc}</>
+        ) : (
+          'Hover or tap a stage to see what it does.'
+        )}
+      </figcaption>
+    </figure>
+  );
+}
+
+/* ---------------- Cache / memory hierarchy pyramid ---------------- */
+const MEM_LEVELS = [
+  { name: 'Registers', size: '~1 KB', speed: '< 1 ns', desc: 'Inside the CPU — the fastest storage there is.', color: '#8B5CF6' },
+  { name: 'L1 Cache', size: '32–64 KB', speed: '~1 ns', desc: 'Split I-cache / D-cache, per core.', color: '#A78BFA' },
+  { name: 'L2 Cache', size: '256 KB–1 MB', speed: '~4 ns', desc: 'Per core, larger and a little slower.', color: '#3ED6F2' },
+  { name: 'L3 Cache', size: '8–64 MB', speed: '~15 ns', desc: 'Shared across cores on the die.', color: '#39D98A' },
+  { name: 'Main Memory (RAM)', size: '8–128 GB', speed: '~100 ns', desc: 'DRAM — every cache miss lands here.', color: '#F5B84B' },
+  { name: 'SSD / Disk', size: 'TBs', speed: '~100 µs', desc: 'Persistent storage — page faults go here.', color: '#7C8DB0' },
+];
+
+function CacheHierarchy() {
+  const [active, setActive] = useState<number | null>(null);
+  const W = 480;
+  const rowH = 40;
+  const gap = 7;
+  const top = 12;
+  return (
+    <figure className="visual-diagram">
+      <svg viewBox={`0 0 ${W} ${top * 2 + 6 * rowH + 5 * gap}`} role="img" aria-label="Memory hierarchy pyramid from registers to disk">
+        {MEM_LEVELS.map((l, i) => {
+          const frac = (i + 1) / MEM_LEVELS.length;
+          const w = 120 + frac * 220;
+          const x = (W - w) / 2;
+          const y = top + i * (rowH + gap);
+          const isActive = active === i;
+          return (
+            <g key={l.name}
+              onMouseEnter={() => setActive(i)} onMouseLeave={() => setActive(null)}
+              onClick={() => setActive(isActive ? null : i)} style={{ cursor: 'pointer' }}>
+              <rect x={x} y={y} width={w} height={rowH} rx={10} fill={l.color}
+                opacity={active === null || isActive ? 0.88 : 0.35} />
+              <text x={W / 2} y={y + 17} textAnchor="middle" className="visual-svg-label" fill="#060913" fontWeight={700}>
+                {l.name}
+              </text>
+              <text x={W / 2} y={y + 32} textAnchor="middle" className="visual-svg-note" fill="#060913">
+                {l.size} · {l.speed}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+      <figcaption className="visual-diagram-cap" aria-live="polite">
+        {active !== null ? (
+          <><strong>{MEM_LEVELS[active].name} ({MEM_LEVELS[active].size}, {MEM_LEVELS[active].speed}):</strong> {MEM_LEVELS[active].desc}</>
+        ) : (
+          'Bigger = slower and cheaper. Hover or tap a level for details.'
+        )}
+      </figcaption>
+    </figure>
+  );
+}
+
 /* ---------------- main component ---------------- */
 const TITLES: Record<DiagramType, string> = {
   'osi-layers': 'OSI Model — 7 Layers',
@@ -553,6 +789,10 @@ const TITLES: Record<DiagramType, string> = {
   'pr-lifecycle': 'Pull Request Lifecycle',
   'subnetting': 'Subnetting — /24 into four /26s',
   'tls-handshake': 'TLS 1.2 Handshake',
+  'oop-pillars': 'The 4 Pillars of OOP',
+  'solid-principles': 'SOLID Principles',
+  'cpu-pipeline': 'CPU 5-Stage Pipeline',
+  'cache-hierarchy': 'Memory Hierarchy Pyramid',
 };
 
 export default function ConceptDiagram({ type, title, className = '' }: Props) {
@@ -567,6 +807,10 @@ export default function ConceptDiagram({ type, title, className = '' }: Props) {
       {type === 'pr-lifecycle' && <PrLifecycle />}
       {type === 'subnetting' && <Subnetting />}
       {type === 'tls-handshake' && <TlsHandshake />}
+      {type === 'oop-pillars' && <OopPillars />}
+      {type === 'solid-principles' && <SolidPrinciples />}
+      {type === 'cpu-pipeline' && <CpuPipeline />}
+      {type === 'cache-hierarchy' && <CacheHierarchy />}
     </div>
   );
 }
