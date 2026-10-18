@@ -24,13 +24,13 @@ const LEVELS = [
     id: 'intermediate',
     icon: '🚀',
     name: 'Intermediate',
-    desc: '23 questions — 15 MCQ + 5 coding + 3 written. We verify exactly where you stand before planning.',
+    desc: '8 questions — 4 each from beginner & intermediate. We verify exactly where you stand before planning.',
   },
   {
     id: 'advanced',
     icon: '⚡',
     name: 'Advanced',
-    desc: '23 questions — 15 MCQ + 5 coding + 3 written across all levels. Prove the depth, skip the basics.',
+    desc: '12 questions — 4 each across beginner, intermediate & advanced. Prove the depth, skip the basics.',
   },
 ] as const;
 

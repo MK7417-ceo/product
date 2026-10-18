@@ -187,7 +187,7 @@ export interface DSASubmitResult {
 
 export const dsaApi = {
   daily: (date?: string) =>
-    api<DailyDSAQuestion>(`/api/v1/dsa/daily${date ? `?date=${encodeURIComponent(date)}` : ''}`),
+    api<DailyDSAQuestion>(`/api/v1/practice/dsa-daily${date ? `?date=${encodeURIComponent(date)}` : ''}`),
   submit: (date: string, language: string, code: string) =>
     api<DSASubmitResult>('/api/v1/dsa/daily/submit', {
       method: 'POST',

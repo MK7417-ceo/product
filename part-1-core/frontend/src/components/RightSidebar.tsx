@@ -118,7 +118,7 @@ export default function RightSidebar() {
           <div>
             <div className="rs-label">{t('weeklyTest.title', 'Weekly Test')}</div>
             <div className="rs-weekly-sub">
-              {nextTest
+              {nextTest?.daysUntil != null
                 ? nextTest.daysUntil === 0
                   ? t('weeklyTest.today', 'Today!')
                   : `${t('weeklyTest.in', 'in')} ${nextTest.daysUntil}d`
