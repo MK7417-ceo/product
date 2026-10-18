@@ -96,6 +96,11 @@ def test_summary_shape():
 def test_seed_idempotent_on_migrated_db():
     """Seed into a migrated sqlite DB twice; second run skips everything."""
     import os
+    import re
+    import subprocess
+    import sys
+    import tempfile
+    from pathlib import Path
 
     from sqlalchemy import create_engine
     from sqlalchemy.orm import sessionmaker
@@ -106,26 +111,34 @@ def test_seed_idempotent_on_migrated_db():
         CurriculumQuestionModel,
     )
 
-    db = "/tmp/test_english_comm_seed.db"
-    if os.path.exists(db):
-        os.remove(db)
-    # run migrations to get real tables
-    import subprocess
+    # Resolve part-1-core/ from this file's location — no machine-specific paths,
+    # so the test also passes on CI runners.
+    core_dir = Path(__file__).resolve().parent.parent
+    tmp = Path(tempfile.mkdtemp(prefix="eng_comm_seed_test_"))
+    db = tmp / "seed.db"
 
-    ini = "/tmp/eng_test_alembic.ini"
-    subprocess.run(
-        ["bash", "-lc",
-         f"cp /home/hatch/workspace/product/part-1-core/alembic.ini {ini} && "
-         f"sed -i 's|sqlalchemy.url = .*|sqlalchemy.url = sqlite:///{db}|' {ini}"],
-        check=True,
+    # Temp alembic.ini pointed at the throwaway sqlite DB.
+    ini = tmp / "alembic.ini"
+    ini_text = (core_dir / "alembic.ini").read_text()
+    ini_text, n_url = re.subn(
+        r"(?m)^sqlalchemy\.url\s*=.*$",
+        f"sqlalchemy.url = sqlite:///{db}",
+        ini_text,
     )
+    assert n_url == 1, "sqlalchemy.url line not found in alembic.ini"
+    ini_text, n_loc = re.subn(
+        r"(?m)^script_location\s*=.*$",
+        f"script_location = {core_dir / 'alembic'}",
+        ini_text,
+    )
+    assert n_loc == 1, "script_location line not found in alembic.ini"
+    ini.write_text(ini_text)
+
+    # Run migrations to get real tables, using this same python env's alembic.
     env = dict(os.environ, SECRET_KEY="test12345678901234567890123456789012")
     subprocess.run(
-        ["bash", "-lc",
-         f"cd /home/hatch/workspace/product/part-1-core && "
-         f"SECRET_KEY=test12345678901234567890123456789012 "
-         f"/home/hatch/workspace/sfvenv/bin/alembic -c {ini} upgrade head"],
-        check=True, env=env, capture_output=True,
+        [sys.executable, "-m", "alembic", "-c", str(ini), "upgrade", "head"],
+        check=True, cwd=core_dir, env=env, capture_output=True, text=True,
     )
     engine = create_engine(f"sqlite:///{db}")
     s = sessionmaker(bind=engine)()
