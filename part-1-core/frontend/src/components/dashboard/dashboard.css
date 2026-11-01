@@ -1,14 +1,14 @@
 /* SkillForge Dashboard — component-scoped styles (Milestone 1).
-   Uses the shell's design tokens: --base --surface --border --violet --cyan
-   --green --amber --red --text --muted. --base carries a fallback until the
+   Uses the shell's design tokens: --base --surface --border --accent --accent
+   --sage --accent --red --text --muted. --base carries a fallback until the
    shell agent defines it in the theme. */
 
 .sf-dash {
   max-width: 1080px;
   margin: 0 auto;
   padding: 32px 28px 80px;
-  color: var(--text, #f5f7fb);
-  background: var(--base, #080b14);
+  color: var(--text, #F5EFE6);
+  background: var(--base, #161210);
   min-height: 100%;
 }
 
@@ -20,28 +20,28 @@
   margin: 0;
 }
 .sf-greet .sf-nba {
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   margin-top: 8px;
   font-size: 15px;
 }
 .sf-greet .sf-nba strong {
-  color: var(--cyan, #36c5f0);
+  color: var(--accent, #E85D26);
   font-weight: 600;
 }
 
-/* ---------- hero (aurora gradient) ---------- */
+/* ---------- hero (warm accent gradient) ---------- */
 .sf-hero {
   margin-top: 24px;
   background:
-    radial-gradient(600px 300px at 12% 0%, rgba(139, 92, 246, 0.22), transparent 65%),
-    radial-gradient(500px 280px at 88% 20%, rgba(62, 214, 242, 0.12), transparent 65%),
-    linear-gradient(180deg, #151d36, #0d1322);
-  border: 1px solid rgba(139, 92, 246, 0.35);
+    radial-gradient(600px 300px at 12% 0%, rgba(232, 93, 38, 0.22), transparent 65%),
+    radial-gradient(500px 280px at 88% 20%, rgba(232, 93, 38, 0.12), transparent 65%),
+    linear-gradient(180deg, #241D17, #161210);
+  border: 1px solid rgba(232, 93, 38, 0.35);
   border-radius: 18px;
   padding: 26px 28px;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 40px rgba(139, 92, 246, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 40px rgba(232, 93, 38, 0.10), inset 0 1px 0 rgba(247, 241, 232, 0.07);
 }
 .sf-hero::before {
   content: '';
@@ -50,13 +50,13 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #8b5cf6, #d946ef, #3ed6f2);
+  background: linear-gradient(90deg, #E85D26, #E85D26, #E85D26);
 }
 .sf-kicker {
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.12em;
-  background: linear-gradient(90deg, var(--violet-bright, #a78bfa), var(--magenta, #e879f9));
+  background: linear-gradient(90deg, var(--accent, #E85D26), var(--accent, #E85D26));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .sf-hero h2 {
@@ -65,7 +65,7 @@
   margin: 8px 0 6px;
 }
 .sf-hero p {
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   font-size: 14px;
   max-width: 560px;
   margin: 0;
@@ -81,7 +81,7 @@
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
 }
 .sf-step .sf-ck {
   width: 20px;
@@ -93,15 +93,15 @@
   justify-content: center;
   font-size: 12px;
   font-weight: 700;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  border: 1px solid var(--border, rgba(247, 241, 232, 0.1));
 }
 .sf-step.done {
-  color: var(--text, #f5f7fb);
+  color: var(--text, #F5EFE6);
 }
 .sf-step.done .sf-ck {
-  background: rgba(57, 217, 138, 0.16);
-  color: var(--green, #39d98a);
-  border-color: rgba(57, 217, 138, 0.4);
+  background: rgba(127, 176, 105, 0.16);
+  color: var(--sage, #7FB069);
+  border-color: rgba(127, 176, 105, 0.4);
 }
 .sf-progress {
   margin-top: 16px;
@@ -111,12 +111,12 @@
   display: flex;
   justify-content: space-between;
   font-size: 12px;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   margin-bottom: 6px;
 }
 .sf-bar {
   height: 8px;
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(247, 241, 232, 0.07);
   border-radius: 99px;
   overflow: hidden;
 }
@@ -124,7 +124,7 @@
   display: block;
   height: 100%;
   border-radius: 99px;
-  background: linear-gradient(90deg, var(--violet, #8b5cf6), var(--cyan, #36c5f0));
+  background: linear-gradient(90deg, var(--accent, #E85D26), var(--accent, #E85D26));
   transition: width 0.8s ease;
 }
 
@@ -137,8 +137,8 @@
   flex-wrap: wrap;
 }
 .sf-btn-primary {
-  background: var(--violet, #8b5cf6);
-  color: #fff;
+  background: var(--accent, #E85D26);
+  color: #F5EFE6;
   border: none;
   font-weight: 700;
   font-size: 15px;
@@ -146,17 +146,17 @@
   border-radius: 12px;
   cursor: pointer;
   transition: 0.15s;
-  box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35);
+  box-shadow: 0 8px 24px rgba(232, 93, 38, 0.35);
   font-family: inherit;
 }
 .sf-btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 12px 28px rgba(139, 92, 246, 0.45);
+  box-shadow: 0 12px 28px rgba(232, 93, 38, 0.45);
 }
 .sf-btn-ghost {
   background: transparent;
-  color: var(--muted, #9aa6bb);
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  color: var(--muted, #A79B8E);
+  border: 1px solid var(--border, rgba(247, 241, 232, 0.1));
   font-weight: 600;
   font-size: 14px;
   padding: 12px 20px;
@@ -165,12 +165,12 @@
   font-family: inherit;
 }
 .sf-btn-ghost:hover {
-  color: var(--text, #f5f7fb);
-  border-color: rgba(255, 255, 255, 0.25);
+  color: var(--text, #F5EFE6);
+  border-color: rgba(247, 241, 232, 0.25);
 }
 .sf-btn-sm {
-  background: var(--violet, #8b5cf6);
-  color: #fff;
+  background: var(--accent, #E85D26);
+  color: #F5EFE6;
   border: none;
   font-weight: 700;
   font-size: 13px;
@@ -188,12 +188,12 @@
 .sf-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-top: 20px;
+  gap: 16px;
+  margin-top: 26px;
 }
 .sf-stat {
-  background: linear-gradient(180deg, rgba(22, 31, 54, 0.94), rgba(13, 19, 36, 0.96));
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: linear-gradient(180deg, rgba(36, 29, 23, 0.94), rgba(22, 18, 16, 0.96));
+  border: 1px solid rgba(247, 241, 232, 0.09);
   border-radius: 16px;
   padding: 20px;
   cursor: pointer;
@@ -202,17 +202,17 @@
   color: inherit;
   display: block;
   min-width: 0;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(247, 241, 232, 0.06);
 }
 .sf-stat:hover {
   transform: translateY(-2px);
-  border-color: rgba(139, 92, 246, 0.4);
+  border-color: rgba(232, 93, 38, 0.4);
 }
 .sf-stat .sf-lb {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
 }
 .sf-stat .sf-v {
   font-size: 28px;
@@ -225,12 +225,12 @@
 }
 .sf-stat .sf-v .sf-unit {
   font-size: 15px;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   font-weight: 600;
 }
 .sf-stat .sf-sub {
   font-size: 13px;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   margin-top: 2px;
 }
 .sf-dot {
@@ -245,8 +245,8 @@
 .sf-body {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 14px;
-  margin-top: 14px;
+  gap: 16px;
+  margin-top: 26px;
   align-items: start;
 }
 .sf-main-col {
@@ -255,8 +255,8 @@
 
 /* ---------- generic card ---------- */
 .sf-card {
-  background: var(--surface, #121a2b);
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  background: var(--surface, #241D17);
+  border: 1px solid var(--border, rgba(247, 241, 232, 0.1));
   border-radius: 16px;
   padding: 22px;
 }
@@ -267,7 +267,7 @@
 }
 .sf-hint {
   font-size: 13px;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   margin: 0 0 16px;
 }
 
@@ -276,18 +276,33 @@
   display: flex;
   gap: 14px;
   align-items: flex-start;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  background: rgba(247, 241, 232, 0.03);
+  border: 1px solid var(--border, rgba(247, 241, 232, 0.1));
   border-radius: 12px;
   padding: 16px;
+}
+/* Stacked variant: content row on top, full-width button below */
+.sf-task-stacked {
+  flex-direction: column;
+  align-items: stretch;
+}
+.sf-task-top {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  min-width: 0;
+}
+.sf-task-btn {
+  width: 100%;
+  margin-top: 4px;
 }
 .sf-task .sf-n {
   width: 30px;
   height: 30px;
   flex: none;
   border-radius: 9px;
-  background: rgba(139, 92, 246, 0.18);
-  color: var(--violet, #8b5cf6);
+  background: rgba(232, 93, 38, 0.18);
+  color: var(--accent, #E85D26);
   font-weight: 800;
   display: flex;
   align-items: center;
@@ -303,35 +318,92 @@
 }
 .sf-task .sf-tbody p {
   font-size: 13px;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   margin: 4px 0 0;
+}
+/* Structured "why this matters" — replaces the dumped paragraph */
+.sf-why {
+  margin: 8px 0 2px;
+  padding: 10px 12px;
+  background: rgba(247, 241, 232, 0.03);
+  border: 1px solid rgba(247, 241, 232, 0.08);
+  border-radius: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+}
+.sf-why-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.sf-why-skill {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text, #F5EFE6);
+  text-transform: capitalize;
+}
+.sf-why-pct {
+  font-size: 12px;
+  font-weight: 600;
+  color: #E85D26;
+  white-space: nowrap;
+}
+.sf-why-bar {
+  position: relative;
+  height: 6px;
+  margin-top: 8px;
+  background: rgba(247, 241, 232, 0.08);
+  border-radius: 99px;
+  overflow: visible;
+}
+.sf-why-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #E85D26, #E85D26);
+}
+.sf-why-bar em {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: rgba(247, 241, 232, 0.55);
+  border-radius: 2px;
+}
+.sf-why-text {
+  font-size: 12.5px !important;
+  color: var(--muted, #A79B8E);
+  margin: 8px 0 0 !important;
+  line-height: 1.5;
 }
 .sf-meta {
   display: flex;
   gap: 12px;
   margin-top: 8px;
   font-size: 12px;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   flex-wrap: wrap;
 }
 .sf-prio-high {
-  color: var(--amber, #f5b84b);
+  color: var(--accent, #E85D26);
   font-weight: 700;
 }
 .sf-prio-medium {
-  color: var(--cyan, #36c5f0);
+  color: var(--accent, #E85D26);
   font-weight: 700;
 }
 .sf-prio-low {
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   font-weight: 700;
 }
 .sf-empty {
-  border: 1px dashed var(--border, rgba(255, 255, 255, 0.1));
+  border: 1px dashed var(--border, rgba(247, 241, 232, 0.1));
   border-radius: 12px;
   padding: 22px;
   text-align: center;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   font-size: 14px;
 }
 .sf-empty .sf-cta {
@@ -348,7 +420,7 @@
 .sf-day {
   text-align: center;
   font-size: 11px;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
 }
 .sf-day i {
   display: block;
@@ -356,19 +428,19 @@
   aspect-ratio: 1;
   border-radius: 10px;
   margin-top: 4px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  background: rgba(247, 241, 232, 0.05);
+  border: 1px solid var(--border, rgba(247, 241, 232, 0.1));
 }
 .sf-day.sf-today i {
-  border-color: var(--cyan, #36c5f0);
-  box-shadow: 0 0 0 1px var(--cyan, #36c5f0);
+  border-color: var(--accent, #E85D26);
+  box-shadow: 0 0 0 1px var(--accent, #E85D26);
 }
 .sf-week-foot {
   font-size: 13px;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
 }
 .sf-week-foot b {
-  color: var(--text, #f5f7fb);
+  color: var(--text, #F5EFE6);
 }
 
 /* ---------- right rail ---------- */
@@ -390,8 +462,8 @@
   gap: 10px;
   align-items: flex-start;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.1));
+  background: rgba(247, 241, 232, 0.03);
+  border: 1px solid var(--border, rgba(247, 241, 232, 0.1));
   border-radius: 10px;
 }
 .sf-today-item .sf-tb {
@@ -404,7 +476,7 @@
 }
 .sf-today-item .sf-tm {
   font-size: 11.5px;
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   margin-top: 4px;
   display: flex;
   gap: 10px;
@@ -418,22 +490,22 @@
   letter-spacing: 0.04em;
 }
 .sf-pill.sf-inprogress {
-  background: rgba(54, 197, 240, 0.14);
-  color: var(--cyan, #36c5f0);
+  background: rgba(232, 93, 38, 0.14);
+  color: var(--accent, #E85D26);
 }
 .sf-pill.sf-pending {
-  background: rgba(154, 166, 187, 0.14);
-  color: var(--muted, #9aa6bb);
+  background: rgba(167, 155, 142, 0.14);
+  color: var(--muted, #A79B8E);
 }
 .sf-pill.sf-completed {
-  background: rgba(57, 217, 138, 0.14);
-  color: var(--green, #39d98a);
+  background: rgba(127, 176, 105, 0.14);
+  color: var(--sage, #7FB069);
 }
 
 /* ---------- loading / error ---------- */
 .sf-skel {
   border-radius: 12px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
+  background: linear-gradient(90deg, rgba(247, 241, 232, 0.04), rgba(247, 241, 232, 0.09), rgba(247, 241, 232, 0.04));
   background-size: 200% 100%;
   animation: sf-shimmer 1.4s ease infinite;
   min-height: 64px;
@@ -444,15 +516,15 @@
   }
 }
 .sf-error {
-  border: 1px solid rgba(240, 108, 117, 0.35);
-  background: rgba(240, 108, 117, 0.07);
+  border: 1px solid rgba(224, 93, 68, 0.35);
+  background: rgba(224, 93, 68, 0.07);
   border-radius: 12px;
   padding: 16px;
   font-size: 13.5px;
-  color: var(--text, #f5f7fb);
+  color: var(--text, #F5EFE6);
 }
 .sf-error .sf-err-sub {
-  color: var(--muted, #9aa6bb);
+  color: var(--muted, #A79B8E);
   font-size: 12.5px;
   margin-top: 4px;
 }
@@ -504,3 +576,20 @@
     flex-direction: column;
   }
 }
+
+/* Scoring explainer modal */
+.sf-modal-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(22, 18, 16, 0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.sf-modal {
+  width: 100%; max-width: 460px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 18px;
+  padding: 28px; box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+}
+.sf-modal h3 { margin: 0 0 14px; font-size: 19px; font-weight: 800; }
+.sf-modal-list { margin: 0 0 22px; padding-left: 20px; display: grid; gap: 10px; }
+.sf-modal-list li { font-size: 14px; line-height: 1.55; color: var(--text); }
+.sf-modal-list li strong { color: var(--text); }
+.sf-modal .sf-btn-primary { width: 100%; }

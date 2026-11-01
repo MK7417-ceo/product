@@ -25,11 +25,11 @@ function ScoreRing({ score }: { score: number }) {
       <svg width="132" height="132" viewBox="0 0 132 132">
         <defs>
           <linearGradient id="ob-ring-grad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#8B5CF6" />
-            <stop offset="100%" stopColor="#36C5F0" />
+            <stop offset="0%" stopColor="#E85D26" />
+            <stop offset="100%" stopColor="#E85D26" />
           </linearGradient>
         </defs>
-        <circle cx="66" cy="66" r={r} fill="none" stroke="rgba(255,255,255,.08)" strokeWidth="11" />
+        <circle cx="66" cy="66" r={r} fill="none" stroke="rgba(247, 241, 232, .08)" strokeWidth="11" />
         <circle
           cx="66" cy="66" r={r} fill="none"
           stroke="url(#ob-ring-grad)" strokeWidth="11" strokeLinecap="round"

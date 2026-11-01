@@ -1,0 +1,99 @@
+.battles {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.battles-sub {
+  opacity: 0.85;
+}
+
+.battles-fair {
+  font-size: 0.9rem;
+  opacity: 0.75;
+  border-left: 3px solid #888;
+  padding-left: 10px;
+}
+
+.battles-error {
+  color: #e05d44;
+  font-weight: 600;
+}
+
+.battles-card {
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.battles-card label {
+  display: block;
+  margin: 10px 0;
+}
+
+.battles-card select,
+.battles-card input {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+}
+
+.battles-card button {
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.battles-note {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  word-break: break-all;
+}
+
+.battles-history {
+  list-style: none;
+  padding: 0;
+}
+
+.battles-history-btn {
+  width: 100%;
+  text-align: left;
+}
+
+.battles-timer {
+  font-size: 1.2rem;
+}
+
+.battles-q {
+  margin: 16px 0;
+}
+
+.battles-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.battles-choices button.chosen {
+  outline: 2px solid currentColor;
+  font-weight: 700;
+}
+
+.battles-score {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.battles-score span {
+  font-size: 0.9rem;
+  font-weight: 400;
+}
+
+.battles-review p {
+  margin: 6px 0;
+}

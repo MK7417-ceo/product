@@ -82,6 +82,10 @@ class SqlAlchemyContentRepository:
                 out[f"{qtype}:{level}"] = out.get(f"{qtype}:{level}", 0) + 1
             return out
 
+    def count_theory(self, slug: str) -> int:
+        with self._sessions() as s:
+            return s.query(TheoryModel).filter_by(topic_slug=slug).count()
+
     # ---- theory ----
     def list_theory(self, slug: str, level: str = "") -> list[TheoryBlock]:
         with self._sessions() as s:
@@ -90,6 +94,11 @@ class SqlAlchemyContentRepository:
             if level:
                 q = q.filter(TheoryModel.level == level)
             return [_th_to_domain(m) for m in q.all()]
+
+    def get_theory(self, block_id: str) -> TheoryBlock | None:
+        with self._sessions() as s:
+            m = s.get(TheoryModel, block_id)
+            return _th_to_domain(m) if m else None
 
     def save_theory(self, block: TheoryBlock) -> None:
         with self._sessions() as s:

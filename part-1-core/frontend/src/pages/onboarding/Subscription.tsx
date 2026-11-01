@@ -91,7 +91,7 @@ export default function Subscription() {
         Start free. Upgrade when you want unlimited roadmaps, certificates and
         interview prep. Current plan:{' '}
         <b style={{ textTransform: 'uppercase' }}>{tiers[currentTier]?.name ?? currentTier}</b>
-        {demoPlan && <span style={{ color: 'var(--amber)' }}> (demo override)</span>}
+        {demoPlan && <span style={{ color: 'var(--accent)' }}> (demo override)</span>}
       </p>
 
       <div className="ob-plans">

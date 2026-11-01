@@ -4,6 +4,7 @@ from __future__ import annotations
 import uuid
 
 from fastapi import FastAPI, Request
+from starlette.middleware.gzip import GZipMiddleware
 
 from app.adapters.inbound.assessment_service import AssessmentServiceImpl
 from app.adapters.inbound.auth_service import JwtAuthService
@@ -12,6 +13,7 @@ from app.adapters.inbound.onboarding_service import OnboardingServiceImpl
 from app.adapters.outbound.assessment_repository import SqlAlchemyAssessmentRepository
 from app.adapters.inbound.evidence_service import EvidenceServiceImpl
 from app.adapters.inbound.practice_service import PracticeServiceImpl
+from app.adapters.inbound.search_service import SearchServiceImpl
 from app.adapters.inbound.content_service import ContentServiceImpl
 from app.adapters.outbound.content_repository import SqlAlchemyContentRepository
 from app.adapters.inbound.curriculum_service import CurriculumServiceImpl
@@ -24,6 +26,7 @@ from app.adapters.outbound.profile_repository import (
 )
 from app.adapters.outbound.evidence_repository import SqlAlchemyEvidenceRepository
 from app.adapters.outbound.roadmap_repository import SqlAlchemyRoadmapRepository
+from app.adapters.outbound.search_repository import SqlAlchemySearchRepository
 from app.adapters.outbound.code_runner_client import HttpCodeRunnerClient
 from app.adapters.inbound.launchpad_service import LaunchpadServiceImpl
 from app.adapters.outbound.resume_repository import SqlAlchemyResumeRepository
@@ -45,6 +48,7 @@ from app.api.v1 import oauth as oauth_api
 from app.api.v1 import onboarding as onboarding_api
 from app.api.v1 import evidence as evidence_api
 from app.api.v1 import practice as practice_api
+from app.api.v1 import search as search_api
 from app.api.v1 import roadmaps as roadmaps_api
 from app.api.v1 import content as content_api
 from app.api.v1 import curriculum as curriculum_api
@@ -57,12 +61,23 @@ from app.api.v1 import placement as placement_api
 from app.api.v1 import trends as trends_api
 from app.api.v1 import weekly_tests as weekly_tests_api
 from app.api.v1 import simulator as simulator_api
+from app.api.v1 import seo as seo_api
+from app.api.v1 import ai as ai_api
+from app.adapters.inbound.ai_answer_service import (
+    AiAnswerServiceImpl,
+    GeminiProvider,
+    NullProvider,
+)
+from app.adapters.outbound.ai_answer_repository import SqlAlchemyAiAnswerRepository
+from app.api.v1 import battles as battles_api
 from app.adapters.inbound.streak_service import StreakServiceImpl
 from app.adapters.inbound.weekly_test_service import WeeklyTestServiceImpl
 from app.adapters.outbound.weekly_test_repository import SqlAlchemyWeeklyTestRepository
 from app.adapters.inbound.simulator_service import SimulatorServiceImpl
 from app.adapters.outbound.simulator_repository import SqlAlchemySimulatorRepository
 from app.adapters.inbound.password_reset_service import PasswordResetServiceImpl
+from app.adapters.inbound.battle_service import BattleServiceImpl
+from app.adapters.outbound.battle_repository import SqlAlchemyBattleRepository
 from app.adapters.outbound.password_reset_repository import SqlAlchemyPasswordResetRepository
 from app.adapters.outbound.email_service import send_password_reset_email
 from app.adapters.outbound.streak_repository import SqlAlchemyStreakRepository
@@ -77,6 +92,13 @@ configure_logging()
 
 def create_app() -> FastAPI:
     app = FastAPI(title=settings.APP_NAME)
+
+    # Speed: gzip-compress API responses >= 500 bytes when the client
+    # accepts gzip (Starlette built-in, no new dependency). Small responses
+    # (e.g. /health) are sent uncompressed — compressing them would cost
+    # more than it saves. Static frontend assets are NOT covered here;
+    # they are compressed by the production host/CDN, not this API server.
+    app.add_middleware(GZipMiddleware, minimum_size=500)
 
     # ---- hexagonal wiring: ports <- adapters ----
     db_probe = SqlAlchemyDatabaseProbe(SessionLocal)
@@ -105,6 +127,8 @@ def create_app() -> FastAPI:
         app.state.assessment_repo, bank)
     app.state.practice_service = PracticeServiceImpl(
         bank, SqlAlchemyRoadmapRepository(SessionLocal))
+    app.state.search_service = SearchServiceImpl(
+        SqlAlchemySearchRepository(SessionLocal))
     app.state.content_service = ContentServiceImpl(
         SqlAlchemyContentRepository(SessionLocal))
     app.state.curriculum_service = CurriculumServiceImpl(
@@ -113,6 +137,9 @@ def create_app() -> FastAPI:
         SqlAlchemyStreakRepository(SessionLocal))
     app.state.coin_service = CoinServiceImpl(
         SqlAlchemyCoinRepository(SessionLocal))
+    app.state.battle_service = BattleServiceImpl(
+        SqlAlchemyBattleRepository(SessionLocal), bank, users,
+        app.state.coin_service)
     app.state.weekly_test_service = WeeklyTestServiceImpl(
         SqlAlchemyWeeklyTestRepository(SessionLocal),
         SqlAlchemyCurriculumRepository(SessionLocal),
@@ -120,6 +147,16 @@ def create_app() -> FastAPI:
     app.state.simulator_service = SimulatorServiceImpl(
         SqlAlchemySimulatorRepository(SessionLocal),
         app.state.coin_service)
+    if settings.GEMINI_API_KEY:
+        _llm_provider = GeminiProvider(
+            api_key=settings.GEMINI_API_KEY, model=settings.GEMINI_MODEL)
+    else:
+        _llm_provider = NullProvider()
+    app.state.ai_answer_service = AiAnswerServiceImpl(
+        SqlAlchemyAiAnswerRepository(SessionLocal),
+        _llm_provider,
+        db_min_score=settings.AI_DB_MIN_SCORE,
+        rag_min_score=settings.AI_RAG_MIN_SCORE)
     app.state.password_reset_service = PasswordResetServiceImpl(
         users,
         SqlAlchemyPasswordResetRepository(SessionLocal),
@@ -163,6 +200,7 @@ def create_app() -> FastAPI:
     app.include_router(assessments_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(roadmaps_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(practice_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(search_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(evidence_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(content_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(study_plans_api.router, prefix=settings.API_V1_PREFIX)
@@ -175,6 +213,12 @@ def create_app() -> FastAPI:
     app.include_router(trends_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(weekly_tests_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(simulator_api.router, prefix=settings.API_V1_PREFIX)
+    # SEO endpoints live at the site root (no /api/v1 prefix): crawlers
+    # expect /sitemap.xml and /robots.txt there. In production the
+    # frontend origin must proxy these two paths to the backend.
+    app.include_router(seo_api.router)
+    app.include_router(ai_api.router, prefix=settings.API_V1_PREFIX)
+    app.include_router(battles_api.router, prefix=settings.API_V1_PREFIX)
     return app
 
 

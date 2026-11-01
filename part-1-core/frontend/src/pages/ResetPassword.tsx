@@ -3,6 +3,7 @@ import type { FormEvent } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { api, ApiError } from '../lib/api';
 import { HexLogo } from '../components/layout/TopNav';
+import PasswordField from '../components/PasswordField';
 
 /**
  * Route: /reset-password?token=… — set a new password from a reset link.
@@ -92,30 +93,22 @@ export default function ResetPassword() {
             <p className="sub">Make it at least 8 characters.</p>
             {error && <div className="auth-err">{error}</div>}
             <form onSubmit={submit}>
-              <div className="field">
-                <label htmlFor="rp-pass">New password</label>
-                <input
-                  id="rp-pass"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="new-password"
-                  minLength={8}
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="rp-confirm">Confirm new password</label>
-                <input
-                  id="rp-confirm"
-                  type="password"
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  required
-                  autoComplete="new-password"
-                  minLength={8}
-                />
-              </div>
+              <PasswordField
+                id="rp-pass"
+                label="New password"
+                value={password}
+                onChange={setPassword}
+                autoComplete="new-password"
+                minLength={8}
+              />
+              <PasswordField
+                id="rp-confirm"
+                label="Confirm new password"
+                value={confirm}
+                onChange={setConfirm}
+                autoComplete="new-password"
+                minLength={8}
+              />
               <button className="btn-primary" type="submit" disabled={busy}>
                 {busy ? 'Updating…' : 'Update password'}
               </button>

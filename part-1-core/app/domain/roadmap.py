@@ -4,6 +4,10 @@ Rules (product guarantees):
 - Roadmaps are generated deterministically from skill gaps (v1: templates).
 - Regeneration creates a NEW version; completed tasks and their evidence
   are NEVER deleted — they are carried forward untouched.
+- Regeneration also carries forward ALL not-completed (pending /
+  in_progress) tasks untouched, so a track for a skill outside the new
+  gaps input never silently disappears from the current plan. Fresh
+  tasks are generated only for gap skills with no carried task yet.
 - Task status flows forward: pending -> in_progress -> completed.
   completed is terminal (history cannot be rewritten).
 """
@@ -178,13 +182,35 @@ def generate_tasks(gaps: list[SkillGap]) -> list[RoadmapTask]:
 def regenerate_tasks(old: Roadmap, gaps: list[SkillGap]) -> list[RoadmapTask]:
     """Build the next version's task list.
 
-    Completed tasks are carried forward UNTOUCHED (same id, same status).
-    Everything else is regenerated fresh from the current gaps.
-    Nothing is ever deleted: completed work survives regeneration.
+    ALL old tasks are carried forward UNTOUCHED (same id, same status,
+    same order) — completed ones as before, and now also every pending /
+    in_progress task, so tracks for skills outside the new gaps input
+    (e.g. a pending python track when regenerating with dsa-only gaps)
+    survive in the new current roadmap. Evidence links (which reference
+    task ids) and version history are therefore untouched as well.
+
+    Fresh tasks are generated ONLY for gap skills that have no carried
+    task yet, so a re-assessed skill never duplicates its carried track.
+    Fresh ids are re-sequenced past the carried ids, and the fresh
+    Learn -> Practice -> Build prerequisite links are remapped through
+    the same renumbering (previously they still pointed at the
+    pre-renumbering ids, which could collide with carried tasks).
     """
-    carried = [t for t in old.completed_tasks()]
-    carried_ids = {t.id for t in carried}
-    fresh = [t for t in generate_tasks(gaps) if t.id not in carried_ids]
+    # Validate every gap up front (same rules as generation), even for
+    # skills whose track is carried and therefore not regenerated.
+    for gap in gaps:
+        if not gap.skill.strip():
+            raise DomainError("gap skill must not be empty")
+        if not 0 <= gap.mastery_pct <= 100:
+            raise DomainError("mastery_pct must be 0-100")
+    if not gaps:
+        raise DomainError("at least one skill gap is required")
+    carried = list(old.tasks)
+    carried_skills = {s for t in carried for s in t.target_skills}
+    uncovered = [g for g in gaps if g.skill.strip() not in carried_skills]
+    if not uncovered:
+        return carried
+    fresh = generate_tasks(uncovered)
     # re-sequence fresh ids so they don't collide with carried ones
     max_n = 0
     for t in carried:
@@ -192,8 +218,13 @@ def regenerate_tasks(old: Roadmap, gaps: list[SkillGap]) -> list[RoadmapTask]:
             max_n = max(max_n, int(t.id[1:]))
         except ValueError:
             pass
+    id_map: dict[str, str] = {}
     renumbered: list[RoadmapTask] = []
     for i, t in enumerate(fresh, start=max_n + 1):
-        t.id = f"t{i:04d}"
+        new_id = f"t{i:04d}"
+        id_map[t.id] = new_id
+        t.id = new_id
         renumbered.append(t)
+    for t in renumbered:
+        t.prerequisites = tuple(id_map.get(p, p) for p in t.prerequisites)
     return carried + renumbered

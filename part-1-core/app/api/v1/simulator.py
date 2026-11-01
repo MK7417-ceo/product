@@ -1,8 +1,10 @@
 """Placement Simulator API — 6 rounds, cutoffs, cooldown, reports."""
 from __future__ import annotations
 
+import html
+
 from fastapi import APIRouter, Depends, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel
 
 from app.api.v1.auth import _domain_error, current_user_id
@@ -68,3 +70,41 @@ def attempt_report(attempt_id: str, request: Request,
         return _svc(request).report(user_id, attempt_id)
     except DomainError as exc:
         raise _domain_error(exc)
+
+
+@router.get("/simulator/attempt/{attempt_id}/certificate",
+            response_class=HTMLResponse)
+def attempt_certificate(attempt_id: str, request: Request,
+                        user_id: str = Depends(current_user_id)):
+    """Printable HTML certificate for a passed simulator attempt."""
+    try:
+        rep = _svc(request).report(user_id, attempt_id)
+    except DomainError as exc:
+        raise _domain_error(exc)
+    if not rep.get("placed"):
+        raise _domain_error(DomainError("certificate available only for placed attempts"))
+    name = html.escape(str(rep.get("user_name") or rep.get("email") or "Candidate"))
+    company = html.escape(str(rep.get("company") or "General"))
+    score = html.escape(str(rep.get("score", "")))
+    date = html.escape(str(rep.get("completed_at", "")))
+    page = f"""<!DOCTYPE html><html><head><meta charset="utf-8">
+<title>Placement Certificate — SkillForge</title>
+<style>
+body{{font-family:Georgia,serif;background:#0f172a;color:#e8ecf4;display:flex;
+align-items:center;justify-content:center;min-height:100vh;margin:0}}
+.cert{{border:3px solid #8b5cf6;border-radius:16px;padding:48px 64px;text-align:center;
+max-width:560px;background:#1e1b4b}}
+.cert h1{{color:#a78bfa;margin:0 0 8px;font-size:32px}}
+.cert .name{{font-size:28px;margin:24px 0 8px;color:#fff}}
+.cert .meta{{color:#9aa6bb;margin:6px 0}}
+@media print{{body{{background:#fff;color:#000}}.cert{{background:#fff;border-color:#333}}}}
+</style></head><body>
+<div class="cert">
+<h1>🏆 Placement Ready</h1>
+<p class="meta">SkillForge Placement Simulator</p>
+<p class="meta">This certifies that</p>
+<div class="name">{name}</div>
+<p class="meta">cleared all 6 rounds ({company}) with score {score}</p>
+<p class="meta">{date}</p>
+</div></body></html>"""
+    return HTMLResponse(content=page)

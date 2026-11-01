@@ -24,6 +24,25 @@ from app.ports.inbound import AuthService
 router = APIRouter(prefix="/auth", tags=["auth"])
 _bearer = HTTPBearer(auto_error=False)
 
+# ---- login brute-force protection: 5 attempts / 60s per (ip, email) ----
+_LOGIN_ATTEMPTS: dict[str, list[float]] = {}
+_LOGIN_LIMIT = 5
+_LOGIN_WINDOW_S = 60.0
+
+
+def _login_allowed(request: Request, email: str) -> bool:
+    import time
+    ip = request.client.host if request.client else "?"
+    key = f"{ip}|{email.strip().lower()}"
+    now = time.monotonic()
+    hits = [t for t in _LOGIN_ATTEMPTS.get(key, []) if now - t < _LOGIN_WINDOW_S]
+    if len(hits) >= _LOGIN_LIMIT:
+        _LOGIN_ATTEMPTS[key] = hits
+        return False
+    hits.append(now)
+    _LOGIN_ATTEMPTS[key] = hits
+    return True
+
 
 def _service(request: Request) -> AuthService:
     return request.app.state.auth_service
@@ -92,6 +111,10 @@ def register(body: RegisterRequest, request: Request):
 
 @router.post("/login", response_model=AuthResponse)
 def login(body: LoginRequest, request: Request):
+    if not _login_allowed(request, body.email):
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many login attempts. Try again in a minute.")
     try:
         return _auth_result(_service(request).login(body.email, body.password))
     except DomainError as exc:

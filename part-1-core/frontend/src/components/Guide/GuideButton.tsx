@@ -1,11 +1,12 @@
 import { useLang } from '../../lib/i18n';
+import guideAvatar from '../../assets/guide-avatar.webp';
 
 interface Props {
   open: boolean;
   onToggle: () => void;
 }
 
-/* Floating action button — bottom-right, aurora gradient, pulse ring. */
+/* Floating action button — bottom-right, photo avatar, pulse ring. */
 export default function GuideButton({ open, onToggle }: Props) {
   const { t } = useLang();
   return (
@@ -19,7 +20,11 @@ export default function GuideButton({ open, onToggle }: Props) {
     >
       <span className="guide-fab-ring" aria-hidden="true" />
       <span className="guide-fab-icon" aria-hidden="true">
-        {open ? '✕' : '🤖'}
+        {open ? (
+          '✕'
+        ) : (
+          <img className="guide-fab-photo" src={guideAvatar} alt="" />
+        )}
       </span>
     </button>
   );

@@ -27,11 +27,11 @@ export default function CoinShop() {
 
   const load = async () => {
     try {
-      const b = await api<{ balance: number }>('/coins/mine');
+      const b = await api<{ balance: number }>('/api/v1/coins/mine');
       setBalance(b.balance);
-      const ben = await api<{ benefits: Benefit[] }>('/coins/benefits');
+      const ben = await api<{ benefits: Benefit[] }>('/api/v1/coins/benefits');
       setBenefits(ben.benefits);
-      const h = await api<{ transactions: Txn[] }>('/coins/history');
+      const h = await api<{ transactions: Txn[] }>('/api/v1/coins/history');
       setHistory(h.transactions);
     } catch {
       setMsg(t('coins.loadError', 'Could not load coin data.'));
@@ -48,7 +48,7 @@ export default function CoinShop() {
     setBusy(benefit);
     setMsg('');
     try {
-      const r = await api<{ balance: number }>('/coins/spend', {
+      const r = await api<{ balance: number }>('/api/v1/coins/spend', {
         method: 'POST',
         body: JSON.stringify({ benefit }),
       });

@@ -1,14 +1,15 @@
 """Outbound adapter: curated diagnostic question bank.
 
 Seed of the hybrid strategy (curated bank first, AI-generated questions
-later). 189 questions: Python (8 x beginner/intermediate/advanced/expert) +
+later). 204 questions: Python (8 x beginner/intermediate/advanced/expert) +
 ML basics (6 x beginner/intermediate/advanced/expert) + JavaScript
 (5 x beginner/intermediate/advanced) + Java (5 x beginner/intermediate/
 advanced) + Web dev (5 x beginner/intermediate/advanced) + Networking
 (5 x beginner/intermediate/advanced) + Data Science (5 x beginner/
 intermediate/advanced) + Data Analyst (5 x beginner/intermediate/
 advanced) + R (5 x beginner/intermediate/advanced) + Ruby (5 x beginner/
-intermediate/advanced) + DevOps (5 x beginner/intermediate/advanced).
+intermediate/advanced) + DevOps (5 x beginner/intermediate/advanced) +
+DSA (5 x beginner/intermediate/advanced).
 Every question carries a skill tag used for gap reports. Every
 topic/level pool holds at least 4 questions so placement sessions can draw
 a random spread from basic to advanced.
@@ -596,6 +597,45 @@ _BANK: list[Question] = [
     _q("py-e6", "python", "expert", "advanced-python", "What happens during import of a module with circular imports?",
        ["always an error", "partially initialized module objects may be seen; order matters",
         "infinite loop", "nothing special"], 1),
+    # ---- dsa (added Nov 2026, P1-2) ----
+    # "dsa" is a prep topic but had no assessment-bank pool, so
+    # POST /assessments/start rejected it as "unknown topic: dsa". These
+    # original MCQs give it a real pool (5 per level, above the 4-per-level
+    # placement minimum) instead of aliasing it to an unrelated topic.
+    _q("dsa-b1", "dsa", "beginner", "data-structures", "What is the time complexity of accessing an element by index in an array?",
+       ["O(1)", "O(n)", "O(log n)", "O(n^2)"], 0),
+    _q("dsa-b2", "dsa", "beginner", "data-structures", "Which data structure follows last-in, first-out (LIFO) order?",
+       ["Queue", "Stack", "Linked list", "Tree"], 1),
+    _q("dsa-b3", "dsa", "beginner", "algorithms", "What does binary search require of its input?",
+       ["It must be sorted", "It must contain no duplicates", "It must be a linked list", "It must fit in one page"], 0),
+    _q("dsa-b4", "dsa", "beginner", "data-structures", "In a singly linked list, what does each node store besides its value?",
+       ["The list length", "A reference to the next node", "The previous value", "A hash of the list"], 1),
+    _q("dsa-b5", "dsa", "beginner", "algorithms", "What is the worst-case time complexity of linear search in a list of n items?",
+       ["O(1)", "O(log n)", "O(n)", "O(n log n)"], 2),
+    _q("dsa-i1", "dsa", "intermediate", "algorithms", "What is the average-case time complexity of quicksort?",
+       ["O(n)", "O(n log n)", "O(n^2)", "O(log n)"], 1),
+    _q("dsa-i2", "dsa", "intermediate", "data-structures", "In a hash table, what happens on a hash collision?",
+       ["The table is rebuilt empty", "Two keys map to the same bucket and must both be stored",
+        "The new key overwrites the old one", "The table doubles immediately"], 1),
+    _q("dsa-i3", "dsa", "intermediate", "algorithms", "What is the time complexity of inserting at the head of a singly linked list?",
+       ["O(1)", "O(n)", "O(log n)", "O(n^2)"], 0),
+    _q("dsa-i4", "dsa", "intermediate", "data-structures", "Which traversal of a binary search tree visits values in ascending order?",
+       ["Preorder", "Postorder", "Inorder", "Level order"], 2),
+    _q("dsa-i5", "dsa", "intermediate", "algorithms", "Why does merge sort guarantee O(n log n) even in the worst case?",
+       ["It never compares elements", "It always splits the input into equal halves",
+        "It uses a hash table", "It sorts in place"], 1),
+    _q("dsa-a1", "dsa", "advanced", "algorithms", "What is the time complexity of Dijkstra's algorithm with a binary heap on a graph with V vertices and E edges?",
+       ["O(V + E)", "O((V + E) log V)", "O(V^2)", "O(E log E) only"], 1),
+    _q("dsa-a2", "dsa", "advanced", "data-structures", "In an AVL tree, what invariant is maintained after every insertion and deletion?",
+       ["All leaves are at the same depth", "The height difference of any node's subtrees is at most 1",
+        "Keys are stored sorted by hash", "Every node has exactly two children"], 1),
+    _q("dsa-a3", "dsa", "advanced", "algorithms", "Which technique does the 0/1 knapsack dynamic-programming solution rely on?",
+       ["Greedy choice of the lightest item", "Optimal substructure plus overlapping subproblems",
+        "Random sampling", "Divide and conquer with no memoization"], 1),
+    _q("dsa-a4", "dsa", "advanced", "data-structures", "What is the amortized time complexity of appending to a dynamic array?",
+       ["O(1)", "O(n)", "O(log n)", "O(n^2)"], 0),
+    _q("dsa-a5", "dsa", "advanced", "algorithms", "In a directed graph, which algorithm finds strongly connected components in linear time?",
+       ["Prim's algorithm", "Kruskal's algorithm", "Kosaraju's or Tarjan's algorithm", "Bellman-Ford"], 2),
 
 ]
 

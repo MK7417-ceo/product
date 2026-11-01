@@ -45,6 +45,8 @@ function renderMarkdown(content: string): ReactNode[] {
   const out: ReactNode[] = [];
   let list: string[] = [];
   let listOrdered = false;
+  let codeBlock: string[] | null = null;
+  let codeLang = '';
 
   const flushList = () => {
     if (list.length === 0) return;
@@ -59,8 +61,34 @@ function renderMarkdown(content: string): ReactNode[] {
     list = [];
   };
 
+  const flushCode = () => {
+    if (!codeBlock) return;
+    out.push(
+      <pre key={`code-${out.length}`} className="visual-md-code">
+        <code>{codeBlock.join('\n')}</code>
+      </pre>
+    );
+    codeBlock = null;
+    codeLang = '';
+  };
+
   lines.forEach((raw, idx) => {
     const line = raw.trim();
+    // Fenced code block handling
+    if (line.startsWith('```')) {
+      if (codeBlock) {
+        flushCode();
+      } else {
+        flushList();
+        codeBlock = [];
+        codeLang = line.slice(3).trim();
+      }
+      return;
+    }
+    if (codeBlock) {
+      codeBlock.push(raw);
+      return;
+    }
     if (!line) {
       flushList();
       return;
@@ -91,12 +119,14 @@ function renderMarkdown(content: string): ReactNode[] {
     }
   });
   flushList();
+  flushCode();
   return out;
 }
 
 /** Strip markdown for clean text-to-speech output. */
 export function stripMarkdown(md: string): string {
   return md
+    .replace(/^```.*$/gm, '')
     .replace(/^#{1,4}\s+/gm, '')
     .replace(/^>\s+/gm, '')
     .replace(/^[-*]\s+/gm, '')

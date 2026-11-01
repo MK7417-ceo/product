@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLang } from '../../lib/i18n';
+import guideAvatar from '../../assets/guide-avatar.webp';
 import type { LangCode } from '../../lib/translations';
 import {
   answer,
@@ -84,7 +85,7 @@ export default function GuidePanel({ onStartTour, onClose }: Props) {
       {/* header */}
       <header className="guide-header">
         <div className="guide-header-bot" aria-hidden="true">
-          🤖
+          <img className="guide-header-photo" src={guideAvatar} alt="" />
         </div>
         <div className="guide-header-text">
           <strong>{ui(lang, 'title')}</strong>
@@ -119,7 +120,7 @@ export default function GuidePanel({ onStartTour, onClose }: Props) {
           <div key={m.id} className={`guide-msg ${m.from}`}>
             {m.from === 'bot' && (
               <span className="guide-msg-avatar" aria-hidden="true">
-                🤖
+                <img className="guide-msg-photo" src={guideAvatar} alt="" />
               </span>
             )}
             <p className="guide-bubble">{m.text}</p>
@@ -128,7 +129,7 @@ export default function GuidePanel({ onStartTour, onClose }: Props) {
         {typing && (
           <div className="guide-msg bot">
             <span className="guide-msg-avatar" aria-hidden="true">
-              🤖
+              <img className="guide-msg-photo" src={guideAvatar} alt="" />
             </span>
             <p className="guide-bubble typing">
               <span className="dot" />

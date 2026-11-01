@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { api } from '../../lib/api';
+import { useAuth } from '../../lib/auth';
 
 interface NavItem {
   to: string;
@@ -16,6 +17,7 @@ const GROUPS: { title: string; items: NavItem[] }[] = [
     items: [
       { to: '/plan', label: 'Assessment', icon: '🎯' },
       { to: '/roadmap', label: 'Roadmap', icon: '🗺️', badge: true },
+      { to: '/learn', label: 'Learn', icon: '📖' },
       { to: '/practice', label: 'Practice', icon: '📝' },
       { to: '/codelab', label: 'Code Lab', icon: '💻' },
     ],
@@ -37,6 +39,7 @@ const GROUPS: { title: string; items: NavItem[] }[] = [
       { to: '/interview', label: 'Interview Prep', icon: '🎤' },
       { to: '/placement-prep', label: 'Placement Prep', icon: '🎯' },
       { to: '/simulator', label: 'Placement Simulator', icon: '🏆' },
+      { to: '/battles', label: '1v1 Battles', icon: '⚔️' },
     ],
   },
   {
@@ -48,7 +51,13 @@ const GROUPS: { title: string; items: NavItem[] }[] = [
   },
 ];
 
+const ADMIN_GROUP = {
+  title: 'ADMIN',
+  items: [{ to: '/admin/content', label: 'Content Manager', icon: '🛠️' }],
+};
+
 export default function Sidebar() {
+  const { user } = useAuth();
   const [openTasks, setOpenTasks] = useState<number | null>(null);
 
   // Roadmap count badge: open tasks (pending + in_progress) from the
@@ -92,6 +101,23 @@ export default function Sidebar() {
           ))}
         </div>
       ))}
+      {user?.role === 'admin' && (
+        <div>
+          <div className="sgroup">{ADMIN_GROUP.title}</div>
+          {ADMIN_GROUP.items.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) => (isActive ? 'slink active' : 'slink')}
+            >
+              <span className="ic" aria-hidden>
+                {item.icon}
+              </span>
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
+      )}
     </aside>
   );
 }

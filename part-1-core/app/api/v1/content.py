@@ -106,6 +106,10 @@ def update_topic(slug: str, body: TopicUpdateRequest, request: Request,
                  _admin: str = Depends(require_admin)):
     try:
         fields = body.model_dump()
+        # Drop unset fields so partial updates (e.g. only is_active) work.
+        for key in ("name", "description", "icon", "color"):
+            if not fields.get(key):
+                fields.pop(key, None)
         if fields.get("is_active") is None:
             fields.pop("is_active")
         return _svc(request).update_topic(slug, **fields)
@@ -129,6 +133,22 @@ def add_theory(slug: str, body: TheoryCreateRequest, request: Request,
     try:
         return _svc(request).add_theory(
             slug, body.level, body.title, body.content, body.order_index)
+    except DomainError as exc:
+        raise _domain_error(exc)
+
+
+class TheoryUpdateRequest(BaseModel):
+    title: str = ""
+    level: str = ""
+    content: str | None = None
+    order_index: int | None = None
+
+
+@router.put("/content/theory/{block_id}")
+def update_theory(block_id: str, body: TheoryUpdateRequest, request: Request,
+                  _admin: str = Depends(require_admin)):
+    try:
+        return _svc(request).update_theory(block_id, **body.model_dump())
     except DomainError as exc:
         raise _domain_error(exc)
 

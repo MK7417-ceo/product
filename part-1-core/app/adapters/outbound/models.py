@@ -463,3 +463,78 @@ class PasswordResetModel(Base):
     used_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True), nullable=False, default=_utcnow)
+
+
+class AiAnswerModel(Base):
+    """AI/RAG answers. PENDING LLM answers are stored but NEVER served as
+    DB hits until an admin approves them (see domain/ai_answer.py). Only
+    APPROVED rows are returned by the DB-first lookup."""
+    __tablename__ = "ai_answers"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    question: Mapped[str] = mapped_column(Text, nullable=False)
+    normalized_question: Mapped[str] = mapped_column(
+        String(500), nullable=False, index=True)
+    answer: Mapped[str] = mapped_column(Text, nullable=False)
+    source: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="llm")  # llm | manual
+    status: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="pending", index=True)
+    topic_slug: Mapped[str] = mapped_column(String(80), nullable=False, default="")
+    created_by: Mapped[str] = mapped_column(String(36), nullable=False, default="")
+    approved_by: Mapped[str] = mapped_column(String(36), nullable=False, default="")
+    # Local hashed embedding (JSON list of floats, EMBED_DIM long) used for
+    # similarity lookup over approved answers. NULL until computed.
+    embedding_json: Mapped[str] = mapped_column(Text, nullable=True)
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_utcnow)
+    updated_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_utcnow)
+class BattleModel(Base):
+    """A 1v1 skill battle. One row covers the whole lifecycle so a battle
+    can never be half-created:
+
+    status: waiting (player 1 queued, no opponent yet) | challenge
+    (friend invite sent, awaiting the named opponent) | live (both
+    players, window running) | finished.
+    Both players answer the SAME question_ids. Answers/times are JSON
+    dicts {question_id: ...}. Scores, winner and rewards are filled at
+    finalize time; flagged battles keep their flag + reason and pay 0
+    coins pending review. invite_code is set only for friend challenges.
+    """
+    __tablename__ = "battles"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    topic: Mapped[str] = mapped_column(String(80), nullable=False, index=True)
+    bracket: Mapped[str] = mapped_column(String(16), nullable=False, index=True)
+    level: Mapped[str] = mapped_column(String(16), nullable=False, default="")
+    question_ids: Mapped[str] = mapped_column(Text, nullable=False, default="[]")
+    player1_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False, index=True)
+    player2_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=True, index=True)
+    invite_email: Mapped[str] = mapped_column(String(320), nullable=True)
+    invite_code: Mapped[str] = mapped_column(
+        String(16), nullable=True, unique=True, index=True)
+    rematch_of: Mapped[str] = mapped_column(String(36), nullable=True)
+    status: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="waiting")  # waiting|challenge|live|finished
+    window_seconds: Mapped[int] = mapped_column(nullable=False, default=180)
+    player1_answers: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    player2_answers: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    player1_times: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    player2_times: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    player1_score: Mapped[int] = mapped_column(nullable=True)
+    player2_score: Mapped[int] = mapped_column(nullable=True)
+    player1_correct: Mapped[int] = mapped_column(nullable=True)
+    player2_correct: Mapped[int] = mapped_column(nullable=True)
+    winner_id: Mapped[str] = mapped_column(String(36), nullable=True)
+    flagged: Mapped[bool] = mapped_column(nullable=False, default=False)
+    flag_reason: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    rewards: Mapped[str] = mapped_column(Text, nullable=False, default="{}")
+    started_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
+    ends_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=_utcnow)

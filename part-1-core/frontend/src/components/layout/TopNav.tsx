@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../lib/auth';
 import { PLAN_EVENT, readLocalPlan, resolvePlan, type Plan } from '../../lib/plan';
+import SearchBar from '../SearchBar';
 
 /* Breadcrumb label per route. TopNav carries zero page links — the sidebar
    owns navigation; the crumb is wayfinding only. */
@@ -25,13 +26,22 @@ export const CRUMBS: Record<string, string> = {
   '/settings': 'Settings',
   '/profile': 'Profile',
   '/billing': 'Billing',
+  /* P1-6: these pages previously fell through to the 'Dashboard' fallback
+     even though their sidebar highlight and page title were correct. */
+  '/learn': 'Learn',
+  '/daily-plan': 'Daily Plan',
+  '/admin/content': 'Content Manager',
+  '/simulator': 'Placement Simulator',
+  '/news': 'Tech News',
+  '/weekly-test': 'Weekly Test',
+  '/skill-gaps': 'Skill Gaps',
 };
 
 export function HexLogo({ size = 28 }: { size?: number }) {
   return (
     <svg viewBox="0 0 32 32" fill="none" width={size} height={size} aria-hidden>
-      <path d="M16 2l12 7v14l-12 7-12-7V9l12-7z" stroke="#8B5CF6" strokeWidth="2.5" />
-      <path d="M11 16l4 4 7-8" stroke="#36C5F0" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M16 2l12 7v14l-12 7-12-7V9l12-7z" stroke="#E85D26" strokeWidth="2.5" />
+      <path d="M11 16l4 4 7-8" stroke="#E85D26" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -43,8 +53,10 @@ export default function TopNav() {
   const [plan, setPlan] = useState<Plan | null>(null);
   const [popupOpen, setPopupOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
   const proWrapRef = useRef<HTMLDivElement>(null);
+  const notifWrapRef = useRef<HTMLDivElement>(null);
 
   // Plan resolution: localStorage demo purchase first, then the real
   // backend tier. Re-run when the plan changes (purchase) or on reload.
@@ -66,11 +78,13 @@ export default function TopNav() {
     const onClick = (e: MouseEvent) => {
       if (wrapRef.current && !wrapRef.current.contains(e.target as Node)) setMenuOpen(false);
       if (proWrapRef.current && !proWrapRef.current.contains(e.target as Node)) setPopupOpen(false);
+      if (notifWrapRef.current && !notifWrapRef.current.contains(e.target as Node)) setNotifOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setMenuOpen(false);
         setPopupOpen(false);
+        setNotifOpen(false);
       }
     };
     document.addEventListener('mousedown', onClick);
@@ -88,7 +102,9 @@ export default function TopNav() {
 
   const initial = (user?.email?.[0] ?? '?').toUpperCase();
   const subscribed = plan === 'pro' || plan === 'expert';
-  const crumbLabel = CRUMBS[location.pathname] ?? 'Dashboard';
+  const crumbLabel =
+    CRUMBS[location.pathname] ??
+    (location.pathname.startsWith('/learn/') ? 'Learn' : 'Dashboard');
 
   return (
     <nav className="topnav">
@@ -107,12 +123,10 @@ export default function TopNav() {
           <span className="cur">{crumbLabel}</span>
         </div>
 
-        {/* Centered search — visual + focusable for M1; no backend wired. */}
-        <label className="topnav-search" htmlFor="sf-search">
-          <span aria-hidden>⌘K</span>
-          <input id="sf-search" type="search" placeholder="Search skills, tasks…" readOnly />
-          <kbd>Ctrl K</kbd>
-        </label>
+        {/* Centered global search — live results across your roadmaps, tasks, evidence… */}
+        <div className="topnav-search">
+          <SearchBar />
+        </div>
 
         <div className="topnav-right">
           {/* Streak pill intentionally omitted: the practice API exposes no
@@ -156,9 +170,36 @@ export default function TopNav() {
             </div>
           )}
 
-          <button className="iconbtn" aria-label="Notifications (coming soon)" title="Notifications — coming soon">
-            🔔
-          </button>
+          <div className="notif-wrap" ref={notifWrapRef} style={{ position: 'relative' }}>
+            <button
+              className="iconbtn"
+              aria-label="Notifications"
+              aria-expanded={notifOpen}
+              aria-haspopup="dialog"
+              title="Notifications"
+              onClick={() => setNotifOpen((v) => !v)}
+            >
+              🔔
+            </button>
+            {notifOpen && (
+              <div
+                className="notif-popup"
+                role="dialog"
+                aria-label="Notifications"
+                style={{
+                  position: 'absolute', right: 0, top: 'calc(100% + 10px)', width: 280,
+                  background: 'var(--surface)', border: '1px solid var(--border)',
+                  borderRadius: 14, padding: 18, boxShadow: '0 18px 44px rgba(0,0,0,0.5)',
+                  zIndex: 60,
+                }}
+              >
+                <b style={{ fontSize: 14 }}>Notifications</b>
+                <p style={{ fontSize: 13, color: 'var(--muted)', margin: '8px 0 0' }}>
+                  Nothing here yet. We&apos;ll notify you about weekly tests, streak reminders, and placement drives.
+                </p>
+              </div>
+            )}
+          </div>
 
           {subscribed && (
             <span className="plan-badge" title={`SkillForge ${plan === 'pro' ? 'Pro' : 'Expert'} plan`}>

@@ -158,3 +158,14 @@ class LaunchpadService(Protocol):
     def render_portfolio(self, user_id: str) -> tuple[str, str]:
         """(filename, single-file HTML)."""
         ...
+
+
+class SearchService(Protocol):
+    def search(self, user_id: str, query: str, types: str | None = None,
+               limit: int = 20) -> list[object]:
+        """Global search across the user's own content.
+
+        Returns SearchResult domain objects ranked by relevance.
+        Raises DomainError on invalid query/types.
+        """
+        ...

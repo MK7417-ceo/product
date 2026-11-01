@@ -86,7 +86,8 @@ export default function CodeLab() {
   const gutterRef = useRef<HTMLDivElement>(null);
   const areaRef = useRef<HTMLTextAreaElement>(null);
 
-  const code = codeByLang[lang] ?? TEMPLATES[lang] ?? '';
+  const rawCode = codeByLang[lang] ?? TEMPLATES[lang] ?? '';
+  const code = typeof rawCode === 'string' ? rawCode : '';
 
   /* --- languages (engine availability) --- */
   useEffect(() => {
@@ -133,7 +134,10 @@ export default function CodeLab() {
         if (q.starter_code) {
           setCodeByLang((prev) => {
             if (prev.python) return prev;
-            const next = { ...prev, python: q.starter_code };
+            const starter = typeof q.starter_code === 'string'
+              ? q.starter_code
+              : (q.starter_code.python ?? q.starter_code.py ?? '');
+            const next = { ...prev, python: starter };
             try {
               localStorage.setItem(CODE_KEY, JSON.stringify(next));
             } catch {
@@ -273,10 +277,10 @@ export default function CodeLab() {
                       <div className="cl-example" key={i}>
                         <div className="ex-label">Example {i + 1}</div>
                         <div>Input</div>
-                        <pre>{ex.stdin || '(empty)'}</pre>
+                        <pre>{(ex.input ?? ex.stdin ?? '') || '(empty)'}</pre>
                         <div>Output</div>
-                        <pre>{ex.stdout}</pre>
-                        {ex.explanation && <div style={{ color: '#9aa6bb' }}>{ex.explanation}</div>}
+                        <pre>{ex.output ?? ex.stdout ?? ''}</pre>
+                        {ex.explanation && <div style={{ color: '#A79B8E' }}>{ex.explanation}</div>}
                       </div>
                     ))}
                   </div>
@@ -371,7 +375,7 @@ export default function CodeLab() {
                 <div className="cl-error-box" role="alert">
                   <div className="err-title">Run failed — nothing was executed</div>
                   <div>{runError}</div>
-                  <div style={{ marginTop: 8, color: '#9aa6bb' }}>
+                  <div style={{ marginTop: 8, color: '#A79B8E' }}>
                     This usually means the code engine service is not running. Your code is safe in
                     the editor; try again once the engine is back.
                   </div>

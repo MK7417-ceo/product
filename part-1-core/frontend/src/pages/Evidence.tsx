@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { roadmapApi, ApiError, type Evidence, type RoadmapTask } from '../lib/p1api';
 import './p1-pages.css';
 
@@ -12,7 +13,7 @@ function EvidenceDetailPanel({ item, onClose }: { item: EvidenceWithTask; onClos
     <div className="p1x-overlay" onClick={onClose}>
       <div className="p1x-panel" onClick={(e) => e.stopPropagation()}>
         <button className="p1x-btn ghost sm close" onClick={onClose}>✕ Close</button>
-        <span className="p1x-pill violet">{item.kind.toUpperCase()}</span>
+        <span className="p1x-pill brand">{item.kind.toUpperCase()}</span>
         <h2 style={{ marginTop: 10 }}>Evidence detail</h2>
         <p className="p1x-muted" style={{ fontSize: 14 }}>
           Task: <b style={{ color: 'var(--text)' }}>{item.taskTitle}</b> · {item.taskStatus.replace('_', ' ')}
@@ -101,9 +102,14 @@ export default function EvidencePage() {
       <div className="p1x-card">
         {shown.length === 0 && (
           <p className="p1x-empty">
-            {items.length === 0
-              ? 'No evidence yet — start a roadmap task and submit proof of work from the Roadmap page.'
-              : `No ${filter} evidence yet.`}
+            {items.length === 0 ? (
+              <>
+                No evidence yet — start a roadmap task and submit proof of work from the{' '}
+                <Link to="/roadmap">Roadmap page</Link>.
+              </>
+            ) : (
+              `No ${filter} evidence yet.`
+            )}
           </p>
         )}
         {shown.map((e) => (
@@ -115,7 +121,7 @@ export default function EvidencePage() {
                 {e.content.length > 140 ? e.content.slice(0, 140) + '…' : e.content}
               </div>
               <div className="row">
-                <span className="p1x-pill violet">{e.kind.toUpperCase()}</span>
+                <span className="p1x-pill brand">{e.kind.toUpperCase()}</span>
                 <span className="p1x-muted" style={{ fontSize: 12 }}>
                   {new Date(e.created_at).toLocaleString()}
                 </span>

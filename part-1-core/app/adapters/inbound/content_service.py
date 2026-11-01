@@ -1,6 +1,7 @@
 """Inbound adapter: implements content CMS business logic."""
 from __future__ import annotations
 
+import dataclasses
 import uuid
 
 from app.domain.content import (
@@ -23,7 +24,12 @@ class ContentServiceImpl:
 
     # ---- topics ----
     def list_topics(self, active_only: bool = True) -> list[dict]:
-        return [self._topic_out(t) for t in self._repo.list_topics(active_only)]
+        out = []
+        for t in self._repo.list_topics(active_only):
+            d = self._topic_out(t)
+            d["theory_count"] = self._repo.count_theory(t.slug)
+            out.append(d)
+        return out
 
     def get_topic(self, slug: str) -> dict:
         slug = validate_slug(slug)
@@ -92,6 +98,26 @@ class ContentServiceImpl:
     def delete_theory(self, block_id: str) -> None:
         if not self._repo.delete_theory(block_id):
             raise DomainError("theory block not found")
+
+    def update_theory(self, block_id: str, **fields) -> dict:
+        block = self._repo.get_theory(block_id)
+        if not block:
+            raise DomainError("theory block not found")
+        updates: dict = {}
+        if fields.get("title"):
+            updates["title"] = str(fields["title"]).strip()
+        if fields.get("level"):
+            updates["level"] = validate_level(str(fields["level"]))
+        if fields.get("content") is not None:
+            updates["content"] = str(fields["content"])
+        if fields.get("order_index") is not None:
+            updates["order_index"] = int(fields["order_index"])
+        if updates:
+            validate_theory(updates.get("title", block.title),
+                            updates.get("content", block.content))
+            block = dataclasses.replace(block, **updates)
+            self._repo.save_theory(block)
+        return self._theory_out(block)
 
     # ---- questions ----
     def list_questions(self, slug: str, qtype: str = "",

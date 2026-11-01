@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import type { AssessmentSummary, ProfileOut, RoadmapOut } from '../../lib/api-dashboard';
 import { ErrBox, Load } from './ui';
 import './dashboard.css';
@@ -14,6 +15,7 @@ interface Props {
 
 export default function HeroCard({ profile, assessments, roadmap, loading, error, onRetry }: Props) {
   const navigate = useNavigate();
+  const [showScoring, setShowScoring] = useState(false);
 
   if (loading) return <Load label="diagnostic readiness" />;
   if (error) return <ErrBox message={error} onRetry={onRetry} />;
@@ -92,10 +94,32 @@ export default function HeroCard({ profile, assessments, roadmap, loading, error
         <button className="sf-btn-primary" onClick={() => navigate('/plan')}>
           Start 15-min diagnostic →
         </button>
-        <button className="sf-btn-ghost" onClick={() => navigate('/plan')}>
+        <button className="sf-btn-ghost" onClick={() => setShowScoring(true)}>
           How scoring works
         </button>
       </div>
+      {showScoring && (
+        <div className="sf-modal-backdrop" onClick={() => setShowScoring(false)}>
+          <div
+            className="sf-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="How scoring works"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3>How scoring works</h3>
+            <ul className="sf-modal-list">
+              <li><strong>No self-report.</strong> Your level is measured by server-scored questions — never by what you claim.</li>
+              <li><strong>4 questions per level.</strong> The diagnostic samples 4 random questions from each level, beginner upward.</li>
+              <li><strong>70% to pass a level.</strong> Your verified level is the highest level you pass with all lower levels also passing.</li>
+              <li><strong>Your roadmap follows your gaps.</strong> The topics you miss become the tasks in your personalized roadmap.</li>
+            </ul>
+            <button className="sf-btn-primary" onClick={() => setShowScoring(false)}>
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

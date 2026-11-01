@@ -74,10 +74,10 @@ export default function Landing() {
   }, []);
 
   const features = [
-    { icon: <IconTarget />, title: t('landing.features.assess.title'), desc: t('landing.features.assess.desc'), accent: 'violet' },
-    { icon: <IconMap />, title: t('landing.features.roadmap.title'), desc: t('landing.features.roadmap.desc'), accent: 'cyan' },
-    { icon: <IconCode />, title: t('landing.features.code.title'), desc: t('landing.features.code.desc'), accent: 'magenta' },
-    { icon: <IconAward />, title: t('landing.features.certs.title'), desc: t('landing.features.certs.desc'), accent: 'green' },
+    { icon: <IconTarget />, title: t('landing.features.assess.title'), desc: t('landing.features.assess.desc'), accent: 'brand' },
+    { icon: <IconMap />, title: t('landing.features.roadmap.title'), desc: t('landing.features.roadmap.desc'), accent: 'brand' },
+    { icon: <IconCode />, title: t('landing.features.code.title'), desc: t('landing.features.code.desc'), accent: 'brand' },
+    { icon: <IconAward />, title: t('landing.features.certs.title'), desc: t('landing.features.certs.desc'), accent: 'sage' },
   ];
 
   const steps = [1, 2, 3, 4].map((n) => ({
@@ -130,6 +130,7 @@ export default function Landing() {
             <a href="#features">{t('nav.features')}</a>
             <a href="#features">{t('nav.certificates')}</a>
             <a href="#pricing">{t('nav.pricing')}</a>
+            <Link to="/topics">Free Topics</Link>
           </nav>
           <div className="ld-nav-actions">
             <div className="ld-lang">

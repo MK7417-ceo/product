@@ -85,7 +85,7 @@ export default function StatCards({ roadmap, assessments, today, loading }: Prop
           <>Take the diagnostic to get a verified score →</>
         ) : (
           <>
-            <Dot color={verifiedPct !== null && verifiedPct >= 70 ? '#39d98a' : '#f5b84b'} />
+            <Dot color={verifiedPct !== null && verifiedPct >= 70 ? '#7FB069' : '#E85D26'} />
             {completed.length} verified assessment{completed.length === 1 ? '' : 's'}
           </>
         ),
@@ -95,7 +95,7 @@ export default function StatCards({ roadmap, assessments, today, loading }: Prop
         'TOP SKILL GAP',
         loading ? '…' : <span style={{ fontSize: gapValue.length > 14 ? 18 : 24 }}>{gapValue}</span>,
         <>
-          <Dot color="#f06c75" />
+          <Dot color="#E05D44" />
           {gapSub}
         </>,
       )}
@@ -112,7 +112,7 @@ export default function StatCards({ roadmap, assessments, today, loading }: Prop
         ),
         counts ? (
           <>
-            <Dot color="#36c5f0" />
+            <Dot color="#E85D26" />
             {counts.in_progress} in progress
           </>
         ) : (
@@ -134,7 +134,7 @@ export default function StatCards({ roadmap, assessments, today, loading }: Prop
           <>Couldn&apos;t reach the backend — retry from Practice</>
         ) : (
           <>
-            <Dot color="#f5b84b" />
+            <Dot color="#E85D26" />
             daily questions served · open practice
           </>
         ),

@@ -12,13 +12,13 @@ interface Props {
 
 /* ---------------- OSI 7 layers ---------------- */
 const OSI = [
-  { n: 7, name: 'Application', desc: 'What you use every day: HTTP, DNS, email, APIs.', color: '#8B5CF6' },
-  { n: 6, name: 'Presentation', desc: 'Data formats, encryption (TLS) and compression.', color: '#A78BFA' },
-  { n: 5, name: 'Session', desc: 'Opens, manages and closes connections between apps.', color: '#E879F9' },
-  { n: 4, name: 'Transport', desc: 'TCP/UDP: reliable delivery, ports and flow control.', color: '#3ED6F2' },
-  { n: 3, name: 'Network', desc: 'Packets, IP addresses and routing across networks.', color: '#39D98A' },
-  { n: 2, name: 'Data Link', desc: 'Frames, MAC addresses; switches on the local network.', color: '#F5B84B' },
-  { n: 1, name: 'Physical', desc: 'Raw bits as electrical, light or radio signals.', color: '#7C8DB0' },
+  { n: 7, name: 'Application', desc: 'What you use every day: HTTP, DNS, email, APIs.', color: '#E85D26' },
+  { n: 6, name: 'Presentation', desc: 'Data formats, encryption (TLS) and compression.', color: '#E85D26' },
+  { n: 5, name: 'Session', desc: 'Opens, manages and closes connections between apps.', color: '#E85D26' },
+  { n: 4, name: 'Transport', desc: 'TCP/UDP: reliable delivery, ports and flow control.', color: '#E85D26' },
+  { n: 3, name: 'Network', desc: 'Packets, IP addresses and routing across networks.', color: '#7FB069' },
+  { n: 2, name: 'Data Link', desc: 'Frames, MAC addresses; switches on the local network.', color: '#E85D26' },
+  { n: 1, name: 'Physical', desc: 'Raw bits as electrical, light or radio signals.', color: '#A79B8E' },
 ];
 
 function OsiLayers() {
@@ -45,18 +45,18 @@ function OsiLayers() {
               style={{ cursor: 'pointer' }}
             >
               <rect x={x} y={y} width={w} height={rowH} rx={10} fill={l.color} opacity={isActive ? 1 : 0.82} />
-              <text x={x + 14} y={y + rowH / 2 + 5} className="visual-svg-num" fill="#060913" fontWeight={800}>
+              <text x={x + 14} y={y + rowH / 2 + 5} className="visual-svg-num" fill="#161210" fontWeight={800}>
                 {l.n}
               </text>
-              <text x={x + 44} y={y + rowH / 2 + 5} className="visual-svg-label" fill="#060913" fontWeight={700}>
+              <text x={x + 44} y={y + rowH / 2 + 5} className="visual-svg-label" fill="#161210" fontWeight={700}>
                 {l.name}
               </text>
               {i < 4 ? (
-                <text x={x + w + 10} y={y + rowH / 2 + 4} className="visual-svg-note" fill="#9AA6BB">
+                <text x={x + w + 10} y={y + rowH / 2 + 4} className="visual-svg-note" fill="#A79B8E">
                   host
                 </text>
               ) : (
-                <text x={x + w + 10} y={y + rowH / 2 + 4} className="visual-svg-note" fill="#9AA6BB">
+                <text x={x + w + 10} y={y + rowH / 2 + 4} className="visual-svg-note" fill="#A79B8E">
                   media
                 </text>
               )}
@@ -94,7 +94,7 @@ function TcpHandshake() {
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="TCP three-way handshake: SYN, SYN-ACK, ACK">
         <defs>
           <marker id="visual-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-            <path d="M 0 1 L 9 5 L 0 9 z" fill="#3ED6F2" />
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#E85D26" />
           </marker>
         </defs>
         {/* nodes */}
@@ -107,7 +107,7 @@ function TcpHandshake() {
             <text x={n.x} y={H / 2 + 2} textAnchor="middle" fontSize={22}>
               {n.emoji}
             </text>
-            <text x={n.x} y={H / 2 + 54} textAnchor="middle" className="visual-svg-label" fill="#F5F7FB">
+            <text x={n.x} y={H / 2 + 54} textAnchor="middle" className="visual-svg-label" fill="#F5EFE6">
               {n.label}
             </text>
           </g>
@@ -120,18 +120,18 @@ function TcpHandshake() {
           const dist = Math.abs(x2 - x1);
           return (
             <g key={r.label}>
-              <line x1={x1} y1={r.y} x2={x2} y2={r.y} stroke="#3ED6F2" strokeWidth={2} opacity={0.45} markerEnd="url(#visual-arrow)" />
-              <text x={(x1 + x2) / 2} y={r.y - 10} textAnchor="middle" className="visual-svg-label" fill="#3ED6F2" fontWeight={700}>
+              <line x1={x1} y1={r.y} x2={x2} y2={r.y} stroke="#E85D26" strokeWidth={2} opacity={0.45} markerEnd="url(#visual-arrow)" />
+              <text x={(x1 + x2) / 2} y={r.y - 10} textAnchor="middle" className="visual-svg-label" fill="#E85D26" fontWeight={700}>
                 {r.label}
               </text>
-              <text x={(x1 + x2) / 2} y={r.y + 18} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+              <text x={(x1 + x2) / 2} y={r.y + 18} textAnchor="middle" className="visual-svg-note" fill="#A79B8E">
                 {r.sub}
               </text>
               <circle
                 cx={x1}
                 cy={r.y}
                 r={5}
-                fill="#E879F9"
+                fill="#E85D26"
                 className="visual-tcp-dot"
                 style={{ ['--travel' as string]: `${leftToRight ? dist : -dist}px`, animationDelay: r.delay }}
               />
@@ -166,11 +166,11 @@ function DataPipeline() {
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Data pipeline: collect, clean, analyze, visualize, decide">
         <defs>
           <marker id="visual-arrow2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-            <path d="M 0 1 L 9 5 L 0 9 z" fill="#8B5CF6" />
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#E85D26" />
           </marker>
           <linearGradient id="visual-stage" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#8B5CF6" />
-            <stop offset="100%" stopColor="#3ED6F2" />
+            <stop offset="0%" stopColor="#E85D26" />
+            <stop offset="100%" stopColor="#E85D26" />
           </linearGradient>
         </defs>
         {STAGES.map((s, i) => {
@@ -182,10 +182,10 @@ function DataPipeline() {
               <text x={x + bw / 2} y={y + 38} textAnchor="middle" fontSize={26}>
                 {s.emoji}
               </text>
-              <text x={x + bw / 2} y={y + 64} textAnchor="middle" className="visual-svg-label" fill="#060913" fontWeight={700}>
+              <text x={x + bw / 2} y={y + 64} textAnchor="middle" className="visual-svg-label" fill="#161210" fontWeight={700}>
                 {s.name}
               </text>
-              <text x={x + bw / 2} y={y + bh + 20} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+              <text x={x + bw / 2} y={y + bh + 20} textAnchor="middle" className="visual-svg-note" fill="#A79B8E">
                 {s.desc}
               </text>
               {i < STAGES.length - 1 && (
@@ -195,7 +195,7 @@ function DataPipeline() {
                   x2={x + bw + gapX - 4}
                   y2={y + bh / 2}
                   className="visual-flow-line"
-                  stroke="#8B5CF6"
+                  stroke="#E85D26"
                   strokeWidth={2.5}
                   markerEnd="url(#visual-arrow2)"
                 />
@@ -236,7 +236,7 @@ function NetworkTopology() {
           const y = hy + R * Math.sin(a);
           return (
             <g key={n.label}>
-              <line x1={hx} y1={hy} x2={x} y2={y} stroke="#3ED6F2" strokeWidth={1.5} opacity={0.35} />
+              <line x1={hx} y1={hy} x2={x} y2={y} stroke="#E85D26" strokeWidth={1.5} opacity={0.35} />
               <circle cx={x} cy={y} r={22} className="visual-node" style={{ animationDelay: `${i * 0.25}s` }} />
               <text x={x} y={y + 1} textAnchor="middle" fontSize={18}>
                 {n.emoji}
@@ -246,7 +246,7 @@ function NetworkTopology() {
                 y={y + 38}
                 textAnchor="middle"
                 className="visual-svg-note"
-                fill="#9AA6BB"
+                fill="#A79B8E"
               >
                 {n.label}
               </text>
@@ -254,14 +254,14 @@ function NetworkTopology() {
           );
         })}
         {/* hub pulse rings */}
-        <circle cx={hx} cy={hy} r={30} fill="none" stroke="#8B5CF6" strokeWidth={2} className="visual-pulse" />
-        <circle cx={hx} cy={hy} r={30} fill="none" stroke="#8B5CF6" strokeWidth={2} className="visual-pulse visual-pulse-2" />
+        <circle cx={hx} cy={hy} r={30} fill="none" stroke="#E85D26" strokeWidth={2} className="visual-pulse" />
+        <circle cx={hx} cy={hy} r={30} fill="none" stroke="#E85D26" strokeWidth={2} className="visual-pulse visual-pulse-2" />
         {/* hub */}
         <circle cx={hx} cy={hy} r={30} className="visual-hub" />
         <text x={hx} y={hy + 2} textAnchor="middle" fontSize={24}>
           📡
         </text>
-        <text x={hx} y={hy + 50} textAnchor="middle" className="visual-svg-label" fill="#F5F7FB" fontWeight={700}>
+        <text x={hx} y={hy + 50} textAnchor="middle" className="visual-svg-label" fill="#F5EFE6" fontWeight={700}>
           Router
         </text>
       </svg>
@@ -288,24 +288,24 @@ function GitBranching() {
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Git branching: feature branch diverges from main and merges back">
         <defs>
           <marker id="visual-arrow3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth={6} markerHeight={6} orient="auto-start-reverse">
-            <path d="M 0 1 L 9 5 L 0 9 z" fill="#39D98A" />
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#7FB069" />
           </marker>
         </defs>
         {/* main branch line */}
-        <line x1={40} y1={mainY} x2={580} y2={mainY} stroke="#8B5CF6" strokeWidth={3} />
+        <line x1={40} y1={mainY} x2={580} y2={mainY} stroke="#E85D26" strokeWidth={3} />
         {/* feature branch: diverges from B, curves up, runs, merges into E */}
         <path
           d={`M 170 ${mainY} C 200 ${mainY}, 200 ${featY}, 230 ${featY} L 450 ${featY} C 480 ${featY}, 510 ${mainY}, 550 ${mainY}`}
           fill="none"
-          stroke="#39D98A"
+          stroke="#7FB069"
           strokeWidth={3}
           markerEnd="url(#visual-arrow3)"
         />
         {/* main commits */}
         {mainCommits.map((x, i) => (
           <g key={`m${i}`}>
-            <circle cx={x} cy={mainY} r={11} fill="#8B5CF6" stroke="#F5F7FB" strokeWidth={2} />
-            <text x={x} y={mainY + 32} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+            <circle cx={x} cy={mainY} r={11} fill="#E85D26" stroke="#F5EFE6" strokeWidth={2} />
+            <text x={x} y={mainY + 32} textAnchor="middle" className="visual-svg-note" fill="#A79B8E">
               {['A', 'B', 'E ✓'][i]}
             </text>
           </g>
@@ -313,24 +313,24 @@ function GitBranching() {
         {/* feature commits */}
         {featCommits.map((x, i) => (
           <g key={`f${i}`}>
-            <circle cx={x} cy={featY} r={11} fill="#39D98A" stroke="#F5F7FB" strokeWidth={2} />
-            <text x={x} y={featY - 20} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+            <circle cx={x} cy={featY} r={11} fill="#7FB069" stroke="#F5EFE6" strokeWidth={2} />
+            <text x={x} y={featY - 20} textAnchor="middle" className="visual-svg-note" fill="#A79B8E">
               {['C', 'D', ''][i]}
             </text>
           </g>
         ))}
         {/* branch labels */}
-        <text x={40} y={mainY - 14} className="visual-svg-label" fill="#8B5CF6" fontWeight={700}>main</text>
-        <text x={470} y={featY - 14} className="visual-svg-label" fill="#39D98A" fontWeight={700}>feature/login</text>
+        <text x={40} y={mainY - 14} className="visual-svg-label" fill="#E85D26" fontWeight={700}>main</text>
+        <text x={470} y={featY - 14} className="visual-svg-label" fill="#7FB069" fontWeight={700}>feature/login</text>
         {/* travelling merge dot: rides the feature curve into main */}
         <circle
           cx={170}
           cy={mainY}
           r={6}
-          fill="#E879F9"
+          fill="#E85D26"
           className="visual-git-dot"
         />
-        <text x={W / 2} y={H - 12} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+        <text x={W / 2} y={H - 12} textAnchor="middle" className="visual-svg-note" fill="#A79B8E">
           git checkout -b feature/login → work → git merge feature/login
         </text>
       </svg>
@@ -361,8 +361,8 @@ function PrLifecycle() {
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Pull request lifecycle: created, review, changes, approved, merged">
         <defs>
           <linearGradient id="visual-pr" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#39D98A" />
-            <stop offset="100%" stopColor="#3ED6F2" />
+            <stop offset="0%" stopColor="#7FB069" />
+            <stop offset="100%" stopColor="#E85D26" />
           </linearGradient>
         </defs>
         {PR_STAGES.map((s, i) => {
@@ -374,10 +374,10 @@ function PrLifecycle() {
               <text x={x + bw / 2} y={y + 38} textAnchor="middle" fontSize={26}>
                 {s.emoji}
               </text>
-              <text x={x + bw / 2} y={y + 64} textAnchor="middle" className="visual-svg-label" fill="#060913" fontWeight={700}>
+              <text x={x + bw / 2} y={y + 64} textAnchor="middle" className="visual-svg-label" fill="#161210" fontWeight={700}>
                 {s.name}
               </text>
-              <text x={x + bw / 2} y={y + bh + 20} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+              <text x={x + bw / 2} y={y + bh + 20} textAnchor="middle" className="visual-svg-note" fill="#A79B8E">
                 {s.desc}
               </text>
               {i < PR_STAGES.length - 1 && (
@@ -387,7 +387,7 @@ function PrLifecycle() {
                   x2={x + bw + gapX - 4}
                   y2={y + bh / 2}
                   className="visual-flow-line"
-                  stroke="#39D98A"
+                  stroke="#7FB069"
                   strokeWidth={2.5}
                   markerEnd="url(#visual-arrow2)"
                 />
@@ -405,10 +405,10 @@ function PrLifecycle() {
 
 /* ---------------- subnetting: /24 split into four /26s ---------------- */
 const SUBNETS = [
-  { cidr: '192.168.1.0/26', range: '.0 – .63', hosts: '62 hosts', color: '#8B5CF6' },
-  { cidr: '192.168.1.64/26', range: '.64 – .127', hosts: '62 hosts', color: '#3ED6F2' },
-  { cidr: '192.168.1.128/26', range: '.128 – .191', hosts: '62 hosts', color: '#39D98A' },
-  { cidr: '192.168.1.192/26', range: '.192 – .255', hosts: '62 hosts', color: '#F5B84B' },
+  { cidr: '192.168.1.0/26', range: '.0 – .63', hosts: '62 hosts', color: '#E85D26' },
+  { cidr: '192.168.1.64/26', range: '.64 – .127', hosts: '62 hosts', color: '#E85D26' },
+  { cidr: '192.168.1.128/26', range: '.128 – .191', hosts: '62 hosts', color: '#7FB069' },
+  { cidr: '192.168.1.192/26', range: '.192 – .255', hosts: '62 hosts', color: '#E85D26' },
 ];
 
 function Subnetting() {
@@ -422,7 +422,7 @@ function Subnetting() {
   return (
     <figure className="visual-diagram">
       <svg viewBox={`0 0 ${W} 150`} role="img" aria-label="192.168.1.0/24 divided into four /26 subnets">
-        <text x={barX} y={24} className="visual-svg-label" fill="#E7ECF5" fontWeight={700}>
+        <text x={barX} y={24} className="visual-svg-label" fill="#F5EFE6" fontWeight={700}>
           192.168.1.0/24 — borrow 2 bits → four /26 subnets
         </text>
         {SUBNETS.map((s, i) => {
@@ -440,17 +440,17 @@ function Subnetting() {
                 fill={s.color} opacity={isActive ? 1 : 0.82}
               />
               <text x={barX + i * segW + (segW - 4) / 2} y={barY + 24}
-                className="visual-svg-note" fill="#060913" fontWeight={800} textAnchor="middle">
+                className="visual-svg-note" fill="#161210" fontWeight={800} textAnchor="middle">
                 /26
               </text>
               <text x={barX + i * segW + (segW - 4) / 2} y={barY + 42}
-                className="visual-svg-note" fill="#060913" textAnchor="middle">
+                className="visual-svg-note" fill="#161210" textAnchor="middle">
                 {s.range}
               </text>
             </g>
           );
         })}
-        <text x={barX} y={128} className="visual-svg-note" fill="#9AA6BB">
+        <text x={barX} y={128} className="visual-svg-note" fill="#A79B8E">
           block size = 256 − 192 = 64 → subnets at .0, .64, .128, .192
         </text>
       </svg>
@@ -470,10 +470,10 @@ function Subnetting() {
 
 /* ---------------- TLS 1.2 handshake flow ---------------- */
 const TLS_STEPS = [
-  { from: 'Client', to: 'Server', label: 'ClientHello', desc: 'Offers cipher suites + random Rc.', color: '#8B5CF6' },
-  { from: 'Server', to: 'Client', label: 'ServerHello + Certificate', desc: 'Picks cipher, sends random Rs + CA-signed certificate.', color: '#3ED6F2' },
-  { from: 'Client', to: 'Server', label: 'ClientKeyExchange', desc: 'Premaster secret encrypted with server public key.', color: '#39D98A' },
-  { from: 'Client', to: 'Server', label: 'Finished', desc: 'Both derive session keys — encrypted chat begins.', color: '#F5B84B' },
+  { from: 'Client', to: 'Server', label: 'ClientHello', desc: 'Offers cipher suites + random Rc.', color: '#E85D26' },
+  { from: 'Server', to: 'Client', label: 'ServerHello + Certificate', desc: 'Picks cipher, sends random Rs + CA-signed certificate.', color: '#E85D26' },
+  { from: 'Client', to: 'Server', label: 'ClientKeyExchange', desc: 'Premaster secret encrypted with server public key.', color: '#7FB069' },
+  { from: 'Client', to: 'Server', label: 'Finished', desc: 'Both derive session keys — encrypted chat begins.', color: '#E85D26' },
 ];
 
 function TlsHandshake() {
@@ -490,15 +490,15 @@ function TlsHandshake() {
           const cx = i === 0 ? cxC : cxS;
           return (
             <g key={who}>
-              <circle cx={cx} cy={topY - 8} r={20} fill="#1B2340" stroke="#8B5CF6" strokeWidth={2} />
-              <text x={cx} y={topY - 3} textAnchor="middle" className="visual-svg-note" fill="#E7ECF5" fontWeight={700}>
+              <circle cx={cx} cy={topY - 8} r={20} fill="#241D17" stroke="#E85D26" strokeWidth={2} />
+              <text x={cx} y={topY - 3} textAnchor="middle" className="visual-svg-note" fill="#F5EFE6" fontWeight={700}>
                 {who === 'Client' ? '💻' : '🖥️'}
               </text>
-              <text x={cx} y={topY + 22} textAnchor="middle" className="visual-svg-label" fill="#9AA6BB">
+              <text x={cx} y={topY + 22} textAnchor="middle" className="visual-svg-label" fill="#A79B8E">
                 {who}
               </text>
               <line x1={cx} y1={topY + 30} x2={cx} y2={topY + TLS_STEPS.length * stepH + 8}
-                stroke="#3A4666" strokeDasharray="4 4" />
+                stroke="#A79B8E" strokeDasharray="4 4" />
             </g>
           );
         })}
@@ -523,7 +523,7 @@ function TlsHandshake() {
                 fill={s.color}
               />
               <text x={(x1 + x2) / 2} y={y - 7} textAnchor="middle"
-                className="visual-svg-note" fill="#E7ECF5" fontWeight={700}>
+                className="visual-svg-note" fill="#F5EFE6" fontWeight={700}>
                 {i + 1}. {s.label}
               </text>
             </g>
@@ -545,10 +545,10 @@ function TlsHandshake() {
 
 /* ---------------- OOP pillars ---------------- */
 const OOP_PILLARS = [
-  { emoji: '🔒', name: 'Encapsulation', desc: 'Bundle data + methods; hide internals', color: '#8B5CF6' },
-  { emoji: '🧬', name: 'Inheritance', desc: 'Child reuses the parent\'s traits', color: '#3ED6F2' },
-  { emoji: '🎭', name: 'Polymorphism', desc: 'One interface, many behaviours', color: '#39D98A' },
-  { emoji: '👻', name: 'Abstraction', desc: 'Show the what, hide the how', color: '#F5B84B' },
+  { emoji: '🔒', name: 'Encapsulation', desc: 'Bundle data + methods; hide internals', color: '#E85D26' },
+  { emoji: '🧬', name: 'Inheritance', desc: 'Child reuses the parent\'s traits', color: '#E85D26' },
+  { emoji: '🎭', name: 'Polymorphism', desc: 'One interface, many behaviours', color: '#7FB069' },
+  { emoji: '👻', name: 'Abstraction', desc: 'Show the what, hide the how', color: '#E85D26' },
 ];
 
 function OopPillars() {
@@ -576,15 +576,15 @@ function OopPillars() {
               <rect
                 x={x} y={y} width={bw} height={bh} rx={14}
                 fill={p.color} opacity={isActive || active === null ? 0.92 : 0.45}
-                stroke={isActive ? '#F5F7FB' : 'none'} strokeWidth={isActive ? 2.5 : 0}
+                stroke={isActive ? '#F5EFE6' : 'none'} strokeWidth={isActive ? 2.5 : 0}
               />
               <text x={x + bw / 2} y={y + 40} textAnchor="middle" fontSize={28}>
                 {p.emoji}
               </text>
-              <text x={x + bw / 2} y={y + 68} textAnchor="middle" className="visual-svg-label" fill="#060913" fontWeight={700}>
+              <text x={x + bw / 2} y={y + 68} textAnchor="middle" className="visual-svg-label" fill="#161210" fontWeight={700}>
                 {p.name}
               </text>
-              <text x={x + bw / 2} y={y + bh + 22} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+              <text x={x + bw / 2} y={y + bh + 22} textAnchor="middle" className="visual-svg-note" fill="#A79B8E">
                 {p.desc}
               </text>
             </g>
@@ -600,11 +600,11 @@ function OopPillars() {
 
 /* ---------------- SOLID principles ---------------- */
 const SOLID = [
-  { letter: 'S', name: 'Single Responsibility', desc: 'One reason to change', color: '#8B5CF6' },
-  { letter: 'O', name: 'Open / Closed', desc: 'Extend, don\u2019t modify', color: '#3ED6F2' },
-  { letter: 'L', name: 'Liskov Substitution', desc: 'Subtypes must substitute', color: '#39D98A' },
-  { letter: 'I', name: 'Interface Segregation', desc: 'No fat interfaces', color: '#F5B84B' },
-  { letter: 'D', name: 'Dependency Inversion', desc: 'Depend on abstractions', color: '#E879F9' },
+  { letter: 'S', name: 'Single Responsibility', desc: 'One reason to change', color: '#E85D26' },
+  { letter: 'O', name: 'Open / Closed', desc: 'Extend, don\u2019t modify', color: '#E85D26' },
+  { letter: 'L', name: 'Liskov Substitution', desc: 'Subtypes must substitute', color: '#7FB069' },
+  { letter: 'I', name: 'Interface Segregation', desc: 'No fat interfaces', color: '#E85D26' },
+  { letter: 'D', name: 'Dependency Inversion', desc: 'Depend on abstractions', color: '#E85D26' },
 ];
 
 function SolidPrinciples() {
@@ -632,15 +632,15 @@ function SolidPrinciples() {
               <rect
                 x={x} y={y} width={bw} height={bh} rx={14}
                 fill={s.color} opacity={isActive || active === null ? 0.92 : 0.45}
-                stroke={isActive ? '#F5F7FB' : 'none'} strokeWidth={isActive ? 2.5 : 0}
+                stroke={isActive ? '#F5EFE6' : 'none'} strokeWidth={isActive ? 2.5 : 0}
               />
-              <text x={x + bw / 2} y={y + 44} textAnchor="middle" fontSize={30} fontWeight={800} fill="#060913">
+              <text x={x + bw / 2} y={y + 44} textAnchor="middle" fontSize={30} fontWeight={800} fill="#161210">
                 {s.letter}
               </text>
-              <text x={x + bw / 2} y={y + 68} textAnchor="middle" className="visual-svg-label" fill="#060913" fontWeight={700} fontSize={11}>
+              <text x={x + bw / 2} y={y + 68} textAnchor="middle" className="visual-svg-label" fill="#161210" fontWeight={700} fontSize={11}>
                 {s.name}
               </text>
-              <text x={x + bw / 2} y={y + bh + 22} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+              <text x={x + bw / 2} y={y + bh + 22} textAnchor="middle" className="visual-svg-note" fill="#A79B8E">
                 {s.desc}
               </text>
             </g>
@@ -656,11 +656,11 @@ function SolidPrinciples() {
 
 /* ---------------- CPU 5-stage pipeline ---------------- */
 const PIPE_STAGES = [
-  { abbr: 'IF', name: 'Fetch', desc: 'PC → instruction memory. Grab the next instruction.', color: '#8B5CF6' },
-  { abbr: 'ID', name: 'Decode', desc: 'Decode opcode, read registers.', color: '#A78BFA' },
-  { abbr: 'EX', name: 'Execute', desc: 'ALU computes; branch target resolved.', color: '#3ED6F2' },
-  { abbr: 'MEM', name: 'Memory', desc: 'Load/store touches data memory.', color: '#39D98A' },
-  { abbr: 'WB', name: 'Write-back', desc: 'Result written back to the register file.', color: '#F5B84B' },
+  { abbr: 'IF', name: 'Fetch', desc: 'PC → instruction memory. Grab the next instruction.', color: '#E85D26' },
+  { abbr: 'ID', name: 'Decode', desc: 'Decode opcode, read registers.', color: '#E85D26' },
+  { abbr: 'EX', name: 'Execute', desc: 'ALU computes; branch target resolved.', color: '#E85D26' },
+  { abbr: 'MEM', name: 'Memory', desc: 'Load/store touches data memory.', color: '#7FB069' },
+  { abbr: 'WB', name: 'Write-back', desc: 'Result written back to the register file.', color: '#E85D26' },
 ];
 
 function CpuPipeline() {
@@ -672,9 +672,9 @@ function CpuPipeline() {
   const gapX = (W - 5 * bw) / 4;
   const y = 60;
   const dots = [
-    { color: '#E879F9', delay: '0s' },
-    { color: '#F5B84B', delay: '1.1s' },
-    { color: '#39D98A', delay: '2.2s' },
+    { color: '#E85D26', delay: '0s' },
+    { color: '#E85D26', delay: '1.1s' },
+    { color: '#7FB069', delay: '2.2s' },
   ];
   const travel = W - 40;
   return (
@@ -682,7 +682,7 @@ function CpuPipeline() {
       <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="Five-stage CPU pipeline: fetch, decode, execute, memory, write-back">
         <defs>
           <marker id="visual-arrow-pipe" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-            <path d="M 0 1 L 9 5 L 0 9 z" fill="#3ED6F2" />
+            <path d="M 0 1 L 9 5 L 0 9 z" fill="#E85D26" />
           </marker>
         </defs>
         {PIPE_STAGES.map((s, i) => {
@@ -694,15 +694,15 @@ function CpuPipeline() {
                 opacity={active === null || isActive ? 0.9 : 0.35}
                 onMouseEnter={() => setActive(i)} onMouseLeave={() => setActive(null)}
                 onClick={() => setActive(isActive ? null : i)} style={{ cursor: 'pointer' }} />
-              <text x={x + bw / 2} y={y + 26} textAnchor="middle" className="visual-svg-label" fill="#060913" fontWeight={800}>
+              <text x={x + bw / 2} y={y + 26} textAnchor="middle" className="visual-svg-label" fill="#161210" fontWeight={800}>
                 {s.abbr}
               </text>
-              <text x={x + bw / 2} y={y + 46} textAnchor="middle" className="visual-svg-note" fill="#060913" fontWeight={600}>
+              <text x={x + bw / 2} y={y + 46} textAnchor="middle" className="visual-svg-note" fill="#161210" fontWeight={600}>
                 {s.name}
               </text>
               {i < 4 && (
                 <line x1={x + bw} y1={y + bh / 2} x2={x + bw + gapX} y2={y + bh / 2}
-                  stroke="#3ED6F2" strokeWidth={2} opacity={0.6} markerEnd="url(#visual-arrow-pipe)" />
+                  stroke="#E85D26" strokeWidth={2} opacity={0.6} markerEnd="url(#visual-arrow-pipe)" />
               )}
             </g>
           );
@@ -712,7 +712,7 @@ function CpuPipeline() {
             className="visual-tcp-dot"
             style={{ ['--travel' as string]: `${travel}px`, animationDelay: d.delay }} />
         ))}
-        <text x={W / 2} y={y + bh + 66} textAnchor="middle" className="visual-svg-note" fill="#9AA6BB">
+        <text x={W / 2} y={y + bh + 66} textAnchor="middle" className="visual-svg-note" fill="#A79B8E">
           instructions stream through the stages — one finishes every cycle
         </text>
       </svg>
@@ -729,12 +729,12 @@ function CpuPipeline() {
 
 /* ---------------- Cache / memory hierarchy pyramid ---------------- */
 const MEM_LEVELS = [
-  { name: 'Registers', size: '~1 KB', speed: '< 1 ns', desc: 'Inside the CPU — the fastest storage there is.', color: '#8B5CF6' },
-  { name: 'L1 Cache', size: '32–64 KB', speed: '~1 ns', desc: 'Split I-cache / D-cache, per core.', color: '#A78BFA' },
-  { name: 'L2 Cache', size: '256 KB–1 MB', speed: '~4 ns', desc: 'Per core, larger and a little slower.', color: '#3ED6F2' },
-  { name: 'L3 Cache', size: '8–64 MB', speed: '~15 ns', desc: 'Shared across cores on the die.', color: '#39D98A' },
-  { name: 'Main Memory (RAM)', size: '8–128 GB', speed: '~100 ns', desc: 'DRAM — every cache miss lands here.', color: '#F5B84B' },
-  { name: 'SSD / Disk', size: 'TBs', speed: '~100 µs', desc: 'Persistent storage — page faults go here.', color: '#7C8DB0' },
+  { name: 'Registers', size: '~1 KB', speed: '< 1 ns', desc: 'Inside the CPU — the fastest storage there is.', color: '#E85D26' },
+  { name: 'L1 Cache', size: '32–64 KB', speed: '~1 ns', desc: 'Split I-cache / D-cache, per core.', color: '#E85D26' },
+  { name: 'L2 Cache', size: '256 KB–1 MB', speed: '~4 ns', desc: 'Per core, larger and a little slower.', color: '#E85D26' },
+  { name: 'L3 Cache', size: '8–64 MB', speed: '~15 ns', desc: 'Shared across cores on the die.', color: '#7FB069' },
+  { name: 'Main Memory (RAM)', size: '8–128 GB', speed: '~100 ns', desc: 'DRAM — every cache miss lands here.', color: '#E85D26' },
+  { name: 'SSD / Disk', size: 'TBs', speed: '~100 µs', desc: 'Persistent storage — page faults go here.', color: '#A79B8E' },
 ];
 
 function CacheHierarchy() {
@@ -758,10 +758,10 @@ function CacheHierarchy() {
               onClick={() => setActive(isActive ? null : i)} style={{ cursor: 'pointer' }}>
               <rect x={x} y={y} width={w} height={rowH} rx={10} fill={l.color}
                 opacity={active === null || isActive ? 0.88 : 0.35} />
-              <text x={W / 2} y={y + 17} textAnchor="middle" className="visual-svg-label" fill="#060913" fontWeight={700}>
+              <text x={W / 2} y={y + 17} textAnchor="middle" className="visual-svg-label" fill="#161210" fontWeight={700}>
                 {l.name}
               </text>
-              <text x={W / 2} y={y + 32} textAnchor="middle" className="visual-svg-note" fill="#060913">
+              <text x={W / 2} y={y + 32} textAnchor="middle" className="visual-svg-note" fill="#161210">
                 {l.size} · {l.speed}
               </text>
             </g>

@@ -157,8 +157,8 @@ const STR = {
 };
 
 const GRADE_COLORS: Record<string, string> = {
-  S: '#ffd700', A: '#4ade80', B: '#60a5fa',
-  C: '#facc15', D: '#fb923c', F: '#f87171',
+  S: '#E85D26', A: '#7FB069', B: '#E85D26',
+  C: '#E85D26', D: '#E85D26', F: '#E05D44',
 };
 
 export default function WeeklyTest() {
