@@ -26,7 +26,7 @@ function normTopic(t: Record<string, unknown>): Topic {
     name: String(t.name),
     description: String(t.description ?? ''),
     icon: String(t.icon ?? '📘'),
-    color: String(t.color ?? '#E85D26'),
+    color: '#E85D26', // palette: single brand accent — seeded/legacy topic colors ignored
     active: Boolean(t.is_active ?? t.active ?? true),
     question_count: Number(t.question_count ?? counts.total ?? 0),
     theory_count: Number(t.theory_count ?? 0),

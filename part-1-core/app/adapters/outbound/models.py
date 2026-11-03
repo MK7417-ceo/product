@@ -167,7 +167,7 @@ class TopicModel(Base):
     name: Mapped[str] = mapped_column(String(120), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False, default="")
     icon: Mapped[str] = mapped_column(String(80), nullable=False, default="")
-    color: Mapped[str] = mapped_column(String(16), nullable=False, default="#8b5cf6")
+    color: Mapped[str] = mapped_column(String(16), nullable=False, default="#E85D26")
     is_active: Mapped[bool] = mapped_column(nullable=False, default=True)
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
 

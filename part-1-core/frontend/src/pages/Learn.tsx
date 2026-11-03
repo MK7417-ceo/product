@@ -67,7 +67,7 @@ function TopicList() {
             <button
               key={t.slug}
               className="learn-topic-card"
-              style={{ ['--topic-color' as string]: t.color || '#E85D26' }}
+              style={{ ['--topic-color' as string]: '#E85D26' /* palette: single brand accent */ }}
               onClick={() => navigate(`/learn/${t.slug}`)}
             >
               <span className="learn-topic-icon">{t.icon || '📘'}</span>

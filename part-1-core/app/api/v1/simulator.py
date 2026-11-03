@@ -92,9 +92,9 @@ def attempt_certificate(attempt_id: str, request: Request,
 <style>
 body{{font-family:Georgia,serif;background:#0f172a;color:#e8ecf4;display:flex;
 align-items:center;justify-content:center;min-height:100vh;margin:0}}
-.cert{{border:3px solid #8b5cf6;border-radius:16px;padding:48px 64px;text-align:center;
+.cert{{border:3px solid #E85D26;border-radius:16px;padding:48px 64px;text-align:center;
 max-width:560px;background:#1e1b4b}}
-.cert h1{{color:#a78bfa;margin:0 0 8px;font-size:32px}}
+.cert h1{{color:#F5EFE6;margin:0 0 8px;font-size:32px}}
 .cert .name{{font-size:28px;margin:24px 0 8px;color:#fff}}
 .cert .meta{{color:#9aa6bb;margin:6px 0}}
 @media print{{body{{background:#fff;color:#000}}.cert{{background:#fff;border-color:#333}}}}

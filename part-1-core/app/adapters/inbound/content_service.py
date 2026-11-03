@@ -39,14 +39,14 @@ class ContentServiceImpl:
         return self._topic_out(topic, counts=self._repo.count_questions(slug))
 
     def create_topic(self, slug: str, name: str, description: str = "",
-                     icon: str = "", color: str = "#8b5cf6") -> dict:
+                     icon: str = "", color: str = "#E85D26") -> dict:
         slug = validate_slug(slug)
         validate_topic(name, description, icon, color)
         if self._repo.get_topic(slug):
             raise DomainError("topic slug already exists")
         topic = Topic(id=uuid.uuid4().hex, slug=slug, name=name.strip(),
                       description=(description or "").strip(),
-                      icon=(icon or "").strip(), color=color or "#8b5cf6")
+                      icon=(icon or "").strip(), color=color or "#E85D26")
         self._repo.save_topic(topic)
         return self._topic_out(topic)
 
@@ -61,7 +61,7 @@ class ContentServiceImpl:
             id=topic.id, slug=topic.slug, name=name.strip(),
             description=str(fields.get("description", topic.description or "")),
             icon=str(fields.get("icon", topic.icon or "")),
-            color=str(fields.get("color", topic.color or "#8b5cf6")),
+            color=str(fields.get("color", topic.color or "#E85D26")),
             is_active=bool(fields.get("is_active", topic.is_active)),
             created_at=topic.created_at,
         )

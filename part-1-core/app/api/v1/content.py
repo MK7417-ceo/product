@@ -20,7 +20,7 @@ class TopicCreateRequest(BaseModel):
     name: str
     description: str = ""
     icon: str = ""
-    color: str = "#8b5cf6"
+    color: str = "#E85D26"
 
 
 class TopicUpdateRequest(BaseModel):
