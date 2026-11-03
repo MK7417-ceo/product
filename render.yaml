@@ -1,0 +1,33 @@
+# Render Blueprint — SKILL_FORGE free-tier deploy (no card required).
+# Apply: Render dashboard → New → Blueprint → connect repo → this file.
+# Values marked `sync: false` are set in the Render dashboard, never here,
+# so no secret ever lands in the repo.
+services:
+  - type: web
+    name: skillforge-core
+    env: docker
+    dockerfilePath: ./part-1-core/Dockerfile
+    dockerContext: ./part-1-core
+    plan: free
+    healthCheckPath: /api/v1/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false # Neon DIRECT (non-pooled) Postgres URL, sslmode=require
+      - key: SECRET_KEY
+        generateValue: true # Render generates a random secret on deploy
+      - key: CODE_ENGINE_URL
+        sync: false # engine service URL, pasted after it exists (Step 5)
+      - key: FRONTEND_URL
+        sync: false # core service URL itself (used in emails/links)
+      # PUBLIC_BASE_URL intentionally unset: same-origin deploy falls back
+      # to the request URL for sitemap links.
+      # GEMINI_API_KEY / RESEND_API_KEY intentionally unset: DB-first AI
+      # works without a key, and password-reset mail logs in dev mode.
+
+  - type: web
+    name: skillforge-engine
+    env: docker
+    dockerfilePath: ./part-2-code-engine/Dockerfile
+    dockerContext: ./part-2-code-engine
+    plan: free
+    healthCheckPath: /v1/health
