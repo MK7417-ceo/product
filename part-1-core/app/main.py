@@ -219,6 +219,30 @@ def create_app() -> FastAPI:
     app.include_router(seo_api.router)
     app.include_router(ai_api.router, prefix=settings.API_V1_PREFIX)
     app.include_router(battles_api.router, prefix=settings.API_V1_PREFIX)
+
+    # Production single-service mode: when the frontend has been built
+    # into frontend/dist (Docker stage 1), serve it from the backend so
+    # the whole app runs on one origin (no CORS/proxy setup). Local dev
+    # without a build is unaffected (dist simply does not exist).
+    # Registered LAST so every API/SEO/docs route above wins over it.
+    from pathlib import Path
+
+    from fastapi.responses import FileResponse, JSONResponse
+    from fastapi.staticfiles import StaticFiles
+
+    _dist = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+    if _dist.is_dir():
+        app.mount("/assets", StaticFiles(directory=_dist / "assets"), name="assets")
+
+        @app.get("/{full_path:path}")
+        async def _spa_fallback(full_path: str):
+            if full_path.startswith("api/") or full_path.startswith("assets/"):
+                return JSONResponse({"detail": "Not Found"}, status_code=404)
+            candidate = _dist / full_path
+            if full_path and candidate.is_file():
+                return FileResponse(candidate)
+            return FileResponse(_dist / "index.html")
+
     return app
 
 

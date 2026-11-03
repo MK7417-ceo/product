@@ -11,6 +11,12 @@ from sqlalchemy import engine_from_config, pool
 from app.core.database import Base
 
 config = context.config
+# Production: the entrypoint exports ALEMBIC_DATABASE_URL (from
+# DATABASE_URL) so migrations hit the real database. A dedicated variable
+# — NOT DATABASE_URL itself — because the test suite sets DATABASE_URL
+# for the app while alembic tests rely on their own ini URL.
+if os.environ.get("ALEMBIC_DATABASE_URL"):
+    config.set_main_option("sqlalchemy.url", os.environ["ALEMBIC_DATABASE_URL"])
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
