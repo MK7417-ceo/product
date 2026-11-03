@@ -267,3 +267,17 @@ export const accountApi = {
       body: JSON.stringify(links),
     }),
 };
+
+/* ---------- curriculum domains (for roadmap domain picker) ---------- */
+
+export interface CurriculumDomain {
+  slug: string;
+  title: string;
+  description?: string;
+  category?: string;
+}
+
+export const curriculumApi = {
+  listDomains: () =>
+    api<{ domains: CurriculumDomain[] }>('/api/v1/curriculum/domains'),
+};

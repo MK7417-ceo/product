@@ -4,7 +4,7 @@ import { practiceApi, ApiError, type TodayPlan, type DailyQuestion } from '../li
 import './p1-pages.css';
 
 const PRI_CLASS: Record<string, string> = {
-  high: 'amber', medium: 'info', low: 'claim',
+  high: 'warn', medium: 'info', low: 'claim',
 };
 
 export default function Practice() {
@@ -15,12 +15,18 @@ export default function Practice() {
   const [score, setScore] = useState<{ correct: number; total: number } | null>(null);
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => {
+  const load = () => {
+    setLoading(true);
+    setError('');
     practiceApi
       .today()
       .then(setPlan)
       .catch((err) => setError(err instanceof ApiError ? err.message : 'Load failed'))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    load();
   }, []);
 
   const pick = (qid: string, idx: number) => {
@@ -119,7 +125,14 @@ export default function Practice() {
               </div>
             </div>
           ))}
-        {plan && plan.questions.length === 0 && <p className="p1x-empty">Aaj ke questions load nahi ho paaye.</p>}
+        {plan && plan.questions.length === 0 && (
+          <div className="p1x-empty">
+            <p>Aaj ke questions load nahi ho paaye.</p>
+            <button className="p1x-btn" onClick={load} style={{ marginTop: 8 }}>
+              🔄 Retry
+            </button>
+          </div>
+        )}
         {!score ? (
           <button
             className="p1x-btn"

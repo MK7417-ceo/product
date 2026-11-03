@@ -1,10 +1,10 @@
-/* StreakWidget — Aurora Dark flame + calendar */
+/* StreakWidget — Warm Ink + Burnt Orange flame + calendar */
 .streak-widget {
   background: linear-gradient(135deg, rgba(255, 122, 26, 0.12), rgba(255, 45, 120, 0.08));
   border: 1px solid rgba(255, 122, 26, 0.25);
   border-radius: 16px;
   padding: 18px 20px;
-  color: #f0eefc;
+  color: #F5EFE6;
   max-width: 420px;
 }
 
@@ -39,7 +39,7 @@
 .streak-count {
   font-size: 2rem;
   font-weight: 800;
-  background: linear-gradient(90deg, #ff9a3c, #ff2d78);
+  background: linear-gradient(90deg, #E85D26, #E85D26);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -47,7 +47,7 @@
 
 .streak-label {
   font-size: 0.85rem;
-  color: #a89fd0;
+  color: #A79B8E;
 }
 
 .streak-side {
@@ -56,19 +56,19 @@
   flex-direction: column;
   gap: 4px;
   font-size: 0.8rem;
-  color: #a89fd0;
+  color: #A79B8E;
 }
 
 .streak-side b {
-  color: #f0eefc;
+  color: #F5EFE6;
 }
 
 .streak-milestone {
   margin-top: 12px;
   padding: 10px 12px;
   border-radius: 10px;
-  background: rgba(255, 215, 0, 0.1);
-  border: 1px solid rgba(255, 215, 0, 0.35);
+  background: rgba(232, 93, 38, 0.1);
+  border: 1px solid rgba(232, 93, 38, 0.35);
   font-weight: 600;
   animation: milestone-pop 0.5s ease;
 }
@@ -84,11 +84,11 @@
 }
 
 .streak-today.done {
-  color: #4ade80;
+  color: #7FB069;
 }
 
 .streak-today.pending {
-  color: #fbbf24;
+  color: #E85D26;
 }
 
 .streak-calendar {
@@ -97,7 +97,7 @@
 
 .streak-cal-title {
   font-size: 0.78rem;
-  color: #a89fd0;
+  color: #A79B8E;
   margin-bottom: 8px;
 }
 
@@ -110,11 +110,11 @@
 .streak-dot {
   aspect-ratio: 1;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(247, 241, 232, 0.08);
 }
 
 .streak-dot.active {
-  background: linear-gradient(135deg, #ff9a3c, #ff2d78);
+  background: linear-gradient(135deg, #E85D26, #E85D26);
   box-shadow: 0 0 6px rgba(255, 122, 26, 0.6);
 }
 

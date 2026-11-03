@@ -29,6 +29,19 @@ DOMAIN_SKILLS: dict[str, dict] = {
             "advanced-python",
         ],
     },
+    # P1-2: "dsa" became a real assessment topic (question_bank.py), so it
+    # needs a registry entry or gap reports/roadmaps/auto-assignment break
+    # consistency (test_registry_covers_every_bank_skill_tag enforces this).
+    "dsa": {
+        "name": "Data Structures & Algorithms",
+        "icon": "🧩",
+        "description": "Arrays, stacks, trees, graphs, and the algorithms that run on them.",
+        "coding": True,
+        "skills": [
+            "data-structures",
+            "algorithms",
+        ],
+    },
     "javascript": {
         "name": "JavaScript",
         "icon": "🟨",

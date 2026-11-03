@@ -48,7 +48,7 @@ class Topic:
     name: str
     description: str = ""
     icon: str = ""
-    color: str = "#8b5cf6"
+    color: str = "#E85D26"
     is_active: bool = True
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -79,7 +79,7 @@ class BankQuestion:
 
 
 def validate_topic(name: str, description: str = "", icon: str = "",
-                   color: str = "#8b5cf6") -> None:
+                   color: str = "#E85D26") -> None:
     if not (name or "").strip():
         raise DomainError("topic name is required")
     if len(name.strip()) > 120:

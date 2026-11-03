@@ -80,7 +80,7 @@ function TypingTest() {
         <button className="p1x-btn ghost sm" onClick={reset}>Reset</button>
         {done && wpm !== null && (
           <span>
-            <strong style={{ color: 'var(--green)' }}>{wpm} WPM</strong>{' '}
+            <strong style={{ color: 'var(--sage)' }}>{wpm} WPM</strong>{' '}
             <span className="p1x-muted">· {acc}% accurate</span>
           </span>
         )}
@@ -120,7 +120,7 @@ function PiMock({ questions }: { questions: PrepQuestion[] }) {
       {q ? (
         <>
           <p style={{ fontWeight: 600, fontSize: 17 }}>{q.question}</p>
-          <div className="p1x-timer" style={{ color: secs <= 30 ? 'var(--red)' : 'var(--cyan)' }}>
+          <div className="p1x-timer" style={{ color: secs <= 30 ? 'var(--red)' : 'var(--accent)' }}>
             {mm}:{ss}
           </div>
           <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>

@@ -161,7 +161,7 @@ export default function Certificates() {
             {vres && (
               <div
                 className="p1x-card"
-                style={{ marginTop: 14, borderColor: vres.valid ? 'rgba(57,217,138,.45)' : 'rgba(240,108,117,.45)' }}
+                style={{ marginTop: 14, borderColor: vres.valid ? 'rgba(127, 176, 105, .45)' : 'rgba(224, 93, 68, .45)' }}
               >
                 {vres.valid ? (
                   <>

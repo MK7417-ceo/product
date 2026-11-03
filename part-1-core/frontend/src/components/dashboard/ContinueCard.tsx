@@ -38,22 +38,47 @@ export default function ContinueCard({ roadmap, loading, error, onRetry }: Props
   const prioClass =
     task.priority === 'high' ? 'sf-prio-high' : task.priority === 'medium' ? 'sf-prio-medium' : 'sf-prio-low';
 
+  // Parse "Your verified mastery in X is N% — ..." into structured parts
+  // so it renders as designed UI, not a dumped paragraph.
+  const why = task.why_it_matters || '';
+  const masteryMatch = why.match(/mastery in (\S+) is (\d+)%/i);
+  const skillName = masteryMatch ? masteryMatch[1] : null;
+  const masteryPct = masteryMatch ? parseInt(masteryMatch[2], 10) : null;
+  // Remainder after the em-dash is the "what this does" line.
+  const whyRemainder = why.includes('—') ? why.split('—').slice(1).join('—').trim() : '';
+
   return (
     <section className="sf-card" aria-label="Continue where you left off">
       <h3>Continue where you left off</h3>
       <div className="sf-hint">One task. Clear done-state. No decisions needed.</div>
-      <div className="sf-task">
-        <div className="sf-n">{roadmap!.tasks.findIndex((t) => t.id === task.id) + 1}</div>
-        <div className="sf-tbody">
-          <b>{task.title}</b>
-          <p>{task.why_it_matters || task.description}</p>
-          <div className="sf-meta">
-            <span>⏱ {task.effort_minutes} min</span>
-            {task.expected_evidence && <span>🎯 {task.expected_evidence}</span>}
-            <span className={prioClass}>{task.priority.toUpperCase()}</span>
+      <div className="sf-task sf-task-stacked">
+        <div className="sf-task-top">
+          <div className="sf-n">{roadmap!.tasks.findIndex((t) => t.id === task.id) + 1}</div>
+          <div className="sf-tbody">
+            <b>{task.title}</b>
+            {skillName && masteryPct !== null ? (
+              <div className="sf-why">
+                <div className="sf-why-row">
+                  <span className="sf-why-skill">{skillName}</span>
+                  <span className="sf-why-pct">{masteryPct}% mastery</span>
+                </div>
+                <div className="sf-why-bar" aria-hidden="true">
+                  <i style={{ width: `${Math.min(100, masteryPct)}%` }} />
+                  <em style={{ left: '70%' }} title="70% target" />
+                </div>
+                {whyRemainder && <p className="sf-why-text">{whyRemainder}</p>}
+              </div>
+            ) : (
+              <p>{task.why_it_matters || task.description}</p>
+            )}
+            <div className="sf-meta">
+              <span>⏱ {task.effort_minutes} min</span>
+              {task.expected_evidence && <span>🎯 {task.expected_evidence}</span>}
+              <span className={prioClass}>{task.priority.toUpperCase()}</span>
+            </div>
           </div>
         </div>
-        <button className="sf-btn-sm" onClick={() => navigate('/roadmap')}>
+        <button className="sf-btn-sm sf-task-btn" onClick={() => navigate('/roadmap')}>
           {task.status === 'in_progress' ? 'Resume →' : 'Start →'}
         </button>
       </div>

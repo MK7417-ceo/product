@@ -48,12 +48,51 @@ class NewsItem:
 
 
 def _http_get(url: str, params: dict | None = None, timeout: int = 10):
-    """Lazy httpx import; returns response or None on ANY failure."""
+    """Lazy httpx import; returns response or None on ANY failure.
+
+    Primary path is a plain httpx.get (environment proxy settings apply).
+    Fallback: in sandboxed/egress-proxy environments httpx's parsing of
+    the ambient proxy settings can fail outright (e.g. bracketed IPv6
+    entries in NO_PROXY raise InvalidURL) and the default CA bundle may
+    not trust the egress proxy's certificate — both failures used to
+    swallow the whole feed and leave /news/tech permanently empty even
+    though the upstream sources are reachable. The fallback retries the
+    SAME request with the proxy taken explicitly from the environment
+    (never logged) and the system CA bundle when present. It adds no new
+    source and no new pipeline; it only lets the existing fetch succeed
+    in such environments. Still never raises.
+    """
     try:
         import httpx
 
         resp = httpx.get(
             url, params=params, headers={"User-Agent": USER_AGENT}, timeout=timeout
+        )
+        if resp.status_code == 200:
+            return resp
+        return None
+    except Exception:
+        pass
+    try:
+        import os
+
+        import httpx
+
+        proxy = (
+            os.environ.get("https_proxy")
+            or os.environ.get("HTTPS_PROXY")
+            or os.environ.get("http_proxy")
+            or os.environ.get("HTTP_PROXY")
+        )
+        system_ca = "/etc/ssl/certs/ca-certificates.crt"
+        resp = httpx.get(
+            url,
+            params=params,
+            headers={"User-Agent": USER_AGENT},
+            timeout=timeout,
+            proxy=proxy or None,
+            trust_env=False,
+            verify=system_ca if os.path.exists(system_ca) else True,
         )
         if resp.status_code == 200:
             return resp

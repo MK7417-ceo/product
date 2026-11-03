@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { ApiError } from '../lib/api';
 import { HexLogo } from '../components/layout/TopNav';
+import PasswordField from '../components/PasswordField';
 
 export default function Register() {
   const { register } = useAuth();
@@ -56,18 +57,14 @@ export default function Register() {
               autoComplete="email"
             />
           </div>
-          <div className="field">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              minLength={8}
-              autoComplete="new-password"
-            />
-          </div>
+          <PasswordField
+            id="password"
+            label="Password"
+            value={password}
+            onChange={setPassword}
+            autoComplete="new-password"
+            minLength={8}
+          />
           <button className="btn-primary" type="submit" disabled={busy}>
             {busy ? 'Creating…' : 'Create account'}
           </button>

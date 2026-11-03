@@ -1,9 +1,9 @@
-/* Daily plan — Aurora Dark */
+/* Daily plan — Warm Ink + Burnt Orange */
 .daily {
   max-width: 720px;
   margin: 0 auto;
   padding: 28px 20px 64px;
-  color: #f5f7fb;
+  color: #F5EFE6;
   font-family: 'Inter', system-ui, sans-serif;
 }
 
@@ -16,13 +16,13 @@
 }
 
 .daily-head h1 { font-size: 1.6rem; margin: 0 0 6px; }
-.daily .muted { color: #9aa6bb; }
+.daily .muted { color: #A79B8E; }
 
 .streak {
   font-size: 1.4rem;
   font-weight: 700;
-  background: rgba(245, 184, 75, 0.12);
-  border: 1px solid rgba(245, 184, 75, 0.4);
+  background: rgba(232, 93, 38, 0.12);
+  border: 1px solid rgba(232, 93, 38, 0.4);
   border-radius: 12px;
   padding: 8px 14px;
   white-space: nowrap;
@@ -35,13 +35,13 @@
   font-weight: 600;
   padding: 3px 10px;
   border-radius: 999px;
-  background: rgba(139, 92, 246, 0.15);
-  border: 1px solid rgba(139, 92, 246, 0.5);
+  background: rgba(232, 93, 38, 0.15);
+  border: 1px solid rgba(232, 93, 38, 0.5);
 }
 
 .kind-badge.mock {
-  background: rgba(240, 108, 117, 0.12);
-  border-color: rgba(240, 108, 117, 0.5);
+  background: rgba(224, 93, 68, 0.12);
+  border-color: rgba(224, 93, 68, 0.5);
 }
 
 .progress-wrap {
@@ -55,14 +55,14 @@
   flex: 1;
   height: 12px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(247, 241, 232, 0.08);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(90deg, #8b5cf6, #36c5f0);
+  background: linear-gradient(90deg, #E85D26, #E85D26);
   transition: width 0.3s ease;
 }
 
@@ -78,14 +78,14 @@
 }
 
 .task {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(247, 241, 232, 0.04);
+  border: 1px solid rgba(247, 241, 232, 0.1);
   border-radius: 12px;
   transition: border-color 0.15s, opacity 0.15s;
 }
 
 .task.done {
-  border-color: rgba(57, 217, 138, 0.5);
+  border-color: rgba(127, 176, 105, 0.5);
   opacity: 0.75;
 }
 
@@ -97,23 +97,32 @@
   cursor: pointer;
 }
 
+/* P1-7 fallback rows: same layout as task rows, no checkbox — roadmap task
+   state is changed on /roadmap, not from the Daily Plan fallback list. */
+.task-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
 .task input[type='checkbox'] {
   width: 20px;
   height: 20px;
-  accent-color: #39d98a;
+  accent-color: #7FB069;
   cursor: pointer;
 }
 
-.task.done .task-text { text-decoration: line-through; color: #9aa6bb; }
+.task.done .task-text { text-decoration: line-through; color: #A79B8E; }
 .task-icon { font-size: 1.3rem; }
 .task-text { font-size: 1rem; }
-.task-sub { color: #9aa6bb; font-size: 0.9rem; }
+.task-sub { color: #A79B8E; font-size: 0.9rem; }
 
 .celebrate {
   text-align: center;
   padding: 40px 20px;
-  background: rgba(57, 217, 138, 0.08);
-  border: 1px solid rgba(57, 217, 138, 0.4);
+  background: rgba(127, 176, 105, 0.08);
+  border: 1px solid rgba(127, 176, 105, 0.4);
   border-radius: 16px;
 }
 
@@ -125,9 +134,9 @@
 .daily-foot { margin-top: 28px; }
 
 .daily .btn-primary {
-  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  background: linear-gradient(90deg, #E85D26, #E85D26);
   border: none;
-  color: #fff;
+  color: #F5EFE6;
   font-weight: 700;
   padding: 14px 28px;
   border-radius: 12px;
@@ -137,8 +146,8 @@
 
 .daily .btn-ghost {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #f5f7fb;
+  border: 1px solid rgba(247, 241, 232, 0.2);
+  color: #F5EFE6;
   padding: 12px 20px;
   border-radius: 12px;
   cursor: pointer;

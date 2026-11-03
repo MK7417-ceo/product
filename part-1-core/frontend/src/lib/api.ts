@@ -156,9 +156,14 @@ export const codeApi = {
 
 /* ---------- daily DSA (F6b) ---------- */
 
+/* P1-3: the API serves input/output; older payloads used stdin/stdout.
+   Both spellings are accepted, API shape wins, so examples never render
+   "(empty)" / blank while the server actually sent values. */
 export interface DSAExample {
-  stdin: string;
-  stdout: string;
+  stdin?: string;
+  stdout?: string;
+  input?: string;
+  output?: string;
   explanation: string;
 }
 

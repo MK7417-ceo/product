@@ -1,5 +1,5 @@
 /* ============================================================
-   SkillForge — Visual Learning components (Aurora Dark)
+   SkillForge — Visual Learning components (Warm Ink + Burnt Orange)
    ListenButton · ConceptDiagram · TheoryCard
    ============================================================ */
 
@@ -10,8 +10,8 @@
   gap: 8px;
   padding: 8px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(139, 92, 246, 0.45);
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.18), rgba(62, 214, 242, 0.12));
+  border: 1px solid rgba(232, 93, 38, 0.45);
+  background: linear-gradient(135deg, rgba(232, 93, 38, 0.18), rgba(232, 93, 38, 0.12));
   color: var(--text);
   font-size: 13px;
   font-weight: 600;
@@ -21,17 +21,17 @@
 }
 .visual-listen:hover {
   transform: translateY(-1px);
-  border-color: rgba(139, 92, 246, 0.8);
-  box-shadow: 0 4px 18px rgba(139, 92, 246, 0.35);
+  border-color: rgba(232, 93, 38, 0.8);
+  box-shadow: 0 4px 18px rgba(232, 93, 38, 0.35);
 }
 .visual-listen:active { transform: translateY(0) scale(0.97); }
 .visual-listen:focus-visible {
-  outline: 2px solid var(--cyan);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 .visual-listen.is-speaking {
-  border-color: rgba(232, 121, 249, 0.7);
-  background: linear-gradient(135deg, rgba(232, 121, 249, 0.22), rgba(139, 92, 246, 0.16));
+  border-color: rgba(232, 93, 38, 0.7);
+  background: linear-gradient(135deg, rgba(232, 93, 38, 0.22), rgba(232, 93, 38, 0.16));
 }
 .visual-listen-bars {
   display: inline-flex;
@@ -42,7 +42,7 @@
 .visual-listen-bars i {
   width: 3px;
   border-radius: 2px;
-  background: var(--magenta);
+  background: var(--accent);
   animation: visual-bars 0.9s ease-in-out infinite;
 }
 .visual-listen-bars i:nth-child(1) { height: 60%; animation-delay: 0s; }
@@ -58,7 +58,7 @@
   margin: 14px 0 6px;
   padding: 14px;
   border-radius: var(--radius);
-  background: rgba(16, 23, 40, 0.6);
+  background: rgba(22, 18, 16, 0.6);
   border: 1px solid var(--border);
 }
 .visual-concept-title {
@@ -95,7 +95,7 @@
 .visual-osi-layer.is-active rect { filter: brightness(1.12); }
 .visual-osi-layer:focus { outline: none; }
 .visual-osi-layer:focus-visible rect {
-  stroke: var(--cyan);
+  stroke: var(--accent);
   stroke-width: 2;
 }
 
@@ -122,8 +122,8 @@
 
 /* Topology nodes + hub pulse */
 .visual-node {
-  fill: rgba(62, 214, 242, 0.16);
-  stroke: var(--cyan);
+  fill: rgba(232, 93, 38, 0.16);
+  stroke: var(--accent);
   stroke-width: 1.5;
   animation: visual-node-breathe 3s ease-in-out infinite;
 }
@@ -132,8 +132,8 @@
   50% { opacity: 1; }
 }
 .visual-hub {
-  fill: rgba(139, 92, 246, 0.25);
-  stroke: var(--violet);
+  fill: rgba(232, 93, 38, 0.25);
+  stroke: var(--accent);
   stroke-width: 2;
 }
 .visual-pulse {
@@ -149,7 +149,7 @@
 
 /* ---------------- TheoryCard ---------------- */
 .visual-theory-card {
-  background: linear-gradient(160deg, rgba(16, 23, 40, 0.92), rgba(16, 23, 40, 0.72));
+  background: linear-gradient(160deg, rgba(22, 18, 16, 0.92), rgba(22, 18, 16, 0.72));
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 20px;
@@ -157,7 +157,7 @@
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 .visual-theory-card:hover {
-  border-color: rgba(139, 92, 246, 0.4);
+  border-color: rgba(232, 93, 38, 0.4);
 }
 .visual-theory-head {
   display: flex;
@@ -191,16 +191,16 @@
   white-space: nowrap;
 }
 .visual-badge-noncoding {
-  background: rgba(62, 214, 242, 0.14);
-  border: 1px solid rgba(62, 214, 242, 0.45);
-  color: var(--cyan);
+  background: rgba(232, 93, 38, 0.14);
+  border: 1px solid rgba(232, 93, 38, 0.45);
+  color: var(--accent);
 }
 .visual-badge-visual {
-  background: rgba(232, 121, 249, 0.12);
-  border: 1px solid rgba(232, 121, 249, 0.4);
-  color: var(--magenta);
+  background: rgba(232, 93, 38, 0.12);
+  border: 1px solid rgba(232, 93, 38, 0.4);
+  color: var(--accent);
 }
-.visual-theory-body { color: #d6ddee; }
+.visual-theory-body { color: #F5EFE6; }
 
 /* markdown-ish typography */
 .visual-md-h3 {
@@ -212,7 +212,7 @@
 .visual-md-h4 {
   font-size: 14px;
   font-weight: 700;
-  color: var(--violet-bright);
+  color: var(--accent);
   margin: 14px 0 6px;
 }
 .visual-md-p {
@@ -227,12 +227,12 @@
   line-height: 1.65;
 }
 .visual-md-list li { margin-bottom: 4px; }
-.visual-md-list li::marker { color: var(--violet-bright); }
+.visual-md-list li::marker { color: var(--accent); }
 .visual-md-quote {
   margin: 0 0 12px;
   padding: 10px 14px;
-  border-left: 3px solid var(--violet);
-  background: rgba(139, 92, 246, 0.08);
+  border-left: 3px solid var(--accent);
+  background: rgba(232, 93, 38, 0.08);
   border-radius: 0 8px 8px 0;
   font-size: 14px;
   color: var(--text);
@@ -240,12 +240,28 @@
 .visual-inline-code {
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 12.5px;
-  background: rgba(62, 214, 242, 0.1);
-  border: 1px solid rgba(62, 214, 242, 0.25);
-  color: var(--cyan);
+  background: rgba(232, 93, 38, 0.1);
+  border: 1px solid rgba(232, 93, 38, 0.25);
+  color: var(--accent);
   padding: 1px 6px;
   border-radius: 6px;
   white-space: nowrap;
+}
+
+.visual-md-code {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(247, 241, 232, 0.1);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  overflow-x: auto;
+}
+.visual-md-code code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #F5EFE6;
+  white-space: pre;
 }
 
 /* ---------------- responsive ---------------- */

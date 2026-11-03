@@ -151,7 +151,7 @@ export default function Dashboard() {
               padding: 0,
               cursor: 'pointer',
               font: 'inherit',
-              color: 'var(--cyan, #36c5f0)',
+              color: 'var(--accent, #E85D26)',
               fontWeight: 600,
             }}
             aria-label="Go to your next best step"

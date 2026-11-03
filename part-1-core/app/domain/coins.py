@@ -27,6 +27,8 @@ EARN_RULES: dict[str, int] = {
     "coding_solved": 10,
     "mock_completed": 20,
     "simulator_placed": 100,
+    "battle_win": 30,
+    "battle_participation": 5,
 }
 
 # streak day bonus: base x multiplier

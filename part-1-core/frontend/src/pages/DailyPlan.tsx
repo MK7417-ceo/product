@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLang } from '../lib/i18n';
 import { api } from '../lib/api';
+import { practiceApi, type TodayPlan } from '../lib/p1api';
 import { PLAN_STORAGE_KEY, CURRICULUM_SLUG_MAP } from './onboarding/LearningSetup';
 import './daily-plan.css';
 import StreakWidget from '../components/StreakWidget';
@@ -96,12 +97,28 @@ export default function DailyPlan() {
   const [celebrated, setCelebrated] = useState(false);
   const [serverPlan, setServerPlan] = useState<ServerPlan | null>(null);
   const [serverLoading, setServerLoading] = useState(false);
+  /* P1-7 fallback: today's roadmap tasks, used only when no local study
+     plan is stored. Same source as /practice (GET /practice/today), so the
+     two pages can no longer disagree about whether work exists. */
+  const [roadmapTasks, setRoadmapTasks] = useState<TodayPlan['tasks'] | null>(null);
+  const [roadmapLoading, setRoadmapLoading] = useState(false);
 
   useEffect(() => {
     const p = loadPlan();
     setPlan(p);
     setProgress(loadProgress());
-    if (p?.server_managed) {
+    if (!p) {
+      // No stored study plan: fall back to the server roadmap instead of
+      // rendering "no active plan" while a roadmap (and Practice tasks) exist.
+      setRoadmapLoading(true);
+      practiceApi
+        .today()
+        .then((out) => setRoadmapTasks(out.tasks ?? []))
+        .catch(() => setRoadmapTasks(null))
+        .finally(() => setRoadmapLoading(false));
+      return;
+    }
+    if (p.server_managed) {
       setServerLoading(true);
       api<{ plans: ServerPlan[] }>('/api/v1/curriculum/plans/mine')
         .then((out) => {
@@ -192,6 +209,58 @@ export default function DailyPlan() {
   };
 
   if (!plan) {
+    if (roadmapLoading) {
+      return (
+        <div className="daily empty">
+          <h1>{t('daily.title')}</h1>
+          <p className="muted">{t('plan.loading')}</p>
+        </div>
+      );
+    }
+    // P1-7 fallback: no stored study plan, but the server roadmap has
+    // today's tasks (exactly what /practice shows). Render those instead of
+    // the "no active plan" empty state. Read-only on purpose: roadmap task
+    // state changes happen on /roadmap via evidence, not from here.
+    if (roadmapTasks && roadmapTasks.length > 0) {
+      return (
+        <div className="daily">
+          <header className="daily-head">
+            <div>
+              <h1>{t('daily.title')}</h1>
+              <p className="muted">
+                Roadmap se — aaj ke tasks. (Koi saved study plan nahi hai, isliye
+                roadmap ke tasks dikh rahe hain.)
+              </p>
+            </div>
+          </header>
+          <ul className="task-list">
+            {roadmapTasks.map((rt) => (
+              <li key={rt.id} className={rt.status === 'completed' ? 'task done' : 'task'}>
+                <div className="task-row">
+                  <span className="task-icon">📌</span>
+                  <span className="task-text">
+                    {rt.title}
+                    <span className="task-sub">
+                      {' '}
+                      · {rt.effort_minutes} min · {rt.status.replace('_', ' ')} ·{' '}
+                      {rt.priority}
+                    </span>
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+          <div className="daily-foot">
+            <button className="btn-ghost" onClick={() => navigate('/roadmap')}>
+              Roadmap →
+            </button>{' '}
+            <button className="btn-ghost" onClick={() => navigate('/practice')}>
+              Practice →
+            </button>
+          </div>
+        </div>
+      );
+    }
     return (
       <div className="daily empty">
         <h1>{t('daily.title')}</h1>

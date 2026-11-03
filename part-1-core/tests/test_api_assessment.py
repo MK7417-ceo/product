@@ -43,6 +43,19 @@ def test_assessment_full_flow():
     assert r.status_code == 200
     assert any(a["assessment_id"] == aid for a in r.json()["assessments"])
 
+    # REG-1: detail must carry the same per_skill/gaps breakdown as the
+    # list/submit responses (it used to omit both, blanking /gaps).
+    r = c.get(f"/api/v1/assessments/{aid}", headers=h)
+    assert r.status_code == 200, r.text
+    det = r.json()
+    assert det["per_skill"] == out["per_skill"]
+    assert det["gaps"] == out["gaps"]
+    r = c.get("/api/v1/assessments", headers=h)
+    listed = [a for a in r.json()["assessments"]
+              if a["assessment_id"] == aid][0]
+    assert listed["per_skill"] == out["per_skill"]
+    assert listed["gaps"] == out["gaps"]
+
 
 def test_assessment_requires_auth():
     c = TestClient(create_app())
@@ -63,4 +76,4 @@ def test_bank_grew():
     r = c.get("/api/v1/placement/topics", headers=_authz(c))
     assert set(r.json()["topics"]) == {"python", "ml-basics", "javascript", "java", "webdev",
                                          "networking", "data-science", "data-analyst",
-                                         "r-lang", "ruby", "devops"}
+                                         "r-lang", "ruby", "devops", "dsa"}

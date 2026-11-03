@@ -18,6 +18,21 @@ interface Topic {
   theory_count: number;
 }
 
+/** Backend sends {topics:[...]} with is_active; normalize to frontend shape. */
+function normTopic(t: Record<string, unknown>): Topic {
+  const counts = (t.question_counts as Record<string, number>) || {};
+  return {
+    slug: String(t.slug),
+    name: String(t.name),
+    description: String(t.description ?? ''),
+    icon: String(t.icon ?? '📘'),
+    color: '#E85D26', // palette: single brand accent — seeded/legacy topic colors ignored
+    active: Boolean(t.is_active ?? t.active ?? true),
+    question_count: Number(t.question_count ?? counts.total ?? 0),
+    theory_count: Number(t.theory_count ?? 0),
+  };
+}
+
 interface TheoryBlock {
   id: string;
   topic_slug: string;
@@ -53,23 +68,42 @@ const LEVELS = ['beginner', 'intermediate', 'advanced', 'expert'] as const;
 const Q_TYPES: QuestionType[] = ['mcq', 'coding', 'written'];
 
 const contentApi = {
-  listTopics: () => api<Topic[]>('/api/v1/content/topics'),
-  createTopic: (b: Omit<Topic, 'question_count' | 'theory_count'>) =>
-    api<Topic>('/api/v1/content/topics', { method: 'POST', body: JSON.stringify(b) }),
-  toggleTopic: (slug: string, active: boolean) =>
-    api<Topic>(`/api/v1/content/topics/${slug}`, { method: 'PATCH', body: JSON.stringify({ active }) }),
-  listTheory: (slug: string) => api<TheoryBlock[]>(`/api/v1/content/topics/${slug}/theory`),
+  listTopics: async () => {
+    const r = await api<{ topics: Record<string, unknown>[] }>('/api/v1/content/topics?active_only=false');
+    return r.topics.map(normTopic);
+  },
+  createTopic: async (b: Omit<Topic, 'question_count' | 'theory_count'>) => {
+    const r = await api<Record<string, unknown>>('/api/v1/content/topics', {
+      method: 'POST',
+      body: JSON.stringify({ slug: b.slug, name: b.name, description: b.description, icon: b.icon, color: b.color }),
+    });
+    return normTopic(r);
+  },
+  toggleTopic: async (slug: string, active: boolean) => {
+    const r = await api<Record<string, unknown>>(`/api/v1/content/topics/${slug}`, {
+      method: 'PUT',
+      body: JSON.stringify({ is_active: active }),
+    });
+    return normTopic(r);
+  },
+  listTheory: async (slug: string) => {
+    const r = await api<{ theory: TheoryBlock[] }>(`/api/v1/content/topics/${slug}/theory`);
+    return r.theory;
+  },
   saveTheory: (slug: string, b: Partial<TheoryBlock> & { title: string; level: string; body_md: string }) =>
     b.id
-      ? api<TheoryBlock>(`/api/v1/content/theory/${b.id}`, { method: 'PATCH', body: JSON.stringify(b) })
+      ? api<TheoryBlock>(`/api/v1/content/theory/${b.id}`, { method: 'PUT', body: JSON.stringify(b) })
       : api<TheoryBlock>(`/api/v1/content/topics/${slug}/theory`, { method: 'POST', body: JSON.stringify(b) }),
   deleteTheory: (id: string) => api<void>(`/api/v1/content/theory/${id}`, { method: 'DELETE' }),
-  listQuestions: (slug: string) => api<Question[]>(`/api/v1/content/topics/${slug}/questions`),
+  listQuestions: async (slug: string) => {
+    const r = await api<{ questions: Question[] }>(`/api/v1/content/topics/${slug}/questions`);
+    return r.questions;
+  },
   createQuestion: (slug: string, b: Omit<Question, 'id' | 'topic_slug'>) =>
     api<Question>(`/api/v1/content/topics/${slug}/questions`, { method: 'POST', body: JSON.stringify(b) }),
   deleteQuestion: (id: string) => api<void>(`/api/v1/content/questions/${id}`, { method: 'DELETE' }),
   importLink: (url: string) =>
-    api<ImportResult>('/api/v1/content/import-link', { method: 'POST', body: JSON.stringify({ url }) }),
+    api<ImportResult>('/api/v1/content/import-url', { method: 'POST', body: JSON.stringify({ url }) }),
 };
 
 function slugify(name: string): string {
@@ -186,7 +220,7 @@ function TopicList({ topics, selected, onSelect, onToggle, onCreated }: {
   const [slugTouched, setSlugTouched] = useState(false);
   const [description, setDescription] = useState('');
   const [icon, setIcon] = useState('📘');
-  const [color, setColor] = useState('#8b5cf6');
+  const [color, setColor] = useState('#E85D26');
   const [active, setActive] = useState(true);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');

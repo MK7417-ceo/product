@@ -1,23 +1,23 @@
-/* Study plan setup — Aurora Dark, scoped under .plan-setup */
+/* Study plan setup — Warm Ink + Burnt Orange, scoped under .plan-setup */
 .plan-setup {
   max-width: 960px;
   margin: 0 auto;
   padding: 32px 20px 64px;
-  color: #f5f7fb;
+  color: #F5EFE6;
   font-family: 'Inter', system-ui, sans-serif;
 }
 
 .plan-setup h1 {
   font-size: 1.9rem;
   margin-bottom: 24px;
-  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  background: linear-gradient(90deg, #E85D26, #E85D26);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .plan-setup h2 { font-size: 1.35rem; margin: 8px 0 4px; }
-.plan-setup .muted { color: #9aa6bb; margin-bottom: 20px; }
+.plan-setup .muted { color: #A79B8E; margin-bottom: 20px; }
 
 .domain-grid {
   display: grid;
@@ -26,11 +26,11 @@
 }
 
 .domain-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(247, 241, 232, 0.04);
+  border: 1px solid rgba(247, 241, 232, 0.1);
   border-radius: 14px;
   padding: 18px 14px;
-  color: #f5f7fb;
+  color: #F5EFE6;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -41,14 +41,14 @@
 
 .domain-card:hover {
   transform: translateY(-3px);
-  border-color: #8b5cf6;
-  background: rgba(139, 92, 246, 0.12);
+  border-color: #E85D26;
+  background: rgba(232, 93, 38, 0.12);
 }
 
 .domain-card:active { transform: translateY(0); }
 .domain-icon { font-size: 2rem; }
 .domain-name { font-weight: 600; font-size: 1rem; }
-.domain-desc { font-size: 0.8rem; color: #9aa6bb; text-align: center; }
+.domain-desc { font-size: 0.8rem; color: #A79B8E; text-align: center; }
 
 .level-grid {
   display: grid;
@@ -58,11 +58,11 @@
 }
 
 .level-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(247, 241, 232, 0.04);
+  border: 1px solid rgba(247, 241, 232, 0.1);
   border-radius: 14px;
   padding: 22px 16px;
-  color: #f5f7fb;
+  color: #F5EFE6;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -73,14 +73,14 @@
 
 .level-card:hover:not(:disabled) {
   transform: translateY(-3px);
-  border-color: #36c5f0;
-  background: rgba(54, 197, 240, 0.1);
+  border-color: #E85D26;
+  background: rgba(232, 93, 38, 0.1);
 }
 
 .level-card:disabled { opacity: 0.6; cursor: wait; }
 .level-icon { font-size: 2.4rem; }
 .level-name { font-weight: 700; font-size: 1.05rem; }
-.level-desc { font-size: 0.85rem; color: #9aa6bb; text-align: center; }
+.level-desc { font-size: 0.85rem; color: #A79B8E; text-align: center; }
 
 .preview-stats {
   display: grid;
@@ -90,8 +90,8 @@
 }
 
 .preview-stats .stat {
-  background: rgba(139, 92, 246, 0.1);
-  border: 1px solid rgba(139, 92, 246, 0.35);
+  background: rgba(232, 93, 38, 0.1);
+  border: 1px solid rgba(232, 93, 38, 0.35);
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -100,10 +100,10 @@
 }
 
 .stat-num { font-size: 1.3rem; font-weight: 700; }
-.stat-label { font-size: 0.85rem; color: #9aa6bb; }
+.stat-label { font-size: 0.85rem; color: #A79B8E; }
 .stat-note {
   grid-column: 1 / -1;
-  color: #9aa6bb;
+  color: #A79B8E;
   font-size: 0.9rem;
 }
 
@@ -115,9 +115,9 @@
 }
 
 .plan-setup .btn-primary {
-  background: linear-gradient(90deg, #8b5cf6, #ec4899);
+  background: linear-gradient(90deg, #E85D26, #E85D26);
   border: none;
-  color: #fff;
+  color: #F5EFE6;
   font-weight: 700;
   font-size: 1.05rem;
   padding: 14px 28px;
@@ -129,8 +129,8 @@
 
 .plan-setup .btn-ghost {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #f5f7fb;
+  border: 1px solid rgba(247, 241, 232, 0.2);
+  color: #F5EFE6;
   padding: 12px 20px;
   border-radius: 12px;
   cursor: pointer;

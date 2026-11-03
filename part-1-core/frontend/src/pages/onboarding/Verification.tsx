@@ -220,7 +220,7 @@ export default function Verification() {
           {ordered.map((l) => {
             const r = a.levels[l];
             const pct = Math.round(r.ratio * 100);
-            const barColor = r.ratio >= PASS ? '#36C5F0' : r.ratio >= 0.4 ? '#F5B84B' : '#F06C75';
+            const barColor = r.ratio >= PASS ? '#E85D26' : r.ratio >= 0.4 ? '#E85D26' : '#E05D44';
             return (
               <div className="ob-lvl" key={l}>
                 <div className="row">
@@ -289,10 +289,10 @@ export default function Verification() {
                           width: `${Math.round(w.coverage * 100)}%`,
                           background:
                             w.coverage >= 0.7
-                              ? '#36C5F0'
+                              ? '#E85D26'
                               : w.coverage >= 0.4
-                                ? '#F5B84B'
-                                : '#F06C75',
+                                ? '#E85D26'
+                                : '#E05D44',
                         }}
                       />
                     </div>
@@ -355,7 +355,7 @@ export default function Verification() {
             code · {writtenAttempted}/{writtenQs.length} written
           </span>
         </div>
-        <div className="ob-bar cyan" style={{ marginBottom: 20 }}>
+        <div className="ob-bar brand" style={{ marginBottom: 20 }}>
           <i style={{ width: `${pct}%` }} />
         </div>
 

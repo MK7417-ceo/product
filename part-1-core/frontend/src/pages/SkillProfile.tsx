@@ -109,7 +109,7 @@ export default function SkillProfile() {
               <i
                 style={{
                   width: `${Math.max(s.pct, 4)}%`,
-                  background: s.state === 'verified' ? 'var(--green)' : 'var(--red)',
+                  background: s.state === 'verified' ? 'var(--sage)' : 'var(--red)',
                 }}
               />
             </div>

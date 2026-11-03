@@ -79,7 +79,7 @@ export default function Settings() {
       <div className="p1x-card">
         <h2>Subscription</h2>
         <p className="hint">
-          Current plan: <strong style={{ color: 'var(--cyan)' }}>{sub?.name ?? '—'}</strong>
+          Current plan: <strong style={{ color: 'var(--accent)' }}>{sub?.name ?? '—'}</strong>
         </p>
         <div className="p1x-grid3">
           {Object.entries(tiers).map(([key, t]) => (

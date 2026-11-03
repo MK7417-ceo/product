@@ -28,13 +28,16 @@ const Profile = lazy(() => import('./pages/Profile'));
 const Billing = lazy(() => import('./pages/Billing'));
 const Landing = lazy(() => import('./pages/Landing'));
 const CertDirectory = lazy(() => import('./pages/CertDirectory'));
+const PublicTopics = lazy(() => import('./pages/PublicTopics'));
 const LearningSetup = lazy(() => import('./pages/onboarding/LearningSetup'));
+const Learn = lazy(() => import('./pages/Learn'));
 const DailyPlan = lazy(() => import('./pages/DailyPlan'));
 const CoinShop = lazy(() => import('./pages/CoinShop'));
 const TechNews = lazy(() => import('./pages/TechNews'));
 const PlacementPrep = lazy(() => import('./pages/PlacementPrep'));
 const WeeklyTest = lazy(() => import('./pages/WeeklyTest'));
 const PlacementSimulator = lazy(() => import('./pages/PlacementSimulator'));
+const Battles = lazy(() => import('./pages/Battles'));
 const ContentManager = lazy(() => import('./pages/admin/ContentManager'));
 
 function Fallback() {
@@ -99,6 +102,12 @@ export default function App() {
         />
         {/* Public: certificate directory for discovery + SEO */}
         <Route path="/directory" element={<CertDirectory />} />
+        {/* Public SEO: free topic theory without login (see PublicTopics) */}
+        <Route path="/topics" element={<PublicTopics />} />
+        <Route path="/topics/:slug" element={<PublicTopics />} />
+        {/* Bilingual: English versions of the same public pages */}
+        <Route path="/en/topics" element={<PublicTopics lang="en" />} />
+        <Route path="/en/topics/:slug" element={<PublicTopics lang="en" />} />
         <Route path="/" element={<RootRoute />}>
           <Route index element={<Dashboard />} />
           <Route path="welcome" element={<Welcome />} />
@@ -112,6 +121,11 @@ export default function App() {
           <Route path="codelab" element={<CodeLab />} />
           <Route path="skills" element={<SkillProfile />} />
           <Route path="gaps" element={<SkillGaps />} />
+          {/* P0-4: legacy /skill-gaps URL (previously fell through to the
+              catch-all and landed on home) now reaches the real gaps page.
+              The sidebar already links to /gaps; this keeps old links and
+              bookmarks working instead of silently redirecting to /. */}
+          <Route path="skill-gaps" element={<Navigate to="/gaps" replace />} />
           <Route path="evidence" element={<Evidence />} />
           <Route path="certificates" element={<Certificates />} />
           <Route path="portfolio" element={<Portfolio />} />
@@ -122,12 +136,15 @@ export default function App() {
           <Route path="billing" element={<Billing />} />
           <Route path="admin/content" element={<ContentManager />} />
           <Route path="learning-setup" element={<LearningSetup />} />
+          <Route path="learn" element={<Learn />} />
+          <Route path="learn/:slug" element={<Learn />} />
           <Route path="daily-plan" element={<DailyPlan />} />
           <Route path="coins" element={<CoinShop />} />
           <Route path="news" element={<TechNews />} />
           <Route path="placement-prep" element={<PlacementPrep />} />
           <Route path="weekly-test" element={<WeeklyTest />} />
           <Route path="simulator" element={<PlacementSimulator />} />
+          <Route path="battles" element={<Battles />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

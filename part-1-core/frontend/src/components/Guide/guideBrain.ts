@@ -207,10 +207,10 @@ const TOPICS: Topic[] = [
       'इंटरव्यू', 'नौकरी', 'naukri',
     ],
     response: {
-      en: 'Interview Prep covers the full hiring loop: resume and JD matching, technical questions, quant, typing, group discussion, and personal interview practice. There are weekly mock tests — one compulsory and one optional. Camera-ON proctoring keeps mocks realistic.',
-      hi: 'Interview Prep पूरी hiring loop cover करता है: resume और JD matching, technical questions, quant, typing, group discussion और personal interview practice। Weekly mock tests होते हैं — एक compulsory और एक optional। Camera-ON proctoring mocks को realistic बनाता है।',
+      en: 'Interview Prep covers the full hiring loop: resume and JD matching, technical questions, quant, typing, group discussion, and personal interview practice. There are weekly mock tests — one compulsory and one optional.',
+      hi: 'Interview Prep पूरी hiring loop cover करता है: resume और JD matching, technical questions, quant, typing, group discussion और personal interview practice। Weekly mock tests होते हैं — एक compulsory और एक optional।',
       hinglish:
-        'Interview Prep poori hiring loop cover karta hai: resume aur JD matching, technical questions, quant, typing, group discussion aur personal interview practice. Weekly mock tests hote hain — ek compulsory aur ek optional. Camera-ON proctoring mocks ko realistic banata hai.',
+        'Interview Prep poori hiring loop cover karta hai: resume aur JD matching, technical questions, quant, typing, group discussion aur personal interview practice. Weekly mock tests hote hain — ek compulsory aur ek optional.',
     },
   },
   {

@@ -10,7 +10,7 @@
 }
 
 .pp-subtitle {
-  color: var(--text-muted, #9aa0b4);
+  color: var(--text-muted, #A79B8E);
   margin: 0 0 20px;
 }
 
@@ -19,12 +19,12 @@
   gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(247, 241, 232, 0.08);
   padding-bottom: 12px;
 }
 
 .pp-tab {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(247, 241, 232, 0.05);
   border: 1px solid transparent;
   color: inherit;
   border-radius: 10px;
@@ -35,12 +35,12 @@
 }
 
 .pp-tab:hover {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(247, 241, 232, 0.09);
 }
 
 .pp-tab-active {
-  background: linear-gradient(135deg, #7c3aed, #d946ef);
-  color: #fff;
+  background: linear-gradient(135deg, #E85D26, #E85D26);
+  color: #F5EFE6;
   font-weight: 600;
 }
 
@@ -55,8 +55,8 @@
 .pp-search {
   flex: 1;
   min-width: 200px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(247, 241, 232, 0.05);
+  border: 1px solid rgba(247, 241, 232, 0.1);
   border-radius: 10px;
   padding: 10px 14px;
   color: inherit;
@@ -64,8 +64,8 @@
 }
 
 .pp-chip {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(247, 241, 232, 0.05);
+  border: 1px solid rgba(247, 241, 232, 0.1);
   color: inherit;
   border-radius: 20px;
   padding: 8px 16px;
@@ -76,12 +76,12 @@
 }
 
 .pp-chip:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(247, 241, 232, 0.1);
 }
 
 .pp-chip-active {
-  background: rgba(124, 58, 237, 0.3);
-  border-color: #7c3aed;
+  background: rgba(232, 93, 38, 0.3);
+  border-color: #E85D26;
   font-weight: 600;
 }
 
@@ -93,13 +93,13 @@
 }
 
 .pp-count {
-  color: var(--text-muted, #9aa0b4);
+  color: var(--text-muted, #A79B8E);
   font-size: 0.88rem;
   margin-bottom: 12px;
 }
 
 .pp-hint {
-  color: var(--text-muted, #9aa0b4);
+  color: var(--text-muted, #A79B8E);
   margin: 0 0 16px;
 }
 
@@ -110,8 +110,8 @@
 }
 
 .pp-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(247, 241, 232, 0.04);
+  border: 1px solid rgba(247, 241, 232, 0.08);
   border-radius: 14px;
   overflow: hidden;
 }
@@ -132,7 +132,7 @@
 }
 
 .pp-card-head:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(247, 241, 232, 0.03);
 }
 
 .pp-card-title {
@@ -149,29 +149,29 @@
 
 .pp-badge {
   font-size: 0.75rem;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(247, 241, 232, 0.08);
   padding: 3px 10px;
   border-radius: 8px;
   text-transform: capitalize;
 }
 
 .pp-badge-hr {
-  background: rgba(59, 130, 246, 0.2);
-  color: #93c5fd;
+  background: rgba(232, 93, 38, 0.2);
+  color: #E85D26;
 }
 
 .pp-badge-technical {
-  background: rgba(16, 185, 129, 0.2);
-  color: #6ee7b7;
+  background: rgba(127, 176, 105, 0.2);
+  color: #7FB069;
 }
 
 .pp-expand {
-  color: var(--text-muted, #9aa0b4);
+  color: var(--text-muted, #A79B8E);
 }
 
 .pp-card-body {
   padding: 0 16px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-top: 1px solid rgba(247, 241, 232, 0.06);
   padding-top: 16px;
 }
 
@@ -181,8 +181,8 @@
 }
 
 .pp-tip {
-  background: rgba(245, 158, 11, 0.1);
-  border-left: 3px solid #f59e0b;
+  background: rgba(232, 93, 38, 0.1);
+  border-left: 3px solid #E85D26;
   padding: 10px 14px;
   border-radius: 0 8px 8px 0;
   font-size: 0.9rem;
@@ -192,7 +192,7 @@
 .pp-companies {
   margin-top: 10px;
   font-size: 0.85rem;
-  color: var(--text-muted, #9aa0b4);
+  color: var(--text-muted, #A79B8E);
 }
 
 .pp-cols {
@@ -222,12 +222,12 @@
   font-size: 1.05rem;
   margin: 0 0 10px;
   text-transform: capitalize;
-  color: var(--text-muted, #9aa0b4);
+  color: var(--text-muted, #A79B8E);
 }
 
 .pp-trick {
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(217, 70, 239, 0.1));
-  border: 1px solid rgba(124, 58, 237, 0.3);
+  background: linear-gradient(135deg, rgba(232, 93, 38, 0.15), rgba(232, 93, 38, 0.1));
+  border: 1px solid rgba(232, 93, 38, 0.3);
   border-radius: 14px;
   padding: 18px;
   margin-bottom: 20px;
@@ -243,7 +243,7 @@
 }
 
 .pp-trick-ex {
-  color: var(--text-muted, #9aa0b4);
+  color: var(--text-muted, #A79B8E);
 }
 
 .pp-q-prompt {
@@ -260,8 +260,8 @@
 
 .pp-option {
   text-align: left;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(247, 241, 232, 0.04);
+  border: 1px solid rgba(247, 241, 232, 0.1);
   color: inherit;
   border-radius: 10px;
   padding: 10px 14px;
@@ -271,7 +271,7 @@
 }
 
 .pp-option:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(247, 241, 232, 0.08);
 }
 
 .pp-option:disabled {
@@ -279,13 +279,13 @@
 }
 
 .pp-opt-correct {
-  background: rgba(16, 185, 129, 0.2) !important;
-  border-color: #10b981 !important;
+  background: rgba(127, 176, 105, 0.2) !important;
+  border-color: #7FB069 !important;
 }
 
 .pp-opt-wrong {
-  background: rgba(239, 68, 68, 0.2) !important;
-  border-color: #ef4444 !important;
+  background: rgba(224, 93, 68, 0.2) !important;
+  border-color: #E05D44 !important;
 }
 
 .pp-solution {
@@ -307,8 +307,8 @@
 }
 
 .pp-random-controls select {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(247, 241, 232, 0.06);
+  border: 1px solid rgba(247, 241, 232, 0.12);
   color: inherit;
   border-radius: 8px;
   padding: 8px 12px;
@@ -316,8 +316,8 @@
 }
 
 .pp-draw-btn {
-  background: linear-gradient(135deg, #7c3aed, #d946ef);
-  color: #fff;
+  background: linear-gradient(135deg, #E85D26, #E85D26);
+  color: #F5EFE6;
   border: none;
   border-radius: 12px;
   padding: 12px 24px;

@@ -12,6 +12,7 @@ interface AssessmentSummary {
   correct: number;
   total: number;
   gaps: string[];
+  per_skill: PerSkill[]; // list endpoint sends it (P0-1); detail now too (REG-1)
 }
 
 interface PerSkill {
@@ -53,15 +54,15 @@ function severityOf(ratio: number): 'high' | 'medium' {
 
 const SEV_STYLE: Record<'high' | 'medium', { bg: string; fg: string; bd: string; label: string }> = {
   high: {
-    bg: 'rgba(240,108,117,.14)',
+    bg: 'rgba(224, 93, 68, .14)',
     fg: 'var(--red)',
-    bd: 'rgba(240,108,117,.35)',
+    bd: 'rgba(224, 93, 68, .35)',
     label: 'HIGH · <40%',
   },
   medium: {
-    bg: 'rgba(245,184,75,.14)',
-    fg: 'var(--amber)',
-    bd: 'rgba(245,184,75,.35)',
+    bg: 'rgba(232, 93, 38, .14)',
+    fg: 'var(--accent)',
+    bd: 'rgba(232, 93, 38, .35)',
     label: 'MEDIUM · 40–70%',
   },
 };
@@ -84,11 +85,25 @@ export default function SkillGaps() {
       const list = await api<{ assessments: AssessmentSummary[] }>('/api/v1/assessments');
       const completed = list.assessments.filter((a) => a.status === 'completed');
       const details: AssessmentDetail[] = await Promise.all(
-        completed.map((a) =>
-          api<AssessmentDetail>(`/api/v1/assessments/${a.assessment_id}`).catch(
-            () => ({ ...a, per_skill: [] as PerSkill[] }),
-          ),
-        ),
+        completed.map(async (a) => {
+          try {
+            const d = await api<AssessmentDetail>(`/api/v1/assessments/${a.assessment_id}`);
+            // REG-1: the detail payload used to omit per_skill/gaps, and
+            // normalizing that to [] discarded the list item's good data,
+            // blanking /gaps for a user with a genuine gap. Fall back to
+            // the list item whenever the detail breakdown is missing/empty.
+            return {
+              ...a,
+              ...d,
+              per_skill: d.per_skill?.length ? d.per_skill : (a.per_skill ?? []),
+              gaps: d.gaps?.length ? d.gaps : (a.gaps ?? []),
+            };
+          } catch {
+            // Detail fetch failed: keep the list item's own breakdown,
+            // never replace it with [].
+            return { ...a };
+          }
+        }),
       );
       setAssessments(details);
       setState('ready');
@@ -105,7 +120,9 @@ export default function SkillGaps() {
   const gaps: SkillGap[] = useMemo(() => {
     const bySkill = new Map<string, SkillGap>();
     for (const a of assessments) {
-      for (const ps of a.per_skill) {
+      // P0-1 second guard: never iterate a missing per_skill, whatever the
+      // payload shape was (defensive even after the load-time normalize).
+      for (const ps of a.per_skill ?? []) {
         const ratio = ps.total > 0 ? ps.correct / ps.total : 0;
         if (ratio >= 0.7) continue; // not a gap by backend definition
         const existing = bySkill.get(ps.skill);
@@ -238,7 +255,7 @@ export default function SkillGaps() {
         </div>
         <div className="card stat">
           <div className="lb">High severity</div>
-          <div className="vl" style={{ color: highCount ? 'var(--red)' : 'var(--green)' }}>
+          <div className="vl" style={{ color: highCount ? 'var(--red)' : 'var(--sage)' }}>
             {highCount}
           </div>
           <div className="lb" style={{ marginTop: 8 }}>under 40% mastery</div>
@@ -298,7 +315,7 @@ export default function SkillGaps() {
               <div
                 style={{
                   height: 8,
-                  background: 'rgba(255,255,255,.06)',
+                  background: 'rgba(247, 241, 232, .06)',
                   borderRadius: 99,
                   overflow: 'hidden',
                   marginBottom: 10,
@@ -309,7 +326,7 @@ export default function SkillGaps() {
                     width: `${Math.max(pct, 3)}%`,
                     height: '100%',
                     borderRadius: 99,
-                    background: severityOf(g.ratio) === 'high' ? 'var(--red)' : 'var(--amber)',
+                    background: severityOf(g.ratio) === 'high' ? 'var(--red)' : 'var(--accent)',
                   }}
                 />
               </div>
@@ -321,7 +338,7 @@ export default function SkillGaps() {
                     key={s.assessment_id}
                     style={{
                       display: 'inline-block',
-                      background: 'rgba(255,255,255,.05)',
+                      background: 'rgba(247, 241, 232, .05)',
                       border: '1px solid var(--border)',
                       borderRadius: 8,
                       padding: '2px 8px',
@@ -354,7 +371,7 @@ export default function SkillGaps() {
                   style={{
                     margin: '10px 0 0',
                     fontSize: 13,
-                    color: roadmapMsg.text.startsWith('✓') ? 'var(--green)' : 'var(--red)',
+                    color: roadmapMsg.text.startsWith('✓') ? 'var(--sage)' : 'var(--red)',
                   }}
                 >
                   {roadmapMsg.text}
@@ -408,9 +425,9 @@ export default function SkillGaps() {
                       fontWeight: 700,
                       padding: '2px 9px',
                       borderRadius: 99,
-                      background: 'rgba(240,108,117,.14)',
+                      background: 'rgba(224, 93, 68, .14)',
                       color: 'var(--red)',
-                      border: '1px solid rgba(240,108,117,.35)',
+                      border: '1px solid rgba(224, 93, 68, .35)',
                     }}
                   >
                     {a.gaps.length} gap{a.gaps.length === 1 ? '' : 's'}
@@ -458,9 +475,9 @@ export default function SkillGaps() {
                               padding: '3px 10px',
                               borderRadius: 99,
                               background: isGap
-                                ? 'rgba(240,108,117,.14)'
-                                : 'rgba(57,217,138,.14)',
-                              color: isGap ? 'var(--red)' : 'var(--green)',
+                                ? 'rgba(224, 93, 68, .14)'
+                                : 'rgba(127, 176, 105, .14)',
+                              color: isGap ? 'var(--red)' : 'var(--sage)',
                             }}
                           >
                             {isGap ? `GAP · ${p}%` : `✓ ${p}%`}
@@ -469,7 +486,7 @@ export default function SkillGaps() {
                         <div
                           style={{
                             height: 8,
-                            background: 'rgba(255,255,255,.06)',
+                            background: 'rgba(247, 241, 232, .06)',
                             borderRadius: 99,
                             overflow: 'hidden',
                           }}
@@ -479,7 +496,7 @@ export default function SkillGaps() {
                               width: `${Math.max(p, 3)}%`,
                               height: '100%',
                               borderRadius: 99,
-                              background: isGap ? 'var(--red)' : 'var(--green)',
+                              background: isGap ? 'var(--red)' : 'var(--sage)',
                             }}
                           />
                         </div>

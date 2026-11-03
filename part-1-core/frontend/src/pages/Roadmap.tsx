@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { roadmapApi, ApiError, type Roadmap, type RoadmapTask, type Evidence } from '../lib/p1api';
+import { roadmapApi, curriculumApi, ApiError, type Roadmap, type RoadmapTask, type Evidence, type CurriculumDomain } from '../lib/p1api';
+import RoadmapJourney from '../components/RoadmapJourney';
 import './p1-pages.css';
 
 const PRI_CLASS: Record<string, string> = {
-  high: 'amber', medium: 'info', low: 'claim',
+  high: 'warn', medium: 'info', low: 'claim',
 };
 
 function TaskDetailPanel({
@@ -98,7 +99,7 @@ function TaskDetailPanel({
           {evError && <div className="p1x-err">{evError}</div>}
           {ev.map((e) => (
             <div key={e.id} style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 12, marginBottom: 8 }}>
-              <span className="p1x-pill violet">{e.kind.toUpperCase()}</span>
+              <span className="p1x-pill brand">{e.kind.toUpperCase()}</span>
               <span className="p1x-muted" style={{ fontSize: 12, marginLeft: 8 }}>
                 {new Date(e.created_at).toLocaleString()}
               </span>
@@ -153,6 +154,8 @@ export default function Roadmap() {
   const [gaps, setGaps] = useState([{ skill: 'python-basics', mastery: '35' }]);
   const [detailTask, setDetailTask] = useState<RoadmapTask | null>(null);
   const [regenOpen, setRegenOpen] = useState(false);
+  const [domains, setDomains] = useState<CurriculumDomain[]>([]);
+  const [domainsLoading, setDomainsLoading] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -168,6 +171,27 @@ export default function Roadmap() {
   };
 
   useEffect(() => { load(); }, []);
+
+  /* Load curriculum domains for the picker (only when the generate form is shown). */
+  useEffect(() => {
+    if (roadmap || domains.length > 0 || domainsLoading) return;
+    setDomainsLoading(true);
+    curriculumApi
+      .listDomains()
+      .then((d) => setDomains(d.domains))
+      .catch(() => setDomains([]))
+      .finally(() => setDomainsLoading(false));
+  }, [roadmap, domains.length, domainsLoading]);
+
+  const toggleDomain = (slug: string) => {
+    setGaps((gs) => {
+      const exists = gs.some((g) => g.skill === slug);
+      if (exists) return gs.filter((g) => g.skill !== slug);
+      // Drop the placeholder empty row if present
+      const cleaned = gs.filter((g) => g.skill.trim() !== '');
+      return [...cleaned, { skill: slug, mastery: '30' }];
+    });
+  };
 
   const generate = async (regen: boolean) => {
     setError('');
@@ -195,8 +219,33 @@ export default function Roadmap() {
             <p className="p1x-sub">Turn your skill gaps into a learning plan. Worst gaps first.</p>
           </div>
         </div>
-        <div className="p1x-card" style={{ maxWidth: 600 }}>
+        <div className="p1x-card" style={{ maxWidth: 640 }}>
           {error && <div className="p1x-err">{error}</div>}
+          <h3 style={{ margin: '0 0 6px', fontSize: 16 }}>Pick the domains you want to improve</h3>
+          <p className="p1x-muted" style={{ fontSize: 13, margin: '0 0 12px' }}>
+            Tap a domain to add it as a skill gap. We&apos;ll build your route from the weakest first.
+          </p>
+          {domainsLoading && <p className="p1x-muted" style={{ fontSize: 13 }}>Loading domains…</p>}
+          {!domainsLoading && domains.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 18 }}>
+              {domains.map((d) => {
+                const selected = gaps.some((g) => g.skill === d.slug);
+                return (
+                  <button
+                    key={d.slug}
+                    type="button"
+                    onClick={() => toggleDomain(d.slug)}
+                    className={`p1x-btn sm ${selected ? '' : 'ghost'}`}
+                    style={selected ? { borderColor: 'var(--accent)', background: 'rgba(232, 93, 38, 0.18)' } : undefined}
+                    title={d.description ?? d.title}
+                  >
+                    {selected ? '✓ ' : ''}{d.title}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          <h3 style={{ margin: '0 0 6px', fontSize: 16 }}>Or add a custom skill gap</h3>
           {gaps.map((g, i) => (
             <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 10 }}>
               <div className="p1x-field" style={{ flex: 2, margin: 0 }}>
@@ -256,7 +305,7 @@ export default function Roadmap() {
       {error && <div className="p1x-err">{error}</div>}
 
       {regenOpen && (
-        <div className="p1x-card" style={{ borderColor: 'rgba(139,92,246,.4)' }}>
+        <div className="p1x-card" style={{ borderColor: 'rgba(232, 93, 38, .4)' }}>
           <h3>Regenerate with fresh gaps</h3>
           <p className="hint">Completed tasks and their evidence carry forward untouched.</p>
           {gaps.map((g, i) => (
@@ -289,31 +338,7 @@ export default function Roadmap() {
         </div>
       )}
 
-      {roadmap.tasks.map((t, i) => (
-        <button
-          key={t.id}
-          className={`p1x-task ${t.status === 'completed' ? 'done' : ''}`}
-          onClick={() => setDetailTask(t)}
-        >
-          <div className="n">{t.status === 'completed' ? '✓' : i + 1}</div>
-          <div style={{ flex: 1 }}>
-            <div className="tt">{t.title}</div>
-            <div className="why">{t.why_it_matters}</div>
-            <div className="meta">
-              <span>⏱ {t.effort_minutes} min</span>
-              <span>🎯 {t.target_skills.join(', ')}</span>
-              <span>📦 {t.expected_evidence}</span>
-            </div>
-            <div className="row">
-              <span className={`p1x-pill ${PRI_CLASS[t.priority] ?? 'claim'}`}>{t.priority.toUpperCase()}</span>
-              <span className={`p1x-pill ${t.status === 'completed' ? 'ok' : t.status === 'in_progress' ? 'info' : 'claim'}`}>
-                {t.status.replace('_', ' ').toUpperCase()}
-              </span>
-              <span className="p1x-muted" style={{ marginLeft: 'auto', fontSize: 12 }}>Details →</span>
-            </div>
-          </div>
-        </button>
-      ))}
+      <RoadmapJourney tasks={roadmap.tasks} onSelect={setDetailTask} />
 
       {detailTask && (
         <TaskDetailPanel
