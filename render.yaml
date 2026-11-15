@@ -17,6 +17,8 @@ services:
         generateValue: true # Render generates a random secret on deploy
       - key: CODE_ENGINE_URL
         sync: false # engine service URL, pasted after it exists (Step 5)
+      - key: CODE_ENGINE_API_KEY
+        sync: false # set the same high-entropy secret as ENGINE_API_KEY below
       - key: FRONTEND_URL
         sync: false # core service URL itself (used in emails/links)
       # PUBLIC_BASE_URL intentionally unset: same-origin deploy falls back
@@ -31,3 +33,8 @@ services:
     dockerContext: ./part-2-code-engine
     plan: free
     healthCheckPath: /v1/health
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: ENGINE_API_KEY
+        sync: false # must exactly match CODE_ENGINE_API_KEY on skillforge-core
