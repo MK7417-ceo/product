@@ -18,21 +18,21 @@ SKILLFORGE helps Indian students and freshers move from claimed skills to demons
 
 Do not market guaranteed placement, guaranteed salary, employer-recognised certification or independently verified skills unless the corresponding process and evidence actually exist.
 
-## 2. Known repository risks from the previous audit
+## 2. Current engineering status (rechecked 15 November 2026)
 
 | Area | Finding | Launch consequence |
 |---|---|---|
-| Backend tests | A previous GitHub Actions run reported 484 passed; historical evidence only | Re-run on release candidate |
-| Frontend | Package scripts include build/lint, but existing CI does not run frontend build | Add frontend typecheck/build/lint to CI |
-| Code execution | Separate Code Engine source and adversarial tests exist | Do not expose publicly until isolation is independently validated |
-| Sandbox privilege drop | Best-effort privilege-drop path catches OSError and continues | P0: fail closed; abort execution if isolation setup fails |
-| Evidence | Submission currently transitions a task directly to completed | P0: submission must not mean verification |
-| Billing | Checkout documented as HTTP 501 / not connected | Do not claim paid checkout works or grant paid entitlements from browser state |
-| Integration docs | INTEGRATION.md contains unresolved merge-conflict markers | Repair before treating docs as authoritative |
-| Manual QA | Feature test list has unchecked end-to-end and mobile tests | Complete staging QA |
-| Time handling | Practice day calculation uses UTC | Use configured timezone; default India users to Asia/Kolkata |
+| Backend/core | Latest full CI: 491 passed; clean Alembic upgrade passed | PASS for current automated suite; keep regression tests in CI |
+| Frontend | TypeScript/production build and lint passed in CI | PASS for build/lint; browser E2E and mobile QA remain unverified |
+| Code Engine | 18 passed, 14 skipped on GitHub-hosted runner because network namespaces are unavailable | BLOCKED for full sandbox certification; run adversarial integration tests on hardened Linux |
+| Sandbox privilege drop | Fail-closed privilege dropping is implemented and covered by the current CI path | Code change PASS; production isolation boundary remains NOT TESTED |
+| Evidence | Submission is pending review; only admin can review globally; stale-roadmap evidence is rejected | Core workflow automated tests PASS; tenant-scoped reviewer permissions are not implemented |
+| Billing | Checkout remains HTTP 501 / not connected | BLOCKED; do not sell subscriptions or grant paid entitlements |
+| Integration docs | A prior audit flagged possible conflict markers; current file still needs a dedicated check | NOT VERIFIED; validate before release |
+| Manual QA | Full browser, accessibility, and mobile journey has not been signed off | NOT TESTED; complete staging QA |
+| Time handling | User-timezone behavior has not been revalidated in this release | NOT VERIFIED; test configured timezone and India default |
 
-Re-check each item against the release candidate before relying on it.
+CI evidence: GitHub Actions run 43689849360 on the exact application tree reports 491 core tests passed, clean migration passed, frontend build/lint passed, and Code Engine 18 passed / 14 skipped. The skipped sandbox integration tests are not a security sign-off.
 
 ## 3. P0 — Required before public launch
 
@@ -105,7 +105,8 @@ These are pricing hypotheses, not validated market prices. Only list features th
 - Obtain consent before using testimonials, student work or personal data in marketing.
 
 ## 6. Release engineering
-- [ ] CI runs backend tests, frontend typecheck/build/lint, Code Engine tests, security checks and browser E2E.
+- [x] CI runs backend tests, frontend typecheck/build/lint, Code Engine tests and a clean Alembic upgrade check.
+- [ ] Add security/dependency scanning and browser E2E; these are not covered by the current CI run.
 - [ ] Staging mirrors production configuration.
 - [ ] Database migrations, backups and rollback are tested.
 - [ ] Error monitoring, uptime monitoring and structured logs are enabled.
