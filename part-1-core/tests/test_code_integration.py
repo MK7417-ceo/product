@@ -13,6 +13,7 @@ from app.main import create_app
 def _ok_transport(url, payload, headers, timeout, method="POST"):
     if url.endswith("/v1/run"):
         assert headers.get("X-Request-ID")
+        assert headers.get("X-Engine-API-Key") == "shared-test-secret"
         return 200, {"run_id": "abc123", "verdict": "OK", "stdout": "42\n",
                      "stderr": "", "truncated": False, "exit_code": 0,
                      "cpu_ms": 5, "peak_ram_mb": 3.1, "timed_out": False}
@@ -29,8 +30,9 @@ def _down_transport(url, payload, headers, timeout, method="POST"):
 
 def _client_with(transport):
     app = create_app()
-    app.state.code_runner = HttpCodeRunnerClient("http://engine:9",
-                                                 transport=transport)
+    app.state.code_runner = HttpCodeRunnerClient(
+        "http://engine:9", api_key="shared-test-secret", transport=transport
+    )
     return TestClient(app)
 
 
@@ -50,6 +52,19 @@ def test_run_proxied_to_engine():
     assert r.status_code == 200, r.text
     body = r.json()
     assert body["verdict"] == "OK" and body["stdout"] == "42\n"
+
+
+def test_client_forwards_shared_engine_credential():
+    captured = {}
+
+    def transport(url, payload, headers, timeout, method="POST"):
+        captured.update(headers)
+        return 200, {"run_id": "x", "verdict": "OK"}
+
+    client = HttpCodeRunnerClient("http://engine:9", api_key="shared-test-secret",
+                                  transport=transport)
+    client.run("python", "print(1)", "", {}, "request-1")
+    assert captured["X-Engine-API-Key"] == "shared-test-secret"
 
 
 def test_engine_rejection_becomes_400():

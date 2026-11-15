@@ -162,7 +162,9 @@ def create_app() -> FastAPI:
         SqlAlchemyPasswordResetRepository(SessionLocal),
         hasher,
         email_sender=send_password_reset_email)
-    app.state.code_runner = HttpCodeRunnerClient(settings.CODE_ENGINE_URL)
+    app.state.code_runner = HttpCodeRunnerClient(
+        settings.CODE_ENGINE_URL, api_key=settings.CODE_ENGINE_API_KEY
+    )
     app.state.launchpad_service = LaunchpadServiceImpl(
         SqlAlchemyResumeRepository(SessionLocal),
         SqlAlchemyRoadmapRepository(SessionLocal),

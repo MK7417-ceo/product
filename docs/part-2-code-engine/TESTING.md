@@ -3,6 +3,17 @@
 **Rule: no feature is "done" until BOTH lanes pass. Security tests are blocking —
 a single containment failure stops the release.**
 
+## Internal API authentication
+
+Production Render configuration must set:
+- APP_ENV=production and ENGINE_API_KEY on skillforge-engine.
+- CODE_ENGINE_API_KEY on skillforge-core to the exact same high-entropy value.
+
+The engine rejects missing/incorrect credentials on /v1/run and
+/v1/plagiarism/check. If production starts without ENGINE_API_KEY, those
+endpoints return 503 and execute nothing. Health and language metadata remain
+read-only public endpoints. Never commit the shared key.
+
 ## Lane 1 — Agent lane (run on the agent's end, evidence attached)
 
 ### Unit tests (domain core, no Docker)

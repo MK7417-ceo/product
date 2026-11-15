@@ -25,6 +25,7 @@ Do not market guaranteed placement, guaranteed salary, employer-recognised certi
 | Backend/core | Latest full CI: 491 passed; clean Alembic upgrade passed | PASS for current automated suite; keep regression tests in CI |
 | Frontend | TypeScript/production build and lint passed in CI | PASS for build/lint; browser E2E and mobile QA remain unverified |
 | Code Engine | 18 passed, 14 skipped on GitHub-hosted runner because network namespaces are unavailable | BLOCKED for full sandbox certification; run adversarial integration tests on hardened Linux |
+| Engine API exposure | Previously the public Render engine accepted unauthenticated execution requests | Internal shared-key gate added in PR; production deployment must set matching secrets on Core and Engine |
 | Sandbox privilege drop | Fail-closed privilege dropping is implemented and covered by the current CI path | Code change PASS; production isolation boundary remains NOT TESTED |
 | Evidence | Submission is pending review; only admin can review globally; stale-roadmap evidence is rejected | Core workflow automated tests PASS; tenant-scoped reviewer permissions are not implemented |
 | Billing | Checkout remains HTTP 501 / not connected | BLOCKED; do not sell subscriptions or grant paid entitlements |
@@ -32,7 +33,7 @@ Do not market guaranteed placement, guaranteed salary, employer-recognised certi
 | Manual QA | Full browser, accessibility, and mobile journey has not been signed off | NOT TESTED; complete staging QA |
 | Time handling | User-timezone behavior has not been revalidated in this release | NOT VERIFIED; test configured timezone and India default |
 
-CI evidence: GitHub Actions run 43689849360 on the exact application tree reports 491 core tests passed, clean migration passed, frontend build/lint passed, and Code Engine 18 passed / 14 skipped. The skipped sandbox integration tests are not a security sign-off.
+CI evidence: GitHub Actions run 43690053130 on main reports 491 core tests passed, clean migration passed, frontend build/lint passed, and Code Engine 18 passed / 14 skipped. The skipped sandbox integration tests are not a security sign-off. The engine API shared-key protection is being added separately and must be deployed with matching secrets.
 
 ## 3. P0 — Required before public launch
 
@@ -42,6 +43,7 @@ CI evidence: GitHub Actions run 43689849360 on the exact application tree report
 - [ ] Adversarial tests cover privilege escalation, filesystem/network access, fork bombs, memory exhaustion, timeouts and output flooding.
 - [ ] Production secrets are strong, unique and environment-managed.
 - [ ] HTTPS, CORS, trusted hosts, rate limits, auth/session expiry and password reset are production-configured.
+- [ ] Render Core/Engine have the same high-entropy internal API key configured; verify unauthenticated direct engine execution returns 401.
 - [ ] User data access is tenant-scoped and authorization-tested.
 - [ ] Privacy policy, terms, refund/cancellation policy and support contact are published.
 - [ ] Data deletion/export and retention behavior are documented and tested.

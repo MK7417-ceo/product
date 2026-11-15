@@ -38,9 +38,10 @@ def _default_transport(url: str, payload: dict, headers: dict,
 
 
 class HttpCodeRunnerClient:
-    def __init__(self, base_url: str,
+    def __init__(self, base_url: str, api_key: str = "",
                  transport: Callable = _default_transport) -> None:
         self._base = base_url.rstrip("/")
+        self._api_key = api_key
         self._transport = transport
 
     def run(self, language: str, code: str, stdin: str,
@@ -49,7 +50,9 @@ class HttpCodeRunnerClient:
             f"{self._base}/v1/run",
             {"language": language, "code": code, "stdin": stdin,
              "limits": limits or {}},
-            {"X-Request-ID": request_id}, ENGINE_TIMEOUT_S)
+            {"X-Request-ID": request_id,
+             **({"X-Engine-API-Key": self._api_key} if self._api_key else {})},
+            ENGINE_TIMEOUT_S)
         if status == 400:
             raise CodeEngineError(body.get("error", "bad_request"),
                                   body.get("message", "engine rejected the run"),
