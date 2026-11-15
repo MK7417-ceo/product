@@ -22,23 +22,23 @@ Do not market guaranteed placement, guaranteed salary, employer-recognised certi
 
 | Area | Finding | Launch consequence |
 |---|---|---|
-| Backend/core | Latest full CI: 491 passed; clean Alembic upgrade passed | PASS for current automated suite; keep regression tests in CI |
+| Backend/core | Latest post-merge CI (run 43700405600): 492 passed; clean Alembic upgrade passed | PASS for current automated suite; keep regression tests in CI |
 | Frontend | TypeScript/production build and lint passed in CI | PASS for build/lint; browser E2E and mobile QA remain unverified |
-| Code Engine | 18 passed, 14 skipped on GitHub-hosted runner because network namespaces are unavailable | BLOCKED for full sandbox certification; run adversarial integration tests on hardened Linux |
+| Code Engine | 21 passed, 14 skipped on GitHub-hosted runner because network namespaces are unavailable; strict dedicated-runner workflow added, but not yet executed | BLOCKED for full sandbox certification; run adversarial integration tests on hardened Linux |
 | Engine API exposure | Previously the public Render engine accepted unauthenticated execution requests | Internal shared-key gate added in PR; production deployment must set matching secrets on Core and Engine |
-| Sandbox privilege drop | Fail-closed privilege dropping is implemented and covered by the current CI path | Code change PASS; production isolation boundary remains NOT TESTED |
+| Sandbox privilege drop | Fail-closed privilege dropping is implemented; current suite emits a Python fork-from-multithreaded-process warning | Code change PASS; filesystem/process isolation boundary remains NOT TESTED |
 | Evidence | Submission is pending review; only admin can review globally; stale-roadmap evidence is rejected | Core workflow automated tests PASS; tenant-scoped reviewer permissions are not implemented |
 | Billing | Checkout remains HTTP 501 / not connected | BLOCKED; do not sell subscriptions or grant paid entitlements |
 | Integration docs | A prior audit flagged possible conflict markers; current file still needs a dedicated check | NOT VERIFIED; validate before release |
 | Manual QA | Full browser, accessibility, and mobile journey has not been signed off | NOT TESTED; complete staging QA |
 | Time handling | User-timezone behavior has not been revalidated in this release | NOT VERIFIED; test configured timezone and India default |
 
-CI evidence: GitHub Actions run 43690053130 on main reports 491 core tests passed, clean migration passed, frontend build/lint passed, and Code Engine 18 passed / 14 skipped. The skipped sandbox integration tests are not a security sign-off. The engine API shared-key protection is being added separately and must be deployed with matching secrets.
+CI evidence: GitHub Actions run 43700405600 on main (merge commit fabb14d900131124c28a022ad82c2cef178707c7) reports 492 core tests passed, clean migration passed, frontend build/lint passed, and Code Engine 21 passed / 14 skipped. The skipped sandbox integration tests are not a security sign-off. A manual strict workflow now requires a dedicated self-hosted runner and refuses to skip when namespace support is absent; it has not yet been run. The engine API shared-key protection is merged but must be deployed with matching secrets.
 
 ## 3. P0 — Required before public launch
 
 ### Security and privacy
-- [ ] Code execution uses a proven OS/container isolation boundary, non-root identity, no network, restricted filesystem, and CPU/memory/process/time/output limits.
+- [ ] Code execution uses a proven OS/container isolation boundary (e.g. gVisor/Firecracker), non-root identity, no network, restricted filesystem, and CPU/memory/process/time/output limits. The current in-process sandbox is not sufficient for public hostile workloads.
 - [ ] Any failure to establish isolation aborts execution (fail closed).
 - [ ] Adversarial tests cover privilege escalation, filesystem/network access, fork bombs, memory exhaustion, timeouts and output flooding.
 - [ ] Production secrets are strong, unique and environment-managed.
@@ -108,6 +108,7 @@ These are pricing hypotheses, not validated market prices. Only list features th
 
 ## 6. Release engineering
 - [x] CI runs backend tests, frontend typecheck/build/lint, Code Engine tests and a clean Alembic upgrade check.
+- [ ] Run `.github/workflows/sandbox-security.yml` on a dedicated disposable Linux runner and obtain zero skipped integration tests; then independently close filesystem/process isolation gaps.
 - [ ] Add security/dependency scanning and browser E2E; these are not covered by the current CI run.
 - [ ] Staging mirrors production configuration.
 - [ ] Database migrations, backups and rollback are tested.

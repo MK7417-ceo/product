@@ -1,0 +1,33 @@
+name: Sandbox Security Integration
+
+on:
+  workflow_dispatch:
+
+# This workflow intentionally requires a dedicated, disposable Linux runner.
+# Never attach it to a general-purpose or secrets-bearing self-hosted runner.
+permissions:
+  contents: read
+
+jobs:
+  sandbox-security:
+    runs-on: [self-hosted, linux, sandbox-security]
+    timeout-minutes: 20
+    env:
+      SKILLFORGE_REQUIRE_SANDBOX_TESTS: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install language toolchains
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends gcc g++ default-jdk
+      - name: Install Code Engine dependencies
+        run: pip install -r part-2-code-engine/requirements.txt
+      - name: Verify network namespace capability
+        run: unshare -n true
+      - name: Run full sandbox integration and adversarial suite (no skips allowed)
+        run: |
+          cd part-2-code-engine
+          python -m pytest -q -rs
