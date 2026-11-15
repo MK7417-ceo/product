@@ -13,6 +13,7 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str = ""
     GOOGLE_REDIRECT_URI: str = ""
     CODE_ENGINE_URL: str = "http://localhost:8028"
+    CODE_ENGINE_API_KEY: str = ""  # shared secret with the isolated Code Engine
     # AI/RAG (DB-first, API-on-miss). Keys are operator-supplied via env
     # only — never hardcoded, never committed. Empty key = the layer still
     # works from the DB + local RAG, with an honest fallback on a miss.
