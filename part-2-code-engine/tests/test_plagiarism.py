@@ -27,7 +27,9 @@ BOILER = "def solve(nums):\n"
 SOL_A = BOILER + "    return sum(nums)\n"
 SOL_B = BOILER + "    s = 0\n    for x in nums:\n        s += x\n    return s\n"
 
-client = TestClient(create_app())
+ENGINE_KEY = "test-engine-secret"
+client = TestClient(create_app(api_key=ENGINE_KEY))
+ENGINE_HEADERS = {"X-Engine-API-Key": ENGINE_KEY}
 
 
 def test_identical_code_scores_one_and_flags():
@@ -96,7 +98,7 @@ def test_api_plagiarism_check():
         "code": ORIG,
         "candidates": [{"id": "renamed", "code": RENAMED},
                        {"id": "other", "code": DIFFERENT}],
-    })
+    }, headers=ENGINE_HEADERS)
     assert r.status_code == 200, r.text
     res = {x["candidate_id"]: x for x in r.json()["results"]}
     assert res["renamed"]["flagged"] is True
@@ -104,10 +106,19 @@ def test_api_plagiarism_check():
     assert "ngram_hash" in res["renamed"]["fingerprint_a"]
 
 
+def test_plagiarism_endpoint_requires_internal_key():
+    response = client.post("/v1/plagiarism/check", json={
+        "language": "python", "code": ORIG,
+        "candidates": [{"id": "x", "code": RENAMED}],
+    })
+    assert response.status_code == 401
+
+
 def test_api_rejects_bad_input():
     r = client.post("/v1/plagiarism/check", json={
-        "language": "rust", "code": "x", "candidates": [{"id": "a", "code": "y"}]})
+        "language": "rust", "code": "x", "candidates": [{"id": "a", "code": "y"}]},
+        headers=ENGINE_HEADERS)
     assert r.status_code == 400
     r = client.post("/v1/plagiarism/check", json={
-        "language": "python", "code": "x", "candidates": []})
+        "language": "python", "code": "x", "candidates": []}, headers=ENGINE_HEADERS)
     assert r.status_code == 400
