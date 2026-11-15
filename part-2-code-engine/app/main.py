@@ -1,6 +1,8 @@
 """HTTP API for the Code Execution Engine (v1)."""
 from __future__ import annotations
 
+import os
+import secrets
 import time
 import uuid
 
@@ -41,9 +43,14 @@ class PlagiarismRequest(BaseModel):
     boilerplate: str = ""
 
 
-def create_app() -> FastAPI:
+def create_app(api_key: str | None = None, environment: str | None = None) -> FastAPI:
     app = FastAPI(title="SkillForge Code Engine", version="0.1.0")
     svc = CodeRunnerServiceImpl()
+    # In production, execution endpoints are disabled until a shared secret
+    # has been configured on BOTH Core and Engine. Local development may run
+    # without a key; once a key exists it is always enforced.
+    engine_api_key = os.getenv("ENGINE_API_KEY", "") if api_key is None else api_key
+    app_environment = os.getenv("APP_ENV", "development") if environment is None else environment
 
     @app.middleware("http")
     async def request_id(request: Request, call_next):
@@ -51,6 +58,25 @@ def create_app() -> FastAPI:
         response = await call_next(request)
         response.headers[REQUEST_ID_HEADER] = rid
         return response
+
+    @app.middleware("http")
+    async def protect_internal_endpoints(request: Request, call_next):
+        if request.url.path in {"/v1/run", "/v1/plagiarism/check"}:
+            if app_environment.lower() == "production" and not engine_api_key:
+                return JSONResponse(
+                    status_code=503,
+                    content={"error": "engine_not_configured",
+                             "message": "Code Engine shared authentication is not configured"},
+                )
+            if engine_api_key and not secrets.compare_digest(
+                request.headers.get("X-Engine-API-Key", ""), engine_api_key
+            ):
+                return JSONResponse(
+                    status_code=401,
+                    content={"error": "unauthorized",
+                             "message": "A valid internal engine credential is required"},
+                )
+        return await call_next(request)
 
     @app.get("/v1/health")
     def health():
