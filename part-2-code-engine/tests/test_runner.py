@@ -20,7 +20,9 @@ int main() {
 }
 '''
 
-client = TestClient(create_app())
+ENGINE_KEY = "test-engine-secret"
+client = TestClient(create_app(api_key=ENGINE_KEY))
+ENGINE_HEADERS = {"X-Engine-API-Key": ENGINE_KEY}
 svc = CodeRunnerServiceImpl()
 
 
@@ -45,7 +47,7 @@ requires_network_namespace = pytest.mark.skipif(
 
 def _run(**kw):
     kw.setdefault("limits", {})
-    r = client.post("/v1/run", json=kw)
+    r = client.post("/v1/run", json=kw, headers=ENGINE_HEADERS)
     assert r.status_code == 200, r.text
     return r.json()
 
@@ -166,28 +168,44 @@ def test_fork_bomb_is_contained():
 # ---------- contract validation ----------
 
 def test_empty_code_rejected():
-    r = client.post("/v1/run", json={"language": "python", "code": "   "})
+    r = client.post("/v1/run", json={"language": "python", "code": "   "}, headers=ENGINE_HEADERS)
     assert r.status_code == 400
     assert r.json()["error"] == "empty_code"
 
 
 def test_unsupported_language_rejected():
-    r = client.post("/v1/run", json={"language": "rust", "code": "fn main(){}"})
+    r = client.post("/v1/run", json={"language": "rust", "code": "fn main(){}"}, headers=ENGINE_HEADERS)
     assert r.status_code == 400
     assert r.json()["error"] == "unsupported_language"
 
 
 def test_bad_limits_rejected():
     r = client.post("/v1/run", json={"language": "python", "code": "print(1)",
-                                     "limits": {"wall_time_s": 999}})
+                                     "limits": {"wall_time_s": 999}}, headers=ENGINE_HEADERS)
     assert r.status_code == 400
 
 
 @requires_network_namespace
 def test_request_id_echoed():
     r = client.post("/v1/run", json={"language": "python", "code": "print(1)"},
-                    headers={"X-Request-ID": "test-123"})
+                    headers={**ENGINE_HEADERS, "X-Request-ID": "test-123"})
     assert r.headers["x-request-id"] == "test-123"
+
+
+def test_run_endpoint_rejects_missing_or_invalid_internal_key():
+    payload = {"language": "python", "code": "print('must not run')"}
+    assert client.post("/v1/run", json=payload).status_code == 401
+    assert client.post("/v1/run", json=payload,
+                       headers={"X-Engine-API-Key": "wrong"}).status_code == 401
+
+
+def test_production_engine_fails_closed_without_shared_key():
+    production_client = TestClient(create_app(api_key="", environment="production"))
+    response = production_client.post(
+        "/v1/run", json={"language": "python", "code": "print('must not run')"}
+    )
+    assert response.status_code == 503
+    assert response.json()["error"] == "engine_not_configured"
 
 
 def test_languages_endpoint():
