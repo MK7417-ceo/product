@@ -42,7 +42,7 @@ interface ServerTask {
   task_type: string;
   title: string;
   description?: string;
-  status: 'pending' | 'done' | 'skipped';
+  status: string;
 }
 
 interface ServerPlan {

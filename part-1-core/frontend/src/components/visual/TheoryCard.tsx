@@ -46,7 +46,7 @@ function renderMarkdown(content: string): ReactNode[] {
   let list: string[] = [];
   let listOrdered = false;
   let codeBlock: string[] | null = null;
-  let codeLang = '';
+
 
   const flushList = () => {
     if (list.length === 0) return;
@@ -69,7 +69,7 @@ function renderMarkdown(content: string): ReactNode[] {
       </pre>
     );
     codeBlock = null;
-    codeLang = '';
+
   };
 
   lines.forEach((raw, idx) => {
@@ -81,7 +81,7 @@ function renderMarkdown(content: string): ReactNode[] {
       } else {
         flushList();
         codeBlock = [];
-        codeLang = line.slice(3).trim();
+        // Language tag is not needed by this lightweight renderer.
       }
       return;
     }
@@ -160,6 +160,7 @@ export default function TheoryCard({
               🎨 Visual
             </span>
           )}
+          {!coding && <span className="visual-badge">Non-coding</span>}
         </div>
         <ListenButton text={audioText ?? stripMarkdown(content)} lang={lang} />
       </header>

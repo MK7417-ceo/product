@@ -120,6 +120,10 @@ class EvidenceModel(Base):
     content: Mapped[str] = mapped_column(Text, nullable=False)
     feedback: Mapped[str] = mapped_column(Text, nullable=False, default="")
     created_at: Mapped[DateTime] = mapped_column(DateTime(timezone=True), nullable=False)
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="pending_review", index=True)
+    reviewed_by: Mapped[str | None] = mapped_column(String(36), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    reviewed_at: Mapped[DateTime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    review_note: Mapped[str] = mapped_column(Text, nullable=False, default="")
 
 
 class ResumeModel(Base):

@@ -134,10 +134,7 @@ export default function CodeLab() {
         if (q.starter_code) {
           setCodeByLang((prev) => {
             if (prev.python) return prev;
-            const starter = typeof q.starter_code === 'string'
-              ? q.starter_code
-              : (q.starter_code.python ?? q.starter_code.py ?? '');
-            const next = { ...prev, python: starter };
+            const next = { ...prev, python: q.starter_code };
             try {
               localStorage.setItem(CODE_KEY, JSON.stringify(next));
             } catch {

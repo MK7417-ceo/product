@@ -5,6 +5,7 @@ export const languages = [
 ] as const;
 
 export type LangCode = (typeof languages)[number]['code'];
+export type TKey = string;
 
 export const translations = {
   en: {
@@ -178,7 +179,7 @@ export const translations = {
     'coins.error': 'Something went wrong.',
     'coins.loadError': 'Could not load coin data.',
     'streak.dayStreak': 'Day streak',
-    'streak.longest': 'Longest',
+
     'streak.today': "Today's progress",
     'streak.doneToday': 'Done today!',
     'streak.notYet': 'Not yet — keep going!',
@@ -352,7 +353,7 @@ export const translations = {
     'coins.error': 'कुछ गलत हो गया।',
     'coins.loadError': 'कॉइन डेटा लोड नहीं हो सका।',
     'streak.dayStreak': 'दिन की स्ट्रीक',
-    'streak.longest': 'सबसे लंबी',
+
     'streak.today': 'आज की प्रगति',
     'streak.doneToday': 'आज हो गया!',
     'streak.notYet': 'अभी नहीं — लगे रहो!',
@@ -529,11 +530,11 @@ export const translations = {
     'coins.error': 'Kuch galat ho gaya.',
     'coins.loadError': 'Coin data load nahi ho saka.',
     'streak.dayStreak': 'Din ki streak',
-    'streak.longest': 'Sabse lambi',
+
     'streak.today': 'Aaj ki progress',
     'streak.doneToday': 'Aaj ho gaya!',
     'streak.notYet': 'Abhi nahi — lage raho!',
   },
 } as const;
 
-export type TKey = keyof (typeof translations)['en'];
+

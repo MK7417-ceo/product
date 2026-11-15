@@ -22,6 +22,7 @@ function TaskDetailPanel({
   const [evContent, setEvContent] = useState('');
   const [busy, setBusy] = useState(false);
   const [submitErr, setSubmitErr] = useState('');
+  const [submitNotice, setSubmitNotice] = useState('');
 
   useEffect(() => {
     roadmapApi
@@ -51,7 +52,8 @@ function TaskDetailPanel({
       const e = await roadmapApi.submitEvidence(task.id, evKind, evContent.trim());
       setEv((prev) => [e, ...prev]);
       setEvContent('');
-      onChanged(); // task auto-completes on evidence submit
+      setSubmitNotice('Evidence submitted. Your task will be completed after a reviewer verifies it.');
+      onChanged();
     } catch (err) {
       setSubmitErr(err instanceof ApiError ? err.message : 'Submit failed');
     } finally {
@@ -100,6 +102,7 @@ function TaskDetailPanel({
           {ev.map((e) => (
             <div key={e.id} style={{ border: '1px solid var(--border)', borderRadius: 10, padding: 12, marginBottom: 8 }}>
               <span className="p1x-pill brand">{e.kind.toUpperCase()}</span>
+              <span className="p1x-pill info" style={{ marginLeft: 8 }}>{e.status.replace('_', ' ').toUpperCase()}</span>
               <span className="p1x-muted" style={{ fontSize: 12, marginLeft: 8 }}>
                 {new Date(e.created_at).toLocaleString()}
               </span>
@@ -107,6 +110,7 @@ function TaskDetailPanel({
                 {e.content.length > 220 ? e.content.slice(0, 220) + '…' : e.content}
               </p>
               {e.feedback && <p className="p1x-muted" style={{ fontSize: 12.5, margin: '6px 0 0' }}>💬 {e.feedback}</p>}
+              {e.review_note && <p className="p1x-muted" style={{ fontSize: 12.5, margin: '6px 0 0' }}>Reviewer: {e.review_note}</p>}
             </div>
           ))}
           {ev.length === 0 && !evError && <p className="p1x-muted" style={{ fontSize: 13.5 }}>No evidence yet.</p>}
@@ -114,8 +118,9 @@ function TaskDetailPanel({
 
         {task.status === 'in_progress' && (
           <div className="sec">
-            <h4>SUBMIT EVIDENCE — PROOF COMPLETES THE TASK</h4>
+            <h4>SUBMIT EVIDENCE — REVIEW REQUIRED</h4>
             {submitErr && <div className="p1x-err">{submitErr}</div>}
+            {submitNotice && <div className="p1x-pill info" style={{ display: 'inline-flex', marginBottom: 10 }}>{submitNotice}</div>}
             <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
               {['text', 'code', 'url'].map((k) => (
                 <button

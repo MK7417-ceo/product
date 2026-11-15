@@ -100,6 +100,16 @@ def require_admin(request: Request, user_id: str = Depends(current_user_id)) -> 
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="admin required")
     return user_id
 
+def require_reviewer(request: Request, user_id: str = Depends(current_user_id)) -> str:
+    """Only explicitly assigned reviewers and admins may review learner evidence."""
+    try:
+        user = _service(request).get_user(user_id)
+    except DomainError as exc:
+        raise _domain_error(exc)
+    if user.role not in ("reviewer", "admin"):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="reviewer access required")
+    return user_id
+
 
 @router.post("/register", response_model=AuthResponse, status_code=201)
 def register(body: RegisterRequest, request: Request):

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
 import { useLang } from '../lib/i18n';
 import './weekly-test.css';
@@ -164,7 +163,6 @@ const GRADE_COLORS: Record<string, string> = {
 export default function WeeklyTest() {
   const { lang } = useLang();
   const t = STR[lang] ?? STR.en;
-  const navigate = useNavigate();
   const [phase, setPhase] = useState<Phase>('loading');
   const [upcoming, setUpcoming] = useState<TestSummary[]>([]);
   const [past, setPast] = useState<TestSummary[]>([]);
@@ -334,7 +332,7 @@ export default function WeeklyTest() {
           <div className="wt-score-row">
             <div><strong>{result.score}/{result.total}</strong><span>{t.score}</span></div>
             <div><strong>{result.percentage}%</strong><span>%</span></div>
-            <div><strong>🪙 {result.coinsEarned}</strong><span>{t.coinsEarned}</span></div>
+            <div><strong>🪙 {result.coins_earned}</strong><span>{t.coinsEarned}</span></div>
           </div>
           <h3>{t.reviewAnswers}</h3>
           <div className="wt-review">

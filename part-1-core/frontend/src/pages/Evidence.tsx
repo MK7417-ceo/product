@@ -14,6 +14,7 @@ function EvidenceDetailPanel({ item, onClose }: { item: EvidenceWithTask; onClos
       <div className="p1x-panel" onClick={(e) => e.stopPropagation()}>
         <button className="p1x-btn ghost sm close" onClick={onClose}>✕ Close</button>
         <span className="p1x-pill brand">{item.kind.toUpperCase()}</span>
+        <span className="p1x-pill info" style={{ marginLeft: 8 }}>{item.status.replace('_', ' ').toUpperCase()}</span>
         <h2 style={{ marginTop: 10 }}>Evidence detail</h2>
         <p className="p1x-muted" style={{ fontSize: 14 }}>
           Task: <b style={{ color: 'var(--text)' }}>{item.taskTitle}</b> · {item.taskStatus.replace('_', ' ')}
@@ -30,8 +31,14 @@ function EvidenceDetailPanel({ item, onClose }: { item: EvidenceWithTask; onClos
         </div>
         {item.feedback && (
           <div className="sec">
-            <h4>FEEDBACK</h4>
+            <h4>SUBMISSION RECEIPT</h4>
             <p>💬 {item.feedback}</p>
+          </div>
+        )}
+        {item.review_note && (
+          <div className="sec">
+            <h4>REVIEWER FEEDBACK</h4>
+            <p>{item.review_note}</p>
           </div>
         )}
       </div>
@@ -122,6 +129,7 @@ export default function EvidencePage() {
               </div>
               <div className="row">
                 <span className="p1x-pill brand">{e.kind.toUpperCase()}</span>
+                <span className="p1x-pill info">{e.status.replace('_', ' ').toUpperCase()}</span>
                 <span className="p1x-muted" style={{ fontSize: 12 }}>
                   {new Date(e.created_at).toLocaleString()}
                 </span>
