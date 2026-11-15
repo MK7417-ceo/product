@@ -2,6 +2,7 @@
 
 The FIRST test is C++ — the mandated first proof of the engine.
 """
+import os
 import shutil
 import subprocess
 
@@ -39,6 +40,13 @@ def _network_namespace_available() -> bool:
 
 
 NETWORK_NAMESPACE_AVAILABLE = _network_namespace_available()
+
+# A dedicated security runner must never silently convert missing isolation
+# capabilities into skipped tests. Set this in the self-hosted workflow.
+if os.getenv("SKILLFORGE_REQUIRE_SANDBOX_TESTS") == "1" and not NETWORK_NAMESPACE_AVAILABLE:
+    raise RuntimeError(
+        "sandbox security job requires network namespace support; refusing to skip isolation tests"
+    )
 requires_network_namespace = pytest.mark.skipif(
     not NETWORK_NAMESPACE_AVAILABLE,
     reason="runner lacks permission to create a network namespace; fail-closed behavior is tested separately",
