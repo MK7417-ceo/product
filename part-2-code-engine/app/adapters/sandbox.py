@@ -83,11 +83,20 @@ def execute_sandboxed(
             resource.setrlimit(resource.RLIMIT_FSIZE, (4 * 1024 * 1024, 4 * 1024 * 1024))
             os.chdir(workdir)
             if drop_privileges:
-                try:
-                    os.setgid(65534)
-                    os.setuid(65534)
-                except OSError:
-                    pass  # best effort; rlimits + netns still hold
+                # Never execute untrusted code with root privileges. A failed
+                # privilege drop is a hard sandbox setup failure (fail closed).
+                if os.geteuid() == 0:
+                    try:
+                        os.setgroups([])
+                        os.setgid(65534)
+                        os.setuid(65534)
+                    except OSError as exc:
+                        os.write(stderr_w, f"sandbox: privilege drop failed: {exc}\\n".encode())
+                        os._exit(127)
+                # Also reject a non-root process that still has root group.
+                if os.geteuid() == 0 or os.getegid() == 0:
+                    os.write(stderr_w, b"sandbox: refusing privileged execution\\n")
+                    os._exit(127)
             os.dup2(stdin_r, 0)
             os.dup2(stdout_w, 1)
             os.dup2(stderr_w, 2)
