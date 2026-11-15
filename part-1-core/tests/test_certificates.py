@@ -45,14 +45,30 @@ def _authz(c: TestClient) -> dict:
 
 
 def _complete_all_tasks(c: TestClient, h: dict, roadmap_id: str, tasks: list):
+    # Bootstrap a separate reviewer identity; learners cannot self-verify.
+    reviewer_email = f"cert-reviewer-{uuid.uuid4().hex[:8]}@x.com"
+    reviewer = c.post("/api/v1/auth/register", json={
+        "email": reviewer_email, "password": "password123"})
+    assert reviewer.status_code == 201, reviewer.text
+    reviewer_id = reviewer.json()["user"]["id"]
+    c.app.state.auth_service.set_role(reviewer_id, "admin")
+    login = c.post("/api/v1/auth/login", json={
+        "email": reviewer_email, "password": "password123"})
+    rh = {"Authorization": f"Bearer {login.json()['access_token']}"}
+
     for t in tasks:
         if t["status"] == "pending":
             r = c.patch(f"/api/v1/roadmaps/tasks/{t['id']}",
                         json={"status": "in_progress"}, headers=h)
             assert r.status_code == 200, r.text
-        r = c.patch(f"/api/v1/roadmaps/tasks/{t['id']}",
-                    json={"status": "completed"}, headers=h)
-        assert r.status_code == 200, r.text
+        submitted = c.post(f"/api/v1/roadmaps/tasks/{t['id']}/evidence",
+            headers=h, json={"kind": "text",
+            "content": f"Completed work sample for {t['title']}. I can explain and demonstrate the required outcome."})
+        assert submitted.status_code == 201, submitted.text
+        reviewed = c.post(f"/api/v1/evidence/{submitted.json()['id']}/review",
+            headers=rh, json={"decision": "verified",
+            "note": "Test reviewer verified the submitted work sample."})
+        assert reviewed.status_code == 200, reviewed.text
 
 
 def test_certificate_full_flow():

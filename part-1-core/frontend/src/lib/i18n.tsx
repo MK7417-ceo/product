@@ -35,7 +35,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   }, [lang]);
 
   const t = useCallback((key: TKey, fallback?: string): string => {
-    return translations[lang][key] ?? translations.en[key] ?? fallback ?? key;
+    const active = translations[lang] as Record<string, string>;
+    const english = translations.en as Record<string, string>;
+    return active[key] ?? english[key] ?? fallback ?? key;
   }, [lang]);
 
   return <Ctx.Provider value={{ lang, setLang, t, languages }}>{children}</Ctx.Provider>;

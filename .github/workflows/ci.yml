@@ -13,9 +13,48 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install deps
+      - name: Install core dependencies
         run: pip install -r part-1-core/requirements.txt
-      - name: Run tests
+      - name: Run core tests
         run: cd part-1-core && python -m pytest -q
+      - name: Verify clean database migrations
+        env:
+          SECRET_KEY: ci-only-not-a-production-secret
+          ALEMBIC_DATABASE_URL: sqlite:////tmp/skillforge-migration-check.db
+        run: |
+          cd part-1-core
+          alembic upgrade head
+          test -f /tmp/skillforge-migration-check.db
       - name: Docs present
         run: test -f docs/ARCHITECTURE.md && test -f docs/PROGRAM.md
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: part-1-core/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: part-1-core/frontend/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: TypeScript and production build
+        run: npm run build
+      - name: Lint
+        run: npm run lint
+
+  code-engine-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install Code Engine dependencies
+        run: pip install -r part-2-code-engine/requirements.txt
+      - name: Run Code Engine tests
+        run: cd part-2-code-engine && python -m pytest -q

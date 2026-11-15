@@ -73,6 +73,10 @@ export interface Evidence {
   content: string;
   feedback: string;
   created_at: string;
+  status: 'legacy_unverified' | 'pending_review' | 'verified' | 'rejected' | 'needs_changes';
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  review_note: string;
 }
 
 export const roadmapApi = {

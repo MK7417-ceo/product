@@ -56,12 +56,27 @@ class RoadmapServiceImpl:
         return self._roadmaps.list_versions(user_id)
 
     def update_task(self, user_id: str, task_id: str, status: str) -> object:
+        if status == "completed":
+            raise DomainError("a task can only be completed after evidence is verified")
         roadmap = self.get_current(user_id)
         task = next((t for t in roadmap.tasks if t.id == task_id), None)
         if not task:
             raise DomainError("task not found in current roadmap")
         task.transition(status)
         self._roadmaps.save(roadmap)
+        return task
+
+    def complete_verified_task(self, user_id: str, task_id: str) -> object:
+        """Internal workflow entry point used only after evidence review passes."""
+        roadmap = self.get_current(user_id)
+        task = next((t for t in roadmap.tasks if t.id == task_id), None)
+        if not task:
+            raise DomainError("task not found in current roadmap")
+        if task.status == "in_progress":
+            task.transition("completed")
+            self._roadmaps.save(roadmap)
+        elif task.status != "completed":
+            raise DomainError("task must be in progress before verified completion")
         return task
 
     def regenerate(self, user_id: str, gaps: list[dict]) -> Roadmap:

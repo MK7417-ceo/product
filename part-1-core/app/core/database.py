@@ -15,42 +15,49 @@ from sqlalchemy.orm import declarative_base, sessionmaker
 
 from app.core.config import settings
 
-_database_url = make_url(settings.DATABASE_URL)
-_is_sqlite = _database_url.get_backend_name() == "sqlite"
-_connect_args: dict = {}
 
-if _is_sqlite:
-    _connect_args["check_same_thread"] = False
-    _connect_args["timeout"] = 30
+def create_database_engine(database_url: str):
+    """Build a configured engine; exposed for isolated persistence tests."""
+    url = make_url(database_url)
+    is_sqlite = url.get_backend_name() == "sqlite"
+    connect_args: dict = {}
 
-    # Ensure a configured local SQLite file has a real parent directory.
-    # Do not create a directory for in-memory SQLite databases used by tests.
-    if _database_url.database and _database_url.database != ":memory:":
-        Path(_database_url.database).expanduser().resolve().parent.mkdir(
-            parents=True, exist_ok=True
-        )
+    if is_sqlite:
+        connect_args["check_same_thread"] = False
+        connect_args["timeout"] = 30
 
-engine = create_engine(
-    settings.DATABASE_URL,
-    connect_args=_connect_args,
-    pool_pre_ping=True,
-)
+        # Ensure a configured local SQLite file has a real parent directory.
+        # Do not create a directory for in-memory SQLite databases used by tests.
+        if url.database and url.database != ":memory:":
+            Path(url.database).expanduser().resolve().parent.mkdir(
+                parents=True, exist_ok=True
+            )
 
-if _is_sqlite:
-    @event.listens_for(engine, "connect")
-    def _configure_sqlite_connection(dbapi_connection, _connection_record) -> None:
-        """Set safe, low-overhead SQLite defaults on every DB connection."""
-        cursor = dbapi_connection.cursor()
-        try:
-            cursor.execute("PRAGMA foreign_keys=ON")
-            cursor.execute("PRAGMA busy_timeout=30000")
-            # WAL lets readers continue while a writer commits. SQLite still
-            # serializes writers, so PostgreSQL remains the production choice.
-            cursor.execute("PRAGMA journal_mode=WAL")
-            cursor.execute("PRAGMA synchronous=NORMAL")
-        finally:
-            cursor.close()
+    db_engine = create_engine(
+        database_url,
+        connect_args=connect_args,
+        pool_pre_ping=True,
+    )
 
+    if is_sqlite:
+        @event.listens_for(db_engine, "connect")
+        def _configure_sqlite_connection(dbapi_connection, _connection_record) -> None:
+            """Set safe, low-overhead SQLite defaults on every DB connection."""
+            cursor = dbapi_connection.cursor()
+            try:
+                cursor.execute("PRAGMA foreign_keys=ON")
+                cursor.execute("PRAGMA busy_timeout=30000")
+                # WAL lets readers continue while a writer commits. SQLite still
+                # serializes writers, so PostgreSQL remains the production choice.
+                cursor.execute("PRAGMA journal_mode=WAL")
+                cursor.execute("PRAGMA synchronous=NORMAL")
+            finally:
+                cursor.close()
+
+    return db_engine
+
+
+engine = create_database_engine(settings.DATABASE_URL)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
 

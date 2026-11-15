@@ -136,9 +136,13 @@ def test_seed_idempotent_on_migrated_db():
 
     # Run migrations to get real tables, using this same python env's alembic.
     env = dict(os.environ, SECRET_KEY="test12345678901234567890123456789012")
-    subprocess.run(
+    migration = subprocess.run(
         [sys.executable, "-m", "alembic", "-c", str(ini), "upgrade", "head"],
-        check=True, cwd=core_dir, env=env, capture_output=True, text=True,
+        check=False, cwd=core_dir, env=env, capture_output=True, text=True,
+    )
+    assert migration.returncode == 0, (
+        "Alembic upgrade failed.\\nSTDOUT:\\n"
+        + migration.stdout + "\\nSTDERR:\\n" + migration.stderr
     )
     engine = create_engine(f"sqlite:///{db}")
     s = sessionmaker(bind=engine)()

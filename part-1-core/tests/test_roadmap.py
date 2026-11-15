@@ -127,7 +127,9 @@ def test_service_regenerate_bumps_version_and_keeps_completed():
     r = svc.generate("u1", [{"skill": "sql", "mastery_pct": 30}])
     t0 = r.tasks[0]
     svc.update_task("u1", t0.id, "in_progress")
-    svc.update_task("u1", t0.id, "completed")
+    with pytest.raises(DomainError):
+        svc.update_task("u1", t0.id, "completed")
+    svc.complete_verified_task("u1", t0.id)
     r2 = svc.regenerate("u1", [{"skill": "sql", "mastery_pct": 75}])
     assert r2.version == 2
     done = [t for t in r2.tasks if t.status == "completed"]
@@ -183,7 +185,7 @@ def test_api_full_roadmap_flow():
     assert r.status_code == 200 and r.json()["status"] == "in_progress"
     r = c.patch(f"/api/v1/roadmaps/tasks/{tid}",
                 json={"status": "completed"}, headers=h)
-    assert r.status_code == 200
+    assert r.status_code == 400
     # illegal jump rejected
     tid2 = body["tasks"][1]["id"]
     r = c.patch(f"/api/v1/roadmaps/tasks/{tid2}",
@@ -195,7 +197,7 @@ def test_api_full_roadmap_flow():
     body2 = r.json()
     assert body2["version"] == 2
     done = [t for t in body2["tasks"] if t["status"] == "completed"]
-    assert len(done) == 1 and done[0]["id"] == tid
+    assert done == []  # direct API completion is forbidden without verified evidence
     # versions list
     r = c.get("/api/v1/roadmaps", headers=h)
     assert r.status_code == 200 and len(r.json()) == 2

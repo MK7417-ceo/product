@@ -91,11 +91,11 @@ def execute_sandboxed(
                         os.setgid(65534)
                         os.setuid(65534)
                     except OSError as exc:
-                        os.write(stderr_w, f"sandbox: privilege drop failed: {exc}\\n".encode())
+                        os.write(stderr_w, f"sandbox: privilege drop failed: {exc}\n".encode())
                         os._exit(127)
                 # Also reject a non-root process that still has root group.
                 if os.geteuid() == 0 or os.getegid() == 0:
-                    os.write(stderr_w, b"sandbox: refusing privileged execution\\n")
+                    os.write(stderr_w, b"sandbox: refusing privileged execution\n")
                     os._exit(127)
             os.dup2(stdin_r, 0)
             os.dup2(stdout_w, 1)

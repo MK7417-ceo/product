@@ -3,6 +3,7 @@
 The FIRST test is C++ — the mandated first proof of the engine.
 """
 import shutil
+import subprocess
 
 import pytest
 from fastapi.testclient import TestClient
@@ -23,6 +24,25 @@ client = TestClient(create_app())
 svc = CodeRunnerServiceImpl()
 
 
+def _network_namespace_available() -> bool:
+    if not shutil.which("unshare"):
+        return False
+    try:
+        result = subprocess.run(
+            ["unshare", "-n", "true"], capture_output=True, timeout=3, check=False
+        )
+        return result.returncode == 0
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+
+
+NETWORK_NAMESPACE_AVAILABLE = _network_namespace_available()
+requires_network_namespace = pytest.mark.skipif(
+    not NETWORK_NAMESPACE_AVAILABLE,
+    reason="runner lacks permission to create a network namespace; fail-closed behavior is tested separately",
+)
+
+
 def _run(**kw):
     kw.setdefault("limits", {})
     r = client.post("/v1/run", json=kw)
@@ -32,6 +52,7 @@ def _run(**kw):
 
 # ---------- the mandated first proof: C++ ----------
 
+@requires_network_namespace
 def test_cpp_hello_world_runs_sandboxed():
     res = _run(language="cpp", code=CPP_HELLO)
     assert res["verdict"] == "OK", res
@@ -42,6 +63,7 @@ def test_cpp_hello_world_runs_sandboxed():
     assert res["peak_ram_mb"] is not None and res["peak_ram_mb"] > 0
 
 
+@requires_network_namespace
 def test_cpp_stdin_echo():
     code = r'''#include <bits/stdc++.h>
 using namespace std;
@@ -52,6 +74,7 @@ int main() { string s; cin >> s; cout << "echo:" << s; return 0; }
     assert res["stdout"] == "echo:skillforge"
 
 
+@requires_network_namespace
 def test_cpp_compile_error():
     res = _run(language="cpp", code="int main( { oops }")
     assert res["verdict"] == "COMPILE_ERROR"
@@ -60,18 +83,21 @@ def test_cpp_compile_error():
 
 # ---------- other languages ----------
 
+@requires_network_namespace
 def test_c_hello_world():
     res = _run(language="c", code='#include <stdio.h>\nint main(){printf("c-ok\\n");return 0;}')
     assert res["verdict"] == "OK"
     assert res["stdout"].strip() == "c-ok"
 
 
+@requires_network_namespace
 def test_python_hello_world():
     res = _run(language="python", code='print("py-ok")')
     assert res["verdict"] == "OK"
     assert res["stdout"].strip() == "py-ok"
 
 
+@requires_network_namespace
 def test_python_stdin_and_runtime_error():
     res = _run(language="python", code="import sys\nprint(sys.stdin.read().strip())", stdin="in-data")
     assert res["verdict"] == "OK" and res["stdout"].strip() == "in-data"
@@ -81,6 +107,7 @@ def test_python_stdin_and_runtime_error():
 
 
 @pytest.mark.skipif(not shutil.which("javac"), reason="no JDK here")
+@requires_network_namespace
 def test_java_hello_world():
     res = _run(language="java",
                code='public class Main { public static void main(String[] a){ System.out.println("java-ok"); } }')
@@ -90,6 +117,7 @@ def test_java_hello_world():
 
 # ---------- sandbox guarantees ----------
 
+@requires_network_namespace
 def test_no_network_inside_sandbox():
     code = ("import socket\n"
             "try:\n"
@@ -102,6 +130,7 @@ def test_no_network_inside_sandbox():
     assert "BLOCKED" in res["stdout"], res
 
 
+@requires_network_namespace
 def test_infinite_loop_is_killed_tle():
     res = _run(language="python", code="while True:\n    pass",
                limits={"wall_time_s": 2})
@@ -109,12 +138,14 @@ def test_infinite_loop_is_killed_tle():
     assert res["timed_out"] is True
 
 
+@requires_network_namespace
 def test_output_truncation():
     res = _run(language="python", code="print('x' * 200000)")
     assert res["truncated"] is True
     assert len(res["stdout"].encode()) == 64 * 1024
 
 
+@requires_network_namespace
 def test_memory_hog_is_contained():
     code = ('#include <bits/stdc++.h>\nusing namespace std;\n'
             'int main(){ vector<char> v; '
@@ -124,6 +155,7 @@ def test_memory_hog_is_contained():
     assert res["verdict"] in ("MLE", "RUNTIME_ERROR"), res  # contained, never hangs host
 
 
+@requires_network_namespace
 def test_fork_bomb_is_contained():
     res = _run(language="python",
                code="import os\nwhile True:\n    os.fork()",
@@ -151,6 +183,7 @@ def test_bad_limits_rejected():
     assert r.status_code == 400
 
 
+@requires_network_namespace
 def test_request_id_echoed():
     r = client.post("/v1/run", json={"language": "python", "code": "print(1)"},
                     headers={"X-Request-ID": "test-123"})
@@ -179,7 +212,17 @@ def test_domain_rejects_bad_limits():
         Limits(memory_mb=32)
 
 
+@requires_network_namespace
 def test_service_direct_call():
     res = svc.run(ExecutionRequest(language="cpp", code=CPP_HELLO))
     assert res.verdict == "OK"
     assert res.stdout.strip() == "hello from c++"
+
+
+
+def test_unavailable_network_namespace_fails_closed():
+    if NETWORK_NAMESPACE_AVAILABLE:
+        pytest.skip("network namespace is available; normal sandbox integration tests cover execution")
+    res = _run(language="python", code="print('THIS_MUST_NOT_RUN')")
+    assert res["stdout"] == ""
+    assert "network isolation failed" in res["stderr"].lower()

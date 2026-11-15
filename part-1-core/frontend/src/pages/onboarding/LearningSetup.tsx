@@ -8,6 +8,8 @@ import './plan-setup.css';
 /* Domain catalog — shown to the user with NO coding/non-coding labels.
    The `coding` flag is internal only: it tells the plan generator whether
    to include hands-on code tasks (mirrors backend domain_skills.py). */
+type Level = 'scratch' | 'beginner' | 'intermediate';
+
 interface Domain {
   slug: string;
   name: string;
