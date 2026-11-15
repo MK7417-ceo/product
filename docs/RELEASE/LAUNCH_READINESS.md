@@ -108,7 +108,8 @@ These are pricing hypotheses, not validated market prices. Only list features th
 
 ## 6. Release engineering
 - [x] CI runs backend tests, frontend typecheck/build/lint, Code Engine tests and a clean Alembic upgrade check.
-- [ ] Run `.github/workflows/sandbox-security.yml` on a dedicated disposable Linux runner and obtain zero skipped integration tests; then independently close filesystem/process isolation gaps.\n- [ ] Add security/dependency scanning and browser E2E; these are not covered by the current CI run.
+- [ ] Run `.github/workflows/sandbox-security.yml` on a dedicated disposable Linux runner and obtain zero skipped integration tests; then independently close filesystem/process isolation gaps.
+- [ ] Add security/dependency scanning and browser E2E; these are not covered by the current CI run.
 - [ ] Staging mirrors production configuration.
 - [ ] Database migrations, backups and rollback are tested.
 - [ ] Error monitoring, uptime monitoring and structured logs are enabled.
